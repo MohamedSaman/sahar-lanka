@@ -24,17 +24,18 @@
                                 <div class="search-results-container position-absolute mt-1 w-50 bg-white shadow-lg rounded"
                                     style="max-height: 350px; overflow-y: auto; z-index: 1000;">
                                     @foreach ($searchResults as $result)
-                                    <div class="search-result-item p-2 border-bottom d-flex align-items-center" wire:key="result-{{ $result->id }}">
+                                    <div class="search-result-item p-2 border-bottom d-flex align-items-center"
+                                        wire:key="result-{{ $result->id }}">
 
                                         <!-- Product Image -->
                                         <div class="product-image me-3" style="min-width: 60px;">
                                             @if ($result->image)
                                             <img src="{{ asset('public/storage/' . $result->image) }}"
-                                                alt="{{ $result->name }}"
-                                                class="img-fluid rounded"
+                                                alt="{{ $result->name }}" class="img-fluid rounded"
                                                 style="width: 60px; height: 60px; object-fit: cover;">
                                             @else
-                                            <div style="width:30px;height:30px;background-color:#f3f4f6;border-radius:0.5rem;display:flex;align-items:center;justify-content:center; margin:0 auto;">
+                                            <div
+                                                style="width:30px;height:30px;background-color:#f3f4f6;border-radius:0.5rem;display:flex;align-items:center;justify-content:center; margin:0 auto;">
                                                 <i class="bi bi-box-seam text-gray-600"></i>
                                             </div>
                                             @endif
@@ -43,12 +44,15 @@
                                         <!-- Product Info -->
                                         <div class="product-info flex-grow-1">
                                             <div class="d-flex justify-content-between align-items-center">
-                                                <h6 class="mb-1 fw-bold">{{ $result->product_name ?? 'Unnamed Product' }}</h6>
+                                                <h6 class="mb-1 fw-bold">{{ $result->product_name ?? 'Unnamed Product'
+                                                    }}</h6>
                                                 <div class="text-end">
                                                     <span class="badge bg-success">
-                                                        Rs.{{ $result->discount_price ?: $result->selling_price ?? '-' }}
+                                                        Rs.{{ $result->discount_price ?: $result->selling_price ?? '-'
+                                                        }}
                                                     </span>
-                                                    <span class="badge {{ $result->stock_quantity <= 5 ? 'bg-warning text-dark' : 'bg-info' }}">
+                                                    <span
+                                                        class="badge {{ $result->stock_quantity <= 5 ? 'bg-warning text-dark' : 'bg-info' }}">
                                                         Available: {{ $result->stock_quantity ?? 0 }}
                                                     </span>
                                                 </div>
@@ -59,11 +63,12 @@
                                         </div>
 
                                         <!-- Add to Cart Button -->
-                                        <div class="search-result-item p-2 border-bottom d-flex align-items-center" wire:key="result-{{ $result->id }}">
+                                        <div class="search-result-item p-2 border-bottom d-flex align-items-center"
+                                            wire:key="result-{{ $result->id }}">
                                             <button class="btn btn-sm btn-primary"
-                                                wire:click="addToCart({{ $result->id }})"
-                                                {{ $result->stock_quantity <= 0 ? 'disabled' : '' }}>
-                                                <i class="fas fa-plus"></i> Add
+                                                wire:click="addToCart({{ $result->id }})" {{ $result->stock_quantity <=
+                                                    0 ? 'disabled' : '' }}>
+                                                    <i class="fas fa-plus"></i> Add
                                             </button>
                                         </div>
 
@@ -71,7 +76,8 @@
                                     @endforeach
                                 </div>
                                 @elseif($search && count($searchResults) == 0)
-                                <div class="search-results-container position-absolute mt-1 w-50 bg-white shadow-lg rounded p-3">
+                                <div
+                                    class="search-results-container position-absolute mt-1 w-50 bg-white shadow-lg rounded p-3">
                                     <div class="text-center text-muted">
                                         <i class="fas fa-search fa-2x mb-2"></i>
                                         <p>No products found matching "{{ $search }}"</p>
@@ -109,11 +115,11 @@
                                                 <div>
                                                     @if ($item['image'])
                                                     <img src="{{ asset('public/storage/' . $item['image']) }}"
-                                                        class="avatar avatar-sm me-3 rounded"
-                                                        alt="{{ $item['name'] }}"
+                                                        class="avatar avatar-sm me-3 rounded" alt="{{ $item['name'] }}"
                                                         style="width: 50px; height: 50px; object-fit: cover;">
                                                     @else
-                                                    <div style="width:40px;height:40px;background-color:#f3f4f6;border-radius:0.5rem;display:flex;align-items:center;justify-content:center; margin-right: auto;">
+                                                    <div
+                                                        style="width:40px;height:40px;background-color:#f3f4f6;border-radius:0.5rem;display:flex;align-items:center;justify-content:center; margin-right: auto;">
                                                         <i class="bi bi-box-seam text-gray-600"></i>
                                                     </div>
                                                     @endif
@@ -121,7 +127,8 @@
                                                 </div>
                                                 <div class="d-flex flex-column justify-content-center">
                                                     <h6 class="mb-0 text-sm">{{ $item['name'] }}</h6>
-                                                    <small class="text-xs text-secondary mb-0">{{ $item['code'] ?? 'N/A' }} |
+                                                    <small class="text-xs text-secondary mb-0">{{ $item['code'] ?? 'N/A'
+                                                        }} |
                                                         {{ $item['brand'] ?? 'N/A' }}
                                                     </small>
                                                 </div>
@@ -140,9 +147,7 @@
                                             <div style="width: 100px;">
                                                 <input type="number"
                                                     class="form-control form-control-sm text-center quantity-input"
-                                                    data-watch-id="{{ $id }}"
-                                                    value="{{ $quantities[$id] }}"
-                                                    min="1"
+                                                    data-watch-id="{{ $id }}" value="{{ $quantities[$id] }}" min="1"
                                                     max="{{ $item['stock_quantity'] }}"
                                                     wire:change="validateQuantity({{ $id }})"
                                                     wire:model.blur="quantities.{{ $id }}">
@@ -162,7 +167,8 @@
                                         </td>
                                         <td>
                                             <p class="text-xs font-weight-bold mb-0">
-                                                Rs.{{ number_format(($item['price'] ?: $item['price']) * $quantities[$id] - ($discounts[$id] ?? 0) * $quantities[$id], 2) }}
+                                                Rs.{{ number_format(($item['price'] ?: $item['price']) *
+                                                $quantities[$id] - ($discounts[$id] ?? 0) * $quantities[$id], 2) }}
                                             </p>
                                         </td>
                                         <td>
@@ -233,9 +239,9 @@
                                             <label class="form-label fw-bold">Payment Type</label>
                                             <div class="d-flex">
                                                 <div class="form-check me-4">
-                                                    <input class="form-check-input" type="radio"
-                                                        name="paymentType" id="fullPayment" value="full"
-                                                        wire:model.live="paymentType" checked>
+                                                    <input class="form-check-input" type="radio" name="paymentType"
+                                                        id="fullPayment" value="full" wire:model.live="paymentType"
+                                                        checked>
                                                     <label class="form-check-label" for="fullPayment">
                                                         <span class="badge bg-success me-1">
                                                             <i class="fas fa-money-bill me-1"></i>
@@ -244,8 +250,8 @@
                                                     </label>
                                                 </div>
                                                 <div class="form-check">
-                                                    <input class="form-check-input" type="radio"
-                                                        name="paymentType" id="partialPayment" value="partial"
+                                                    <input class="form-check-input" type="radio" name="paymentType"
+                                                        id="partialPayment" value="partial"
                                                         wire:model.live="paymentType">
                                                     <label class="form-check-label" for="partialPayment">
                                                         <span class="badge bg-warning me-1">
@@ -268,7 +274,8 @@
                                                     <label class="form-label small fw-bold">Cash Amount</label>
                                                     <div class="input-group">
                                                         <span class="input-group-text">Rs.</span>
-                                                        <input type="number" class="form-control" placeholder="Enter cash amount" wire:model="cashAmount">
+                                                        <input type="number" class="form-control"
+                                                            placeholder="Enter cash amount" wire:model="cashAmount">
                                                     </div>
                                                 </div>
                                             </div>
@@ -284,22 +291,31 @@
                                                 <form wire:submit.prevent="addCheque">
                                                     <div class="row g-3">
                                                         <div class="col-md-6">
-                                                            <label class="form-label small fw-bold">Cheque Number</label>
-                                                            <input type="text" class="form-control" placeholder="Enter cheque number" wire:model="newCheque.number">
+                                                            <label class="form-label small fw-bold">Cheque
+                                                                Number</label>
+                                                            <input type="text" class="form-control"
+                                                                placeholder="Enter cheque number"
+                                                                wire:model="newCheque.number">
                                                         </div>
                                                         <div class="col-md-6">
                                                             <label class="form-label small fw-bold">Bank Name</label>
-                                                            <input type="text" class="form-control" placeholder="Enter bank name" wire:model="newCheque.bank">
+                                                            <input type="text" class="form-control"
+                                                                placeholder="Enter bank name"
+                                                                wire:model="newCheque.bank">
                                                         </div>
                                                         <div class="col-md-6">
                                                             <label class="form-label small fw-bold">Cheque Date</label>
-                                                            <input type="date" class="form-control" wire:model="newCheque.date">
+                                                            <input type="date" class="form-control"
+                                                                wire:model="newCheque.date">
                                                         </div>
                                                         <div class="col-md-6">
-                                                            <label class="form-label small fw-bold">Cheque Amount</label>
+                                                            <label class="form-label small fw-bold">Cheque
+                                                                Amount</label>
                                                             <div class="input-group">
                                                                 <span class="input-group-text">Rs.</span>
-                                                                <input type="number" class="form-control" placeholder="Enter cheque amount" wire:model="newCheque.amount">
+                                                                <input type="number" class="form-control"
+                                                                    placeholder="Enter cheque amount"
+                                                                    wire:model="newCheque.amount">
                                                             </div>
                                                         </div>
                                                     </div>
@@ -333,7 +349,8 @@
                                                                 <td>{{ $cheque['date'] }}</td>
                                                                 <td>Rs.{{ number_format($cheque['amount'], 2) }}</td>
                                                                 <td>
-                                                                    <button class="btn btn-link btn-sm text-danger p-0" wire:click.prevent="removeCheque({{ $index }})">
+                                                                    <button class="btn btn-link btn-sm text-danger p-0"
+                                                                        wire:click.prevent="removeCheque({{ $index }})">
                                                                         <i class="bi bi-trash"></i>
                                                                     </button>
                                                                 </td>
@@ -352,7 +369,9 @@
                                                 <h6 class="card-title fw-bold mb-3">
                                                     <i class="fas fa-calendar-alt me-2"></i>Credit Sale Details
                                                 </h6>
-                                                <p class="text-info">The total amount of <strong>Rs.{{ number_format($grandTotal, 2) }}</strong> will be recorded as a due payment.</p>
+                                                <p class="text-info">The total amount of <strong>Rs.{{
+                                                        number_format($grandTotal, 2) }}</strong> will be recorded as a
+                                                    due payment.</p>
 
                                             </div>
                                         </div>
@@ -361,7 +380,9 @@
                                         <!-- Customer Notes -->
                                         <div class="mb-3">
                                             <label class="form-label fw-bold">Notes</label>
-                                            <textarea class="form-control" rows="3" placeholder="Add any notes about this sale" wire:model="saleNotes"></textarea>
+                                            <textarea class="form-control" rows="3"
+                                                placeholder="Add any notes about this sale"
+                                                wire:model="saleNotes"></textarea>
                                         </div>
                                     </div>
                                 </div>
@@ -411,8 +432,7 @@
                     <div class="modal-content">
                         <div class="modal-header bg-primary">
                             <h1 class="modal-title fs-5 text-white" id="viewDetailModalLabel">Watch Details</h1>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                aria-label="Close"></button>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
                         @if ($productDetails)
                         <div class="modal-body p-4">
@@ -427,7 +447,8 @@
                                                     alt="{{ $productDetails->name }}"
                                                     class="img-fluid rounded-start h-100 w-100 object-fit-cover">
                                                 @else
-                                                <div class="bg-light d-flex flex-column align-items-center justify-content-center h-100">
+                                                <div
+                                                    class="bg-light d-flex flex-column align-items-center justify-content-center h-100">
                                                     <i class="bi bi-box-seam text-muted" style="font-size: 5rem;"></i>
                                                     <p class="text-muted mt-2">No image available</p>
                                                 </div>
@@ -435,7 +456,8 @@
 
                                                 <!-- Status badges in corner -->
                                                 <div class="position-absolute top-0 end-0 p-2 d-flex flex-column gap-2">
-                                                    <span class="badge bg-{{ $productDetails->Status == 'Active' ? 'success' : 'danger' }}">
+                                                    <span
+                                                        class="badge bg-{{ $productDetails->Status == 'Active' ? 'success' : 'danger' }}">
                                                         {{ ucfirst($productDetails->Status) }}
                                                     </span>
 
@@ -456,11 +478,13 @@
                                         <div class="col-md-8">
                                             <div class="p-4">
                                                 <div class="d-flex justify-content-between align-items-center mb-3">
-                                                    <h3 class="fw-bold mb-0 text-primary">{{ $productDetails->product_name }}</h3>
+                                                    <h3 class="fw-bold mb-0 text-primary">{{
+                                                        $productDetails->product_name }}</h3>
                                                 </div>
 
                                                 <div class="mb-3">
-                                                    <span class="badge bg-dark p-2 fs-6">Code: {{ $productDetails->product_code ?? 'N/A' }}</span>
+                                                    <span class="badge bg-dark p-2 fs-6">Code: {{
+                                                        $productDetails->product_code ?? 'N/A' }}</span>
                                                 </div>
 
                                                 <div class="mb-4">
@@ -474,24 +498,29 @@
                                                         <div>
                                                             @if ($productDetails->discount_price > 0)
                                                             <h5 class="text-muted text-decoration-line-through mb-1">
-                                                                Rs.{{ number_format($productDetails->selling_price, 2)  ?? 0}}
+                                                                Rs.{{ number_format($productDetails->selling_price, 2)
+                                                                ?? 0}}
                                                             </h5>
                                                             <h4 class="text-danger fw-bold">
-                                                                Rs.{{ number_format($productDetails->selling_price - $productDetails->discount_price, 2) }}
+                                                                Rs.{{ number_format($productDetails->selling_price -
+                                                                $productDetails->discount_price, 2) }}
                                                             </h4>
                                                             @else
                                                             <h4 class="text-primary fw-bold">
-                                                                Rs.{{ number_format($productDetails->selling_price, 2) }}
+                                                                Rs.{{ number_format($productDetails->selling_price, 2)
+                                                                }}
                                                             </h4>
                                                             @endif
 
                                                             @if ($productDetails->available_stock > 0)
                                                             <small class="text-success">
-                                                                <i class="bi bi-check-circle-fill"></i> {{ $productDetails->available_stock }} units available
+                                                                <i class="bi bi-check-circle-fill"></i> {{
+                                                                $productDetails->available_stock }} units available
                                                             </small>
                                                             @else
                                                             <small class="text-danger fw-bold">
-                                                                <i class="bi bi-exclamation-triangle-fill"></i> OUT OF STOCK
+                                                                <i class="bi bi-exclamation-triangle-fill"></i> OUT OF
+                                                                STOCK
                                                             </small>
                                                             @endif
                                                         </div>
@@ -520,15 +549,18 @@
                                                         <div class="card mb-3 border-danger">
                                                             <div class="card-body d-flex justify-content-between">
                                                                 <p class="card-text fw-bold">Damage Stock</p>
-                                                                <h4 class="card-title text-danger">{{ $productDetails->damage_quantity }}</h4>
+                                                                <h4 class="card-title text-danger">{{
+                                                                    $productDetails->damage_quantity }}</h4>
                                                             </div>
                                                         </div>
                                                     </div>
                                                     <div class="col-md-6">
-                                                        <div class="card mb-3 {{ $productDetails->available_stock > 0 ? 'border-success' : 'border-danger' }}">
+                                                        <div
+                                                            class="card mb-3 {{ $productDetails->available_stock > 0 ? 'border-success' : 'border-danger' }}">
                                                             <div class="card-body d-flex justify-content-between">
                                                                 <p class="card-text fw-bold">Available Stock</p>
-                                                                <h4 class="card-title {{ $productDetails->available_stock > 0 ? 'text-success' : 'text-danger' }}">
+                                                                <h4
+                                                                    class="card-title {{ $productDetails->available_stock > 0 ? 'text-success' : 'text-danger' }}">
                                                                     {{ $productDetails->available_stock }}
                                                                 </h4>
                                                             </div>
@@ -564,8 +596,7 @@
                             <h5 class="modal-title" id="addCustomerModalLabel">
                                 <i class="bi bi-user-plus me-2"></i>Add New Customer
                             </h5>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                aria-label="Close"></button>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
                         <div class="modal-body">
                             <form wire:submit.prevent="saveCustomer">
@@ -576,8 +607,7 @@
                                         <div class="d-flex">
                                             <div class="form-check me-4">
                                                 <input class="form-check-input" type="radio" name="newCustomerType"
-                                                    id="newRetail" value="retail" wire:model="newCustomerType"
-                                                    checked>
+                                                    id="newRetail" value="retail" wire:model="newCustomerType" checked>
                                                 <label class="form-check-label" for="newRetail">Retail</label>
                                             </div>
                                             <div class="form-check">
@@ -593,9 +623,8 @@
                                         <label class="form-label">Full Name <span class="text-danger">*</span></label>
                                         <div class="input-group">
                                             <span class="input-group-text"><i class="bi bi-person"></i></span>
-                                            <input type="text" class="form-control"
-                                                placeholder="Enter customer name" wire:model="newCustomerName"
-                                                required>
+                                            <input type="text" class="form-control" placeholder="Enter customer name"
+                                                wire:model="newCustomerName" required>
                                         </div>
                                         @error('newCustomerName')
                                         <small class="text-danger">{{ $message }}</small>
@@ -606,9 +635,8 @@
                                                 class="text-danger">*</span></label>
                                         <div class="input-group">
                                             <span class="input-group-text"><i class="bi bi-telephone"></i></span>
-                                            <input type="text" class="form-control"
-                                                placeholder="Enter phone number" wire:model="newCustomerPhone"
-                                                required>
+                                            <input type="text" class="form-control" placeholder="Enter phone number"
+                                                wire:model="newCustomerPhone" required>
                                         </div>
                                         @error('newCustomerPhone')
                                         <small class="text-danger">{{ $message }}</small>
@@ -620,8 +648,8 @@
                                         <label class="form-label">Email Address</label>
                                         <div class="input-group">
                                             <span class="input-group-text"><i class="bi bi-envelope-at"></i></span>
-                                            <input type="email" class="form-control"
-                                                placeholder="Enter email address" wire:model="newCustomerEmail">
+                                            <input type="email" class="form-control" placeholder="Enter email address"
+                                                wire:model="newCustomerEmail">
                                         </div>
                                     </div>
                                     <div class="col-md-6">
@@ -636,7 +664,8 @@
                                     <!-- Additional Information -->
                                     <div class="col-md-12">
                                         <label class="form-label">Additional Information</label>
-                                        <textarea class="form-control" rows="3" placeholder="Add any additional information about this customer"
+                                        <textarea class="form-control" rows="3"
+                                            placeholder="Add any additional information about this customer"
                                             wire:model="newCustomerNotes"></textarea>
                                     </div>
                                 </div>
@@ -655,18 +684,23 @@
             </div>
 
             <!-- Receipt Modal -->
-            <div wire:ignore.self class="modal fade" id="receiptModal" tabindex="-1" aria-labelledby="receiptModalLabel" aria-hidden="true">
+            <div wire:ignore.self class="modal fade" id="receiptModal" tabindex="-1" aria-labelledby="receiptModalLabel"
+                aria-hidden="true">
                 <div class="modal-dialog modal-lg">
-                    <div class="modal-content rounded-4 shadow-xl" style="border: 2px solid #233D7F; background: linear-gradient(145deg, #FFFFFF, #F8F9FA);">
-                        <div class="modal-header" style="background-color: #233D7F; color: #FFFFFF; border-top-left-radius: 0.5rem; border-top-right-radius: 0.5rem;">
+                    <div class="modal-content rounded-4 shadow-xl"
+                        style="border: 2px solid #233D7F; background: linear-gradient(145deg, #FFFFFF, #F8F9FA);">
+                        <div class="modal-header"
+                            style="background-color: #233D7F; color: #FFFFFF; border-top-left-radius: 0.5rem; border-top-right-radius: 0.5rem;">
                             <h5 class="modal-title fw-bold tracking-tight" id="receiptModalLabel">
                                 <i class="bi bi-receipt me-2"></i>Sales Receipt
                             </h5>
                             <div class="ms-auto d-flex gap-2">
-                                <button type="button" class="btn btn-sm rounded-full px-3 transition-all hover:shadow" id="printButton" style="background-color: #233D7F;border-color:#fff; color: #fff;">
+                                <button type="button" class="btn btn-sm rounded-full px-3 transition-all hover:shadow"
+                                    id="printButton" style="background-color: #233D7F;border-color:#fff; color: #fff;">
                                     <i class="bi bi-printer me-1"></i>Print
                                 </button>
-                                <button type="button" class="btn-close btn-close-white opacity-75 hover:opacity-100" data-bs-dismiss="modal" aria-label="Close"></button>
+                                <button type="button" class="btn-close btn-close-white opacity-75 hover:opacity-100"
+                                    data-bs-dismiss="modal" aria-label="Close"></button>
                             </div>
                         </div>
                         <div class="modal-body p-4" id="receiptContent">
@@ -674,30 +708,41 @@
                             <div class="receipt-container">
                                 <!-- Receipt Header -->
                                 <div class="text-center mb-4">
-                                    <h3 class="mb-1 fw-bold tracking-tight" style="color: #233D7F;">WORLDEN LANKA</h3>
-                                    <p class="mb-0 text-muted small" style="color: #6B7280;">NO 20/2/1, 2nd FLOOR,HUNTER BUILDING,BANKSHALLL STREET,COLOMBO-11</p>
-                                    <p class="mb-0 text-muted small" style="color: #6B7280;">Phone: 011 - 2332786 | Email: plusaccessories.lk@gmail.com</p>
-                                    <h4 class="mt-3 border-bottom border-2 pb-2 fw-bold" style="color: #233D7F; border-color: #233D7F;">SALES RECEIPT</h4>
+                                    <h3 class="mb-1 fw-bold tracking-tight" style="color: #233D7F;">SAHAR LANKA</h3>
+                                    <p class="mb-0 text-muted small" style="color: #6B7280;">Importers & Retailers of Genuine Spares for <br> <span class="text-denger "> MARUTI-LEYLAND - MAHINDRA-TATA-ALTO </span></p>
+                                    <p class="mb-0 text-muted small" style="color: #6B7280;">Phone: 077 6718838 |
+                                        Address: No. 397/3, Dunu Ela, Thihariya, Kalagedihena.</p>
+                                    <h4 class="mt-3 border-bottom border-2 pb-2 fw-bold"
+                                        style="color: #233D7F; border-color: #233D7F;">SALES RECEIPT</h4>
                                 </div>
 
                                 <!-- Invoice Details -->
                                 <div class="row mb-4">
                                     <div class="col-md-6">
-                                        <h6 class="text-muted mb-2 fw-medium" style="color: #6B7280;">INVOICE DETAILS</h6>
-                                        <p class="mb-1" style="color: #233D7F;"><strong>Invoice Number:</strong> {{ $receipt->invoice_number }}</p>
-                                        <p class="mb-1" style="color: #233D7F;"><strong>Date:</strong> {{ $receipt->created_at->setTimezone('Asia/Colombo')->format('d/m/Y h:i A') }}</p>
+                                        <h6 class="text-muted mb-2 fw-medium" style="color: #6B7280;">INVOICE DETAILS
+                                        </h6>
+                                        <p class="mb-1" style="color: #233D7F;"><strong>Invoice Number:</strong> {{
+                                            $receipt->invoice_number }}</p>
+                                        <p class="mb-1" style="color: #233D7F;"><strong>Date:</strong> {{
+                                            $receipt->created_at->setTimezone('Asia/Colombo')->format('d/m/Y h:i A') }}
+                                        </p>
                                         <p class="mb-1"><strong>Payment Status:</strong>
-                                            <span class="badge" style="background-color: {{ $receipt->payment_status == 'paid' ? '#0F5132' : ($receipt->payment_status == 'partial' ? '#664D03' : '#842029') }}; color: #FFFFFF;">
+                                            <span class="badge"
+                                                style="background-color: {{ $receipt->payment_status == 'paid' ? '#0F5132' : ($receipt->payment_status == 'partial' ? '#664D03' : '#842029') }}; color: #FFFFFF;">
                                                 {{ ucfirst($receipt->payment_status) }}
                                             </span>
                                         </p>
                                     </div>
                                     <div class="col-md-6">
-                                        <h6 class="text-muted mb-2 fw-medium" style="color: #6B7280;">CUSTOMER DETAILS</h6>
+                                        <h6 class="text-muted mb-2 fw-medium" style="color: #6B7280;">CUSTOMER DETAILS
+                                        </h6>
                                         @if ($receipt->customer)
-                                        <p class="mb-1" style="color: #233D7F;"><strong>Name:</strong> {{ $receipt->customer->name }}</p>
-                                        <p class="mb-1" style="color: #233D7F;"><strong>Phone:</strong> {{ $receipt->customer->phone }}</p>
-                                        <p class="mb-1" style="color: #233D7F;"><strong>Type:</strong> {{ ucfirst($receipt->customer_type) }}</p>
+                                        <p class="mb-1" style="color: #233D7F;"><strong>Name:</strong> {{
+                                            $receipt->customer->name }}</p>
+                                        <p class="mb-1" style="color: #233D7F;"><strong>Address:</strong> {{
+                                            $receipt->customer->address ?? 'N/A' }}</p>
+                                     
+                                       
                                         @else
                                         <p class="text-muted" style="color: #6B7280;">Walk-in Customer</p>
                                         @endif
@@ -707,10 +752,11 @@
                                 <!-- Items Table -->
                                 <h6 class="text-muted mb-2 fw-medium" style="color: #6B7280;">PURCHASED ITEMS</h6>
                                 <div class="table-responsive mb-4">
-                                    <table class="table table-bordered table-sm border-1" style="border-color: #233D7F;">
+                                    <table class="table table-bordered table-sm border-1"
+                                        style="border-color: #233D7F;">
                                         <thead style="background-color: #233D7F; color: #FFFFFF;">
                                             <tr>
-                                                <th scope="col" class="text-center py-2">#</th>
+                                                <th scope="col" class="text-center py-2">No.</th>
                                                 <th scope="col" class="text-center py-2">Item</th>
                                                 <th scope="col" class="text-center py-2">Code</th>
                                                 <th scope="col" class="text-center py-2">Price</th>
@@ -723,12 +769,17 @@
                                             @foreach ($receipt->items as $index => $item)
                                             <tr class="transition-all hover:bg-gray-50">
                                                 <td class="text-center py-2">{{ $index + 1 }}</td>
-                                                <td class="text-center py-2">{{ $item->product->product_name ?? 'N/A' }}</td>
-                                                <td class="text-center py-2">{{ $item->product->product_code ?? 'N/A' }}</td>
-                                                <td class="text-center py-2">Rs.{{ number_format($item->price, 2) }}</td>
+                                                <td class="text-center py-2">{{ $item->product->product_name ?? 'N/A' }}
+                                                </td>
+                                                <td class="text-center py-2">{{ $item->product->product_code ?? 'N/A' }}
+                                                </td>
+                                                <td class="text-center py-2">Rs.{{ number_format($item->price, 2) }}
+                                                </td>
                                                 <td class="text-center py-2">{{ $item->quantity }}</td>
-                                                <td class="text-center py-2">Rs.{{ number_format($item->discount * $item->quantity, 2) }}</td>
-                                                <td class="text-center py-2">Rs.{{ number_format(($item->price * $item->quantity) - ($item->discount * $item->quantity), 2) }}</td>
+                                                <td class="text-center py-2">Rs.{{ number_format($item->discount *
+                                                    $item->quantity, 2) }}</td>
+                                                <td class="text-center py-2">Rs.{{ number_format(($item->price *
+                                                    $item->quantity) - ($item->discount * $item->quantity), 2) }}</td>
                                             </tr>
                                             @endforeach
                                         </tbody>
@@ -738,16 +789,20 @@
                                 <!-- Payment Details -->
                                 <div class="row">
                                     <div class="col-md-6">
-                                        <h6 class="text-muted mb-2 fw-medium" style="color: #6B7280;">PAYMENT INFORMATION</h6>
+                                        <h6 class="text-muted mb-2 fw-medium" style="color: #6B7280;">PAYMENT
+                                            INFORMATION</h6>
                                         @if ($receipt->payments->count() > 0)
                                         @foreach ($receipt->payments as $payment)
-                                        <div class="mb-2 p-2 border-start border-3 rounded-2" style="border-color: {{ $payment->is_completed ? '#0F5132' : '#664D03' }}; background-color: #F8F9FA;">
+                                        <div class="mb-2 p-2 border-start border-3 rounded-2"
+                                            style="border-color: {{ $payment->is_completed ? '#0F5132' : '#664D03' }}; background-color: #F8F9FA;">
                                             <p class="mb-1" style="color: #233D7F;">
-                                                <strong>{{ $payment->is_completed ? 'Payment' : 'Scheduled Payment' }}:</strong>
+                                                <strong>{{ $payment->is_completed ? 'Payment' : 'Scheduled Payment'
+                                                    }}:</strong>
                                                 Rs.{{ number_format($payment->amount, 2) }}
                                             </p>
                                             <p class="mb-1" style="color: #233D7F;">
-                                                <strong>Method:</strong> {{ ucfirst(str_replace('_', ' ', $payment->payment_method)) }}
+                                                <strong>Method:</strong> {{ ucfirst(str_replace('_', ' ',
+                                                $payment->payment_method)) }}
                                             </p>
                                             @if ($payment->payment_reference)
                                             <p class="mb-1" style="color: #233D7F;">
@@ -766,7 +821,8 @@
                                         </div>
                                         @endforeach
                                         @else
-                                        <p class="text-muted" style="color: #6B7280;">No payment information available</p>
+                                        <p class="text-muted" style="color: #6B7280;">No payment information available
+                                        </p>
                                         @endif
 
                                         @if ($receipt->notes)
@@ -777,19 +833,23 @@
                                     <div class="col-md-6">
                                         <div class="card border-1 rounded-3 shadow-sm" style="border-color: #233D7F;">
                                             <div class="card-body p-3">
-                                                <h6 class="card-title fw-bold tracking-tight" style="color: #233D7F;">ORDER SUMMARY</h6>
-                                                <div class="d-flex justify-content-between mb-2" style="color: #233D7F;">
+                                                <h6 class="card-title fw-bold tracking-tight" style="color: #233D7F;">
+                                                    ORDER SUMMARY</h6>
+                                                <div class="d-flex justify-content-between mb-2"
+                                                    style="color: #233D7F;">
                                                     <span>Subtotal:</span>
                                                     <span>Rs.{{ number_format($receipt->subtotal, 2) }}</span>
                                                 </div>
-                                                <div class="d-flex justify-content-between mb-2" style="color: #233D7F;">
+                                                <div class="d-flex justify-content-between mb-2"
+                                                    style="color: #233D7F;">
                                                     <span>Total Discount:</span>
                                                     <span>Rs.{{ number_format($receipt->discount_amount, 2) }}</span>
                                                 </div>
                                                 <hr style="border-color: #233D7F;">
                                                 <div class="d-flex justify-content-between" style="color: #233D7F;">
                                                     <span class="fw-bold">Grand Total:</span>
-                                                    <span class="fw-bold">Rs.{{ number_format($receipt->total_amount, 2) }}</span>
+                                                    <span class="fw-bold">Rs.{{ number_format($receipt->total_amount, 2)
+                                                        }}</span>
                                                 </div>
                                             </div>
                                         </div>
@@ -798,7 +858,8 @@
 
                                 <!-- Footer -->
                                 <div class="text-center mt-4 pt-3 border-top" style="border-color: #233D7F;">
-                                    <p class="mb-0 text-muted small" style="color: #6B7280;">Thank you for your purchase!</p>
+                                    <p class="mb-0 text-muted small" style="color: #6B7280;">Thank you for your
+                                        purchase!</p>
                                 </div>
                             </div>
                             @else
@@ -808,7 +869,12 @@
                             @endif
                         </div>
                         <div class="modal-footer border-top py-3" style="border-color: #233D7F; background: #F8F9FA;">
-                            <button type="button" class="btn btn-secondary rounded-pill px-4 fw-medium transition-all hover:shadow" data-bs-dismiss="modal" style="background-color: #6B7280; border-color: #6B7280; color: #FFFFFF;" onmouseover="this.style.backgroundColor='#233D7F'; this.style.borderColor='#233D7F';" onmouseout="this.style.backgroundColor='#6B7280'; this.style.borderColor='#6B7280';">Close</button>
+                            <button type="button"
+                                class="btn btn-secondary rounded-pill px-4 fw-medium transition-all hover:shadow"
+                                data-bs-dismiss="modal"
+                                style="background-color: #6B7280; border-color: #6B7280; color: #FFFFFF;"
+                                onmouseover="this.style.backgroundColor='#233D7F'; this.style.borderColor='#233D7F';"
+                                onmouseout="this.style.backgroundColor='#6B7280'; this.style.borderColor='#6B7280';">Close</button>
                         </div>
                     </div>
                 </div>

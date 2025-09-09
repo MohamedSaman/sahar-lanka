@@ -774,7 +774,7 @@
         <!-- Sidebar -->
         <div class="sidebar">
             <div class="sidebar-header">
-                <div class="sidebar-title">Worlden</div>
+                <div class="sidebar-title">SAHAR LANKA</div>
             </div>
             <div class="sidebar-content">
                 <ul class="nav flex-column">

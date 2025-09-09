@@ -256,9 +256,9 @@
                     @if ($selectedPayment)
                     <div class="receipt-container">
                         <div class="text-center mb-4">
-                            <h3 class="mb-0">WORLDEN LANKA GROUP</h3>
-                            <p class="mb-0 text-muted small">NO 20/2/1, 2nd FLOOR,HUNTER BUILDING,BANKSHALLL STREET,COLOMBO-11</p>
-                            <p class="mb-0 text-muted small">Phone: 011 - 2332786 | Email: plusaccessories.lk@gmail.com</p>
+                            <h3 class="mb-0">SAHAR LANKA </h3>
+                            <p class="mb-0 text-muted small">Importers & Retailers of Genuine Spares for <br> <span class="text-denger "> MARUTI-LEYLAND - MAHINDRA-TATA-ALTO </span></p>
+                            <p class="mb-0 text-muted small">Phone: 077 6718838 | Address: No. 397/3, Dunu Ela, Thihariya, Kalagedihena.</p>
                             <h4 class="mt-3 border-bottom border-2 pb-2">PAYMENT RECEIPT</h4>
                         </div>
 

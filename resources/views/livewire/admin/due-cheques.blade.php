@@ -788,7 +788,7 @@
                         </div>
                         <div class="print-footer">
                             <small>Generated on ${new Date().toLocaleString('en-US', { timeZone: 'Asia/Colombo' })}</small><br>
-                            <small>NEW WATCH COMPANY (MR TRADING) | NO 44, DOOLMALA, THIHARIYA | Phone: (033) 228 7437</small>
+                            <small>(SAHAR LANKA) | No. 397/3, Dunu Ela, Thihariya, Kalagedihena. | Phone: 077 6718838</small>
                         </div>
                     </div>
                 </body>

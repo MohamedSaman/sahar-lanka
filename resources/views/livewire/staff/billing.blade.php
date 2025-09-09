@@ -1352,10 +1352,9 @@
                                 <div class="receipt-container">
                                     <!-- Receipt Header -->
                                     <div class="text-center mb-4">
-                                        <h3 class="mb-0">NEW WATCH COMPANY ( MR TRADING )</h3>
-                                        <p class="mb-0 text-muted small">NO 44 ,DOOLMALA ,THIHARIYA</p>
-                                        <p class="mb-0 text-muted small">Phone: (033) 228 7437 |
-                                            Email:hakeem9053@gmail.com</p>
+                                        <h3 class="mb-0">(SAHAR LANKA)</h3>
+                                        <p class="mb-0 text-muted small">No. 397/3, Dunu Ela, Thihariya, Kalagedihena.</p>
+                                        <p class="mb-0 text-muted small">Phone: 077 6718838 </p>
                                         <h4 class="mt-3 border-bottom border-2 pb-2">SALES RECEIPT</h4>
                                     </div>
 
@@ -1396,7 +1395,7 @@
                                         <table class="table table-bordered table-sm">
                                             <thead class="table-light">
                                                 <tr>
-                                                    <th scope="col">#</th>
+                                                    <th scope="col">No.</th>
                                                     <th scope="col">Item</th>
                                                     <th scope="col">Code</th>
                                                     <th scope="col">Price</th>

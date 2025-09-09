@@ -278,29 +278,34 @@
         <div class="sidebar">
             <div class="sidebar-header">
                 <div class="sidebar-title">
-                    <img src="{{ asset('images/plus.png') }}" alt="Logo" width="200px" height="100px">
+                    {{-- <img src="{{ asset('images/plus.png') }}" alt="Logo" width="200px" height="100px"> --}}
+                    <h3 class="text-center">SAHAR LANKA</h3>
                 </div>
             </div>
             <ul class="nav flex-column">
                 <li class="nav-item">
-                    <a class="nav-link {{ request()->routeIs('admin.dashboard') ? 'active' : '' }}" href="{{ route('admin.dashboard') }}">
+                    <a class="nav-link {{ request()->routeIs('admin.dashboard') ? 'active' : '' }}"
+                        href="{{ route('admin.dashboard') }}">
                         <i class="bi bi-bar-chart-line"></i> <span>Overview</span>
                     </a>
                 </li>
 
                 <li class="nav-item">
-                    <a class="nav-link dropdown-toggle" href="#inventorySubmenu" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="inventorySubmenu">
+                    <a class="nav-link dropdown-toggle" href="#inventorySubmenu" data-bs-toggle="collapse" role="button"
+                        aria-expanded="false" aria-controls="inventorySubmenu">
                         <i class="bi bi-box-seam"></i> <span>Inventory</span>
                     </a>
                     <div class="collapse" id="inventorySubmenu">
                         <ul class="nav flex-column ms-3">
                             <li class="nav-item">
-                                <a class="nav-link py-2 {{ request()->routeIs('admin.products') ? 'active' : '' }}" href="{{ route('admin.products') }}">
+                                <a class="nav-link py-2 {{ request()->routeIs('admin.products') ? 'active' : '' }}"
+                                    href="{{ route('admin.products') }}">
                                     <i class="bi bi-box-fill"></i> <span>Product Details</span>
                                 </a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link py-2 {{ request()->routeIs('admin.categories') ? 'active' : '' }}" href="{{ route('admin.categories') }}">
+                                <a class="nav-link py-2 {{ request()->routeIs('admin.categories') ? 'active' : '' }}"
+                                    href="{{ route('admin.categories') }}">
                                     <i class="bi bi-collection"></i> <span>Product Category</span>
                                 </a>
                             </li>
@@ -308,38 +313,45 @@
                     </div>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link py-2 {{ request()->routeIs('admin.manage-customer') ? 'active' : '' }}" href="{{ route('admin.manage-customer') }}">
+                    <a class="nav-link py-2 {{ request()->routeIs('admin.manage-customer') ? 'active' : '' }}"
+                        href="{{ route('admin.manage-customer') }}">
                         <i class="bi bi-people"></i> <span>Manage Customer</span>
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link dropdown-toggle" href="#salesSubmenu" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="salesSubmenu">
+                    <a class="nav-link dropdown-toggle" href="#salesSubmenu" data-bs-toggle="collapse" role="button"
+                        aria-expanded="false" aria-controls="salesSubmenu">
                         <i class="bi bi-cart"></i> <span>Sales</span>
                     </a>
                     <div class="collapse" id="salesSubmenu">
                         <ul class="nav flex-column ms-3">
                             <li class="nav-item">
-                                <a class="nav-link py-2 {{ request()->routeIs('admin.customer-sale-details') ? 'active' : '' }}" href="{{ route('admin.customer-sale-details') }}">
+                                <a class="nav-link py-2 {{ request()->routeIs('admin.customer-sale-details') ? 'active' : '' }}"
+                                    href="{{ route('admin.customer-sale-details') }}">
                                     <i class="bi bi-people"></i> <span>Customer Sales</span>
                                 </a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link py-2 {{ request()->routeIs('admin.due-payments') ? 'active' : '' }}" href="{{ route('admin.due-payments') }}">
+                                <a class="nav-link py-2 {{ request()->routeIs('admin.due-payments') ? 'active' : '' }}"
+                                    href="{{ route('admin.due-payments') }}">
                                     <i class="bi bi-cash-coin"></i> <span>Due Payments</span>
                                 </a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link py-2 {{ request()->routeIs('admin.due-cheques') ? 'active' : '' }}" href="{{ route('admin.due-cheques') }}">
+                                <a class="nav-link py-2 {{ request()->routeIs('admin.due-cheques') ? 'active' : '' }}"
+                                    href="{{ route('admin.due-cheques') }}">
                                     <i class="bi bi-cash-coin"></i> <span>Cheque Details</span>
                                 </a>
                             </li>
-                               <li class="nav-item">
-                                <a class="nav-link py-2 {{ request()->routeIs('admin.due-cheques-return') ? 'active' : '' }}" href="{{ route('admin.due-cheques-return') }}">
+                            <li class="nav-item">
+                                <a class="nav-link py-2 {{ request()->routeIs('admin.due-cheques-return') ? 'active' : '' }}"
+                                    href="{{ route('admin.due-cheques-return') }}">
                                     <i class="bi bi-cash-coin"></i> <span>Cheque Return</span>
                                 </a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link py-2 {{ request()->routeIs('admin.view-payments') ? 'active' : '' }}" href="{{ route('admin.view-payments') }}">
+                                <a class="nav-link py-2 {{ request()->routeIs('admin.view-payments') ? 'active' : '' }}"
+                                    href="{{ route('admin.view-payments') }}">
                                     <i class="bi bi-credit-card-2-back"></i> <span>View Payments</span>
                                 </a>
                             </li>
@@ -347,12 +359,14 @@
                     </div>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link py-2 {{ request()->routeIs('admin.product-stocks') ? 'active' : '' }}" href="{{ route('admin.product-stocks') }}">
+                    <a class="nav-link py-2 {{ request()->routeIs('admin.product-stocks') ? 'active' : '' }}"
+                        href="{{ route('admin.product-stocks') }}">
                         <i class="bi bi-shield-lock"></i> <span>Product Stock</span>
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link {{ request()->routeIs('admin.store-billing') ? 'active' : '' }}" href="{{ route('admin.store-billing') }}">
+                    <a class="nav-link {{ request()->routeIs('admin.store-billing') ? 'active' : '' }}"
+                        href="{{ route('admin.store-billing') }}">
                         <i class="bi bi-cash"></i> <span>Store Billing</span>
                     </a>
                 </li>
@@ -369,8 +383,8 @@
 
             <!-- Center Title -->
             <div class="flex-grow-1 text-center fw-bold my-2" style="color:#233D7F; font-size:18px;">
-                <h2 style="padding: 0;margin:0"><b>PLUS</b></h2>
-                <p style="padding: 0;margin:0; font-size:16px;">Importers Of Garment Accessories & Machinery</p>
+                <h2 style="padding: 0;margin:0"><b>SAHAR LANKA</b></h2>
+                <p style="padding: 0;margin:0; font-size:16px;">Importers & Retailers of Genuine Spares for MARUTI-LEYLAND - MAHINDRA-TATA-ALTO</p>
             </div>
 
             <!-- Right Dropdown -->

@@ -417,7 +417,7 @@
                         </div>
                         <div class="print-footer">
                             <small>Generated on ${new Date().toLocaleString('en-US', { timeZone: 'Asia/Colombo' })}</small><br>
-                            <small>NEW WATCH COMPANY (MR TRADING) | NO 44, DOOLMALA, THIHARIYA | Phone: (033) 228 7437</small>
+                            <small>(SAHAR LANKA) | No. 397/3, Dunu Ela, Thihariya, Kalagedihena. | Phone: 077 6718838</small>
                         </div>
                     </div>
                 </body>
@@ -548,7 +548,7 @@
                     <h5 style="color: #1e3a8a;">Product-wise Sales</h5>
                     ${productTable ? productTable.outerHTML : '<p>No product sales data available</p>'}
                     <div class="print-footer">
-                        <p>WORLDEN LANKA | NO 20/2/1, 2nd FLOOR,HUNTER BUILDING,BANKSHALLL STREET,COLOMBO-11 | Phone: 011 - 2332786 | Email: plusaccessories.lk@gmail.com</p>
+                        <p>SAHAR LANKA | No. 397/3, Dunu Ela, Thihariya, Kalagedihena. | Phone: 077 6718838 </p>
                     </div>
                     <button class="print-btn" onclick="window.print(); setTimeout(() => window.close(), 500);">
                         Print Report
