@@ -728,11 +728,10 @@
                             @if ($receipt)
                             <div class="receipt-container">
                                 <div class="text-center mb-4">
-                                    <h3 class="mb-1 fw-bold tracking-tight" style="color: #233D7F;">PLUS</h3>
-                                    <p class="mb-0 text-muted small" style="color: #6B7280;">NO 20/2/1, 2nd FLOOR,HUNTER
-                                        BUILDING,BANKSHALLL STREET,COLOMBO-11</p>
-                                    <p class="mb-0 text-muted small" style="color: #6B7280;">Phone: 011 - 2332786 |
-                                        Email: plusaccessories.lk@gmail.com</p>
+                                    <h3 class="mb-1 fw-bold tracking-tight" style="color: #233D7F;">SAHARA LANKA</h3>
+                                    <h5 class="mb-1 fw-medium" style="color: #233D7F;">Importers & Retailers of Genuine Spares for <br> MARUTI-LEYLAND - MAHINDRA-TATA-ALTO</h5>
+                                    <p class="mb-0 text-muted small" style="color: #6B7280;">NO. 397/, DUNU ELA, THIHARIYA, KALAGEDIHENA</p>
+                                    <p class="mb-0 text-muted small" style="color: #6B7280;">Phone: 077 6718838</p>
                                     <h4 class="mt-3 border-bottom border-2 pb-2 fw-bold"
                                         style="color: #233D7F; border-color: #233D7F;">SALES RECEIPT</h4>
                                 </div>
@@ -766,10 +765,8 @@
                                         @if ($receipt->customer)
                                         <p class="mb-1" style="color: #233D7F;"><strong>Name:</strong> {{
                                             $receipt->customer->name }}</p>
-                                        <p class="mb-1" style="color: #233D7F;"><strong>Phone:</strong> {{
-                                            $receipt->customer->phone }}</p>
-                                        <p class="mb-1" style="color: #233D7F;"><strong>Type:</strong> {{
-                                            ucfirst($receipt->customer_type) }}</p>
+                                        <p class="mb-1" style="color: #233D7F;"><strong>Address:</strong> {{
+                                            $receipt->customer->address }}</p>
                                         @else
                                         <p class="text-muted" style="color: #6B7280;">Walk-in Customer</p>
                                         @endif
@@ -802,7 +799,6 @@
                                                 <td class="text-center py-2">Rs.{{ number_format($item->price, 2) }}
                                                 </td>
                                                 <td class="text-center py-2">{{ $item->quantity }}</td>
-                                                <td class="text-center py-2">{{ ucfirst($item->quantity_type) }}</td>
                                                 <td class="text-center py-2">Rs.{{ number_format($item->discount *
                                                     $item->quantity, 2) }}</td>
                                                 <td class="text-center py-2">Rs.{{ number_format(($item->price *
