@@ -176,6 +176,19 @@
                                 @error('product_name') <div class="text-danger small mt-1">{{ $message }}</div> @enderror
                             </div>
 
+
+                            <div class="col-md-6">
+                                <label for="product_code" class="form-label fw-medium" style="color: #233D7F;">Product Code</label>
+                                <input
+                                    type="text"
+                                    id="product_code"
+                                    wire:model="product_code"
+                                    class="form-control border-2 shadow-sm"
+                                    style=" color: #233D7F;">   
+                                @error('product_code') <div class="text-danger small mt-1">{{ $message }}</div> @enderror
+                            </div>
+
+
                             <div class="col-md-6">
                                 <label for="supplier_price" class="form-label fw-medium" style="color: #233D7F;">Supplier Price</label>
                                 <div class="input-group">
@@ -293,6 +306,16 @@
                                     class="form-control border-2 shadow-sm"
                                     style=" color: #233D7F;">
                                 @error('product_name') <div class="text-danger small mt-1">{{ $message }}</div> @enderror
+                            </div>
+                            <div class="col-md-6">
+                                <label for="edit_product_code" class="form-label fw-medium" style="color: #233D7F;">Product Code</label>
+                                <input
+                                    type="text"
+                                    id="edit_product_code"
+                                    wire:model="product_code"
+                                    class="form-control border-2 shadow-sm"
+                                    style=" color: #233D7F;">
+                                @error('product_code') <div class="text-danger small mt-1">{{ $message }}</div> @enderror
                             </div>
                             <div class="col-md-6">
                                 <div class="mb-4">
