@@ -53,7 +53,6 @@ class Products extends Component
 
     protected $rules = [
         'category_id' => 'required|exists:product_categories,id',
-        'product_code' => 'required|string|max:255',
         'product_name' => 'required|string|min:3|max:255',
         'supplier_price' => 'required|numeric|min:0',
         'selling_price' => 'required|numeric|min:0',
@@ -181,13 +180,13 @@ class Products extends Component
 
     public function save()
     {
-        // $this->rules['product_code'] = 'nullable';
+        $this->rules['product_code'] = 'nullable';
         $this->validate();
 
         // Get product name and category name first 2 letters (uppercase)
-        // $productPrefix = strtoupper(substr($this->product_name, 0, 2));
-        // $categoryName = ProductCategory::find($this->category_id)->name ?? 'XX';
-        // $categoryPrefix = strtoupper(substr($categoryName, 0, 2));
+        $productPrefix = strtoupper(substr($this->product_name, 0, 2));
+        $categoryName = ProductCategory::find($this->category_id)->name ?? 'XX';
+        $categoryPrefix = strtoupper(substr($categoryName, 0, 2));
 
 
 
@@ -203,7 +202,6 @@ class Products extends Component
             // Create product without product_code first
             $product = ProductDetail::create([
                 'category_id' => $this->category_id,
-                'product_code' => $this->product_code,
                 'product_name' => $this->product_name,
                 'supplier_price' => $this->supplier_price,
                 'selling_price' => $this->selling_price,
@@ -213,11 +211,11 @@ class Products extends Component
                 'customer_field' => $customerField,
             ]);
 
-            // // Generate product_code using the newly created product ID
-            // $generatedCode = $productPrefix . $categoryPrefix . '0' . $product->id;
+            // Generate product_code using the newly created product ID
+            $generatedCode = $productPrefix . $categoryPrefix . '0' . $product->id;
 
-            // // Update product with generated code
-            // $product->update(['product_code' => $generatedCode]);
+            // Update product with generated code
+            $product->update(['product_code' => $generatedCode]);
 
             $this->resetFields();
             $this->showAddModal = false;
@@ -234,7 +232,6 @@ class Products extends Component
 
         $this->editingProductId = $product->id;
         $this->category_id = $product->category_id;
-        $this->product_code = $product->product_code;
         $this->product_name = $product->product_name;
         $this->supplier_price = $product->supplier_price;
         $this->selling_price = $product->selling_price;
@@ -259,13 +256,7 @@ class Products extends Component
 
     public function update()
     {
-        // $this->rules['product_code'] = 'required|string|max:255|unique:product_details,product_code,' . $this->editingProductId;
-        // $this->validate(
-        //     [],
-        //     [
-        //         'status.required' => 'Please select product status.',
-        //     ]
-        // );
+        $this->rules['product_code'] = 'required|string|max:255|unique:product_details,product_code,' . $this->editingProductId;
 
         $customerField = [];
         foreach ($this->customer_fields as $field) {
@@ -277,7 +268,6 @@ class Products extends Component
         $product = ProductDetail::findOrFail($this->editingProductId);
         $product->update([
             'category_id' => $this->category_id,
-            'product_code' => $this->product_code,
             'product_name' => $this->product_name,
             'supplier_price' => $this->supplier_price,
             'selling_price' => $this->selling_price,
