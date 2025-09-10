@@ -212,11 +212,13 @@
                                     </td>
                                     <td data-label="Customer">
                                         <div class="d-flex align-items-center">
-                                            <div
-                                                class="icon-shape icon-md rounded-circle bg-primary bg-opacity-10 me-2 d-flex align-items-center justify-content-center">
-                                                <span class="text-primary fw-bold">{{
-                                                    substr($payment->sale->customer->name, 0, 1) }}</span>
-                                            </div>
+                                           <div
+    class="icon-shape icon-md rounded-circle bg-primary bg-opacity-10 me-2 d-flex align-items-center justify-content-center">
+    <span class="text-primary fw-bold">
+        {{ substr($payment->sale?->customer?->name ?? 'N', 0, 1) }}
+    </span>
+</div>
+
                                             <div>
                                                 <p class="text-sm fw-semibold text-gray-800 mb-0">
                                                     {{ $payment->sale?->customer?->name ?? 'N/A' }}
