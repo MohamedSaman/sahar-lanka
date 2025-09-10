@@ -728,7 +728,7 @@
                             @if ($receipt)
                             <div class="receipt-container">
                                 <div class="text-center mb-4">
-                                    <h3 class="mb-1 fw-bold tracking-tight" style="color: #233D7F;">SAHARA LANKA</h3>
+                                    <h3 class="mb-1 fw-bold tracking-tight" style="color: #233D7F;">SAHAR LANKA</h3>
                                     <h5 class="mb-1 fw-medium" style="color: #233D7F;">Importers & Retailers of Genuine Spares for <br> MARUTI-LEYLAND - MAHINDRA-TATA-ALTO</h5>
                                     <p class="mb-0 text-muted small" style="color: #6B7280;">NO. 397/, DUNU ELA, THIHARIYA, KALAGEDIHENA</p>
                                     <p class="mb-0 text-muted small" style="color: #6B7280;">Phone: 077 6718838</p>

@@ -870,9 +870,9 @@
                         </div>
                         <div class="print-footer">
                             <small>Generated on ${new Date().toLocaleString('en-US', { timeZone: 'Asia/Colombo' })}</small><br>
-                            <p>PLUS</p>
-                            <small>Importers Of Garment Accessories & Machinery</small><br>
-                            <small>20/2/1, 2nd FLOOR,HUNTER BUILDING,BANKSHALLL STREET,COLOMBO-11 | Phone: 011 - 2332786 | Email: plusaccessories.lk@gmail.com</small>
+                            <p>SAHAR LANKA</p>
+                            <small>Importers & Retailers of Genuine Spares for <br> MARUTI-LEYLAND - MAHINDRA-TATA-ALTO</small><br>
+                            <small>NO. 397/, DUNU ELA, THIHARIYA, KALAGEDIHENA | Phone: 077 6718838</small>
                             <div class="no-print" style="margin-top: 15px;">
                                 <a href="#" class="btn-light" onclick="window.print(); return false;">Print</a>
                                 <a href="#" class="btn-light" style="margin-left: 10px;" onclick="window.close(); return false;">Close</a>
