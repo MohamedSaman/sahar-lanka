@@ -197,7 +197,7 @@
                         </div>
 
                         <!-- Customer & Payment Information -->
-                        @if (!empty($cart))
+                        
                         <div class="row mt-4">
                             <div class="col-md-6">
                                 <!-- Customer & Payment Information Card -->
@@ -421,7 +421,7 @@
                                 </div>
                             </div>
                         </div>
-                        @endif
+
                     </div>
                 </div>
             </div>

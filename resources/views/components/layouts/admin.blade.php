@@ -93,6 +93,7 @@
             z-index: 1000;
             display: flex;
             align-items: center;
+            height: auto;
             transition: all 0.3s ease;
         }
 
