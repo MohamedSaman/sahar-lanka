@@ -262,45 +262,7 @@
                             <h4 class="mt-3 border-bottom border-2 pb-2">PAYMENT RECEIPT</h4>
                         </div>
 
-                        <div class="row mb-4">
-                            <div class="col-md-6">
-                                <h6 class="text-muted mb-2">PAYMENT INFORMATION</h6>
-                                <div class="card border-0 shadow-sm mb-3">
-                                    <div class="card-body p-3">
-                                        <p class="mb-1"><strong>Payment ID:</strong> #{{ $selectedPayment->id }}</p>
-                                        <p class="mb-1"><strong>Amount:</strong> Rs.{{ number_format($selectedPayment->amount, 2) }}</p>
-                                        <p class="mb-1"><strong>Method:</strong> {{ ucfirst($selectedPayment->payment_method) }}</p>
-                                        <p class="mb-1"><strong>Date:</strong>
-                                            {{ $selectedPayment->payment_date ? $selectedPayment->payment_date->format('d/m/Y h:i A') : 'N/A' }}
-                                        </p>
-                                        <p class="mb-1"><strong>Status:</strong>
-                                            <span class="badge bg-{{ 
-                                                $selectedPayment->status === 'pending' ? 'warning' : 
-                                                ($selectedPayment->status === 'approved' ? 'success' : 
-                                                ($selectedPayment->status === 'rejected' ? 'danger' : 
-                                                ($selectedPayment->is_completed ? 'success' : 'secondary'))) }}">
-                                                {{ $selectedPayment->status ? ucfirst($selectedPayment->status) : ($selectedPayment->is_completed ? 'Paid' : 'Scheduled') }}
-                                            </span>
-                                        </p>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <h6 class="text-muted mb-2">INVOICE INFORMATION</h6>
-                                <div class="card border-0 shadow-sm mb-3">
-                                    <div class="card-body p-3">
-                                        <p class="mb-1"><strong>Invoice:</strong> {{ $selectedPayment->sale->invoice_number }}</p>
-                                        <p class="mb-1"><strong>Sale Date:</strong> {{ $selectedPayment->sale->created_at->format('d/m/Y h:i A') }}</p>
-                                        <p class="mb-1"><strong>Total:</strong> Rs.{{ number_format($selectedPayment->sale->total_amount, 2) }}</p>
-                                        <p class="mb-0"><strong>Payment Status:</strong>
-                                            <span class="badge bg-{{ $selectedPayment->sale->payment_status == 'paid' ? 'success' : ($selectedPayment->sale->payment_status == 'partial' ? 'warning' : 'danger') }}">
-                                                {{ ucfirst($selectedPayment->sale->payment_status) }}
-                                            </span>
-                                        </p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+                        
 
                         <div class="row mb-4">
                             <div class="col-md-6">
@@ -351,6 +313,46 @@
                                     @endforeach
                                 </tbody>
                             </table>
+                        </div>
+
+                        <div class="row mb-4">
+                            <div class="col-md-6">
+                                <h6 class="text-muted mb-2">PAYMENT INFORMATION</h6>
+                                <div class="card border-0 shadow-sm mb-3">
+                                    <div class="card-body p-3">
+                                        <p class="mb-1"><strong>Payment ID:</strong> #{{ $selectedPayment->id }}</p>
+                                        <p class="mb-1"><strong>Amount:</strong> Rs.{{ number_format($selectedPayment->amount, 2) }}</p>
+                                        <p class="mb-1"><strong>Method:</strong> {{ ucfirst($selectedPayment->payment_method) }}</p>
+                                        <p class="mb-1"><strong>Date:</strong>
+                                            {{ $selectedPayment->payment_date ? $selectedPayment->payment_date->format('d/m/Y h:i A') : 'N/A' }}
+                                        </p>
+                                        <p class="mb-1"><strong>Status:</strong>
+                                            <span class="badge bg-{{ 
+                                                $selectedPayment->status === 'pending' ? 'warning' : 
+                                                ($selectedPayment->status === 'approved' ? 'success' : 
+                                                ($selectedPayment->status === 'rejected' ? 'danger' : 
+                                                ($selectedPayment->is_completed ? 'success' : 'secondary'))) }}">
+                                                {{ $selectedPayment->status ? ucfirst($selectedPayment->status) : ($selectedPayment->is_completed ? 'Paid' : 'Scheduled') }}
+                                            </span>
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <h6 class="text-muted mb-2">INVOICE INFORMATION</h6>
+                                <div class="card border-0 shadow-sm mb-3">
+                                    <div class="card-body p-3">
+                                        <p class="mb-1"><strong>Invoice:</strong> {{ $selectedPayment->sale->invoice_number }}</p>
+                                        <p class="mb-1"><strong>Sale Date:</strong> {{ $selectedPayment->sale->created_at->format('d/m/Y h:i A') }}</p>
+                                        <p class="mb-1"><strong>Total:</strong> Rs.{{ number_format($selectedPayment->sale->total_amount, 2) }}</p>
+                                        <p class="mb-0"><strong>Payment Status:</strong>
+                                            <span class="badge bg-{{ $selectedPayment->sale->payment_status == 'paid' ? 'success' : ($selectedPayment->sale->payment_status == 'partial' ? 'warning' : 'danger') }}">
+                                                {{ ucfirst($selectedPayment->sale->payment_status) }}
+                                            </span>
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
 
                         <div class="text-center mt-4 pt-3 border-top">
@@ -439,7 +441,7 @@
                     body { font-family: Arial, sans-serif; margin: 20px; font-size: 14px; }
                     .receipt-container { max-width: 800px; margin: auto; }
                     .row { display: flex; flex-wrap: wrap; margin: 0 -15px; }
-                    .col-md-6 { flex: 0 0 50%; max-width: 50%; padding: 0 15px; }
+                    .col-md-6 { flex: 0 0 45%; max-width: 45%; padding: 0 15px; }
                     .card { border: 1px solid #eee; border-radius: 8px; margin-bottom: 15px; }
                     .card-body { padding: 15px; }
                     .table { width: 100%; border-collapse: collapse; margin-bottom: 1rem; }

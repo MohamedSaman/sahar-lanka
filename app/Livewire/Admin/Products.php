@@ -50,10 +50,10 @@ class Products extends Component
     public $viewSoldQuantity;
     public $viewStatus;
     public $viewCustomerFields = [];
+    public $brands=[];
 
     protected $rules = [
         'category_id' => 'required|exists:product_categories,id',
-        'product_code' => 'required|string|max:255',
         'product_name' => 'required|string|min:3|max:255',
         'supplier_price' => 'required|numeric|min:0',
         'selling_price' => 'required|numeric|min:0',
@@ -66,6 +66,11 @@ class Products extends Component
     public function mount()
     {
         $this->categories = ProductCategory::all();
+        $this->loadBrand();
+    }
+
+    public function loadFieldKeys()
+    {
 
         // Get all field keys dynamically from existing products
         $this->fieldKeys = ProductDetail::whereNotNull('customer_field')
@@ -76,6 +81,18 @@ class Products extends Component
             ->unique()
             ->values()
             ->toArray();
+    }
+
+    public function loadBrand(){
+        $this->brands =  [
+            'Leyland',
+            'TATA',
+            'Ace',
+            'Super Ace',
+            'Maximo',
+            'Bolero',
+            'Alto'
+        ];
     }
 
     public function updatedSearch()
@@ -181,16 +198,9 @@ class Products extends Component
 
     public function save()
     {
-        // $this->rules['product_code'] = 'nullable';
         $this->validate();
 
-        // Get product name and category name first 2 letters (uppercase)
-        // $productPrefix = strtoupper(substr($this->product_name, 0, 2));
-        // $categoryName = ProductCategory::find($this->category_id)->name ?? 'XX';
-        // $categoryPrefix = strtoupper(substr($categoryName, 0, 2));
-
-
-
+        
         $customerField = [];
         foreach ($this->customer_fields as $field) {
             if (!empty($field['key'])) {
@@ -203,8 +213,8 @@ class Products extends Component
             // Create product without product_code first
             $product = ProductDetail::create([
                 'category_id' => $this->category_id,
-                'product_code' => $this->product_code,
                 'product_name' => $this->product_name,
+                'product_code' => $this->product_code,
                 'supplier_price' => $this->supplier_price,
                 'selling_price' => $this->selling_price,
                 'stock_quantity' => $totalQuantity - $this->damage_quantity,
@@ -212,12 +222,6 @@ class Products extends Component
                 'status' => 'Available',
                 'customer_field' => $customerField,
             ]);
-
-            // // Generate product_code using the newly created product ID
-            // $generatedCode = $productPrefix . $categoryPrefix . '0' . $product->id;
-
-            // // Update product with generated code
-            // $product->update(['product_code' => $generatedCode]);
 
             $this->resetFields();
             $this->showAddModal = false;
@@ -259,13 +263,7 @@ class Products extends Component
 
     public function update()
     {
-        // $this->rules['product_code'] = 'required|string|max:255|unique:product_details,product_code,' . $this->editingProductId;
-        // $this->validate(
-        //     [],
-        //     [
-        //         'status.required' => 'Please select product status.',
-        //     ]
-        // );
+        $this->validate();
 
         $customerField = [];
         foreach ($this->customer_fields as $field) {
@@ -275,25 +273,28 @@ class Products extends Component
         }
 
         $product = ProductDetail::findOrFail($this->editingProductId);
+
+
+
+
         $product->update([
-            'category_id' => $this->category_id,
-            'product_code' => $this->product_code,
-            'product_name' => $this->product_name,
-            'supplier_price' => $this->supplier_price,
-            'selling_price' => $this->selling_price,
-            'stock_quantity' => $this->stock_quantity,
-            'damage_quantity' => $this->damage_quantity,
-            'sold' => $this->sold,
-            'status' => $this->status,
-            'customer_field' => $customerField,
+            'category_id'      => $this->category_id,
+            'product_name'     => $this->product_name,
+            'supplier_price'   => $this->supplier_price,
+            'selling_price'    => $this->selling_price,
+            'stock_quantity'   => $this->stock_quantity,
+            'damage_quantity'  => $this->damage_quantity,
+            'sold'             => $this->sold,
+            'status'           => $this->status,
+            'customer_field'   => $customerField,
+            'product_code'     => $this->product_code,
         ]);
-
-
 
         $this->resetFields();
         $this->showEditModal = false;
         session()->flash('message', 'Product updated successfully!');
     }
+
 
     public function confirmDelete($productId)
     {

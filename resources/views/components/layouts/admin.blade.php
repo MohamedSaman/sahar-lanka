@@ -37,6 +37,7 @@
             color: #ffffff;
             position: fixed;
             border-right: none;
+            overflow-y: auto;
             transition: all 0.3s ease;
             z-index: 1040;
         }
@@ -80,21 +81,47 @@
             color: #233D7F;
         }
 
+        /* Collapsed Sidebar */
+        .sidebar.collapsed {
+            width: 80px;
+        }
+
+        /* Adjust text visibility when collapsed */
+        .sidebar.collapsed .nav-link span {
+            display: none;
+            /* hide menu text */
+        }
+
+        .sidebar.collapsed .sidebar-title img {
+            width: 60px;
+            /* shrink logo */
+            height: auto;
+        }
+
         /* Top Bar */
         .top-bar {
-            height: 64px;
+            height: 70px;
             background: #ffffff;
             border-bottom: 1px solid #e5e7eb;
             padding: 0 25px;
             position: fixed;
             top: 0;
             left: 260px;
+            /* Default sidebar expanded */
             right: 0;
             z-index: 1000;
             display: flex;
             align-items: center;
-            height: auto;
-            transition: all 0.3s ease;
+            transition: left 0.3s ease, width 0.3s ease;
+            width: calc(100% - 260px);
+            /* full width minus sidebar */
+        }
+
+        .top-bar.collapsed {
+            left: 80px;
+            /* match collapsed sidebar */
+            width: calc(100% - 80px);
+            /* adjust width */
         }
 
         .top-bar .btn {
@@ -171,8 +198,8 @@
         }
 
         .main-content.collapsed {
-            margin-left: 70px;
-            width: calc(100% - 70px);
+            margin-left: 80px;
+            width: calc(100% - 80px);
         }
 
         /* Card Styles */
@@ -237,7 +264,7 @@
         }
 
         /* Responsive Styles */
-        @media (max-width: 767.98px) {
+        @media (max-width: 930px) {
             .sidebar {
                 transform: translateX(-100%);
                 width: 250px;
@@ -253,7 +280,12 @@
             }
 
             .top-bar {
+                width: 100%;
                 left: 0;
+            }
+
+            .top-bar .title {
+                display: none;
             }
 
             .main-content {

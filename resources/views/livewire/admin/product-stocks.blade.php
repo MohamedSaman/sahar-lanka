@@ -1,20 +1,19 @@
 <div class="container-fluid py-6 transition-colors duration-300">
     <div class="card border-0">
         <!-- Card Header -->
-        <div class="card-header bg-transparent pb-4 d-flex flex-column flex-lg-row justify-content-between align-items-lg-center gap-3 border-bottom" style="border-color: #233D7F;">
-
-            <div class="d-flex align-items-center gap-3">
-                <div class="icon-shape icon-lg bg-opacity-25 p-3 d-flex align-items-center justify-content-center">
-                    <i class="bi bi-shield-lock text-black fs-4" aria-hidden="true" style="color:#233D7F;"></i>
-                </div>
-                <div>
-                    <h3 class="mb-1 fw-bold tracking-tight text-black">Product Stock Details</h3>
-                    <p class="text-black opacity-80 mb-0 text-sm">Monitor and manage your product inventory</p>
-                </div>
+        <div class="card-header text-white p-2 rounded-t-4 d-flex align-items-center"
+            style="background: linear-gradient(90deg, #1e40af 0%, #3b82f6 100%); border-radius: 20px 20px 0 0;">
+            <div class="icon-shape icon-lg bg-white bg-opacity-25 rounded-circle p-3 d-flex align-items-center justify-content-center me-3">
+                <i class="bi bi-shield-lock text-white fs-4" aria-hidden="true"></i>
             </div>
-
+            <div>
+                <h3 class="mb-1 fw-bold tracking-tight text-white">Product Stock Details</h3>
+                <p class="text-white opacity-80 mb-0 text-sm">Monitor and manage your product inventorys</p>
+            </div>
+        </div>
+        <div class="card-header bg-transparent pb-4 mt-4 d-flex flex-column flex-lg-row justify-content-between align-items-lg-center gap-3 border-bottom" style="border-color: #233D7F;">
             <!-- Middle: Search Bar -->
-            <div class="flex-grow-1 d-flex justify-content-lg-center">
+            <div class="flex-grow-1 d-flex justify-content-lg">
                 <div class="input-group" style="max-width: 400px; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);">
                     <span class="input-group-text bg-gray-100 border-0 px-3">
                         <i class="bi bi-search text-primary"></i>

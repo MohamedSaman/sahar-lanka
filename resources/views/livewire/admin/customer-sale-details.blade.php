@@ -1,22 +1,20 @@
 <div class="container-fluid py-6 bg-gray-50 min-vh-100 transition-colors duration-300">
     <div class="card border-0 ">
         <!-- Card Header -->
-        <div class="card-header bg-transparent pb-4 d-flex flex-column flex-lg-row justify-content-between align-items-lg-center gap-3">
-
-            <!-- Left: Icon + Title -->
-            <div class="d-flex align-items-center gap-3 flex-shrink-0">
-                <div class="icon-shape icon-lg bg-opacity-25 p-3 d-flex align-items-center justify-content-center">
-                    <i class="bi bi-people fs-4" aria-hidden="true" style="color:#233D7F;"></i>
-                </div>
-                <div>
-                    <h3 class="mb-1 fw-bold tracking-tight text-dark">Customer Sales Details</h3>
-                    <p class="text-dark opacity-80 mb-0 text-sm">Monitor and manage your Customer Sales Records</p>
-                </div>
+        <div class="card-header text-white p-2  d-flex align-items-center"
+            style="background: linear-gradient(90deg, #1e40af 0%, #3b82f6 100%); border-radius: 20px 20px 0 0;">
+            <div class="icon-shape icon-lg bg-white bg-opacity-25 rounded-circle p-3 d-flex align-items-center justify-content-center me-3">
+                <i class="bi bi-people fs-4 text-white" aria-hidden="true"></i>
             </div>
-
+            <div>
+                <h3 class="mb-1 fw-bold tracking-tight text-white">Customer Sales Details</h3>
+                <p class="text-white opacity-80 mb-0 text-sm">Monitor and manage your Customer Sales Records</p>
+            </div>
+        </div>
+        <div class="card-header bg-transparent pb-4 mt-2 d-flex flex-column flex-lg-row justify-content-between align-items-lg-center gap-3">
             <!-- Middle: Search Bar -->
-            <div class="flex-grow-1 d-flex justify-content-lg-center">
-                <div class="input-group " style="max-width: 400px;">
+            <div class="flex-grow-1 d-flex justify-content-lg">
+                <div class="input-group " style="max-width: 600px;">
                     <span class="input-group-text bg-gray-100 border-0 px-3">
                         <i class="bi bi-search text-primary"></i>
                     </span>
@@ -44,6 +42,7 @@
                 </button>
             </div>
         </div>
+
 
         <!-- Card Body -->
         <div class="card-body p-1  pt-5 bg-transparent">
