@@ -342,6 +342,12 @@
                                     <i class="bi bi-collection"></i> <span>Product Category</span>
                                 </a>
                             </li>
+                            <li class="nav-item">
+                                <a class="nav-link py-2 {{ request()->routeIs('admin.brands') ? 'active' : '' }}"
+                                    href="{{ route('admin.brands') }}">
+                                    <i class="bi bi-collection"></i> <span>Product Brands</span>
+                                </a>
+                            </li>
                         </ul>
                     </div>
                 </li>

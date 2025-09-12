@@ -74,6 +74,7 @@ Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified']
         Route::get('/due-cheques-return', DueChequesReturn::class)->name('due-cheques-return');
         
         Route::get('/product-stocks', \App\Livewire\Admin\ProductStocks::class)->name('product-stocks');
+        Route::get('/brands', \App\Livewire\Admin\Brands::class)->name('brands');
 
     });
 

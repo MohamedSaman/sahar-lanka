@@ -11,6 +11,7 @@ class ProductDetail extends Model
     protected $fillable = [
         'product_code',
         'category_id',
+        'brand_id',
         'product_name',
         'supplier_price',
         'selling_price',
@@ -32,5 +33,9 @@ class ProductDetail extends Model
     public function stock()
     {
         return $this->hasOne(ProductStock::class, 'product_id');
+    }
+    public function brand()
+    {
+        return $this->belongsTo(brand::class, 'brand_id');
     }
 }

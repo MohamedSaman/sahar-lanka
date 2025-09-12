@@ -2,6 +2,7 @@
 
 namespace App\Livewire\Admin;
 
+use App\Models\brand;
 use App\Models\ProductCategory;
 use App\Models\ProductDetail;
 use Illuminate\Support\Facades\DB;
@@ -18,7 +19,7 @@ class Products extends Component
 {
     use WithPagination;
 
-    public $product_code, $category_id, $product_name, $supplier_price, $selling_price, $sold, $status;
+    public $product_code, $category_id,$brand_id, $product_name, $supplier_price, $selling_price, $sold, $status;
     public $search = '';
     public $categories;
     public $stock_quantity = 0;
@@ -42,6 +43,7 @@ class Products extends Component
     public $showViewModal = false;
     public $viewProductCode;
     public $viewCategoryName;
+    public $viewBrandName;
     public $viewProductName;
     public $viewSupplierPrice;
     public $viewSellingPrice;
@@ -66,7 +68,9 @@ class Products extends Component
     public function mount()
     {
         $this->categories = ProductCategory::all();
-        $this->loadBrand();
+        $this->brands = brand::all();
+
+        // dd($this->brands);
     }
 
     public function loadFieldKeys()
@@ -81,18 +85,6 @@ class Products extends Component
             ->unique()
             ->values()
             ->toArray();
-    }
-
-    public function loadBrand(){
-        $this->brands =  [
-            'Leyland',
-            'TATA',
-            'Ace',
-            'Super Ace',
-            'Maximo',
-            'Bolero',
-            'Alto'
-        ];
     }
 
     public function updatedSearch()
@@ -209,10 +201,12 @@ class Products extends Component
         }
 
         try {
+            // dd($this->brand_id);
             $totalQuantity = $this->stock_quantity;
             // Create product without product_code first
             $product = ProductDetail::create([
                 'category_id' => $this->category_id,
+                'brand_id' => $this->brand_id,
                 'product_name' => $this->product_name,
                 'product_code' => $this->product_code,
                 'supplier_price' => $this->supplier_price,
@@ -238,6 +232,7 @@ class Products extends Component
 
         $this->editingProductId = $product->id;
         $this->category_id = $product->category_id;
+        $this->brand_id = $product->brand_id;
         $this->product_code = $product->product_code;
         $this->product_name = $product->product_name;
         $this->supplier_price = $product->supplier_price;
@@ -279,6 +274,7 @@ class Products extends Component
 
         $product->update([
             'category_id'      => $this->category_id,
+            'brand_id'         => $this->brand_id,
             'product_name'     => $this->product_name,
             'supplier_price'   => $this->supplier_price,
             'selling_price'    => $this->selling_price,
@@ -318,10 +314,11 @@ class Products extends Component
 
     public function viewProduct($productId)
     {
-        $product = ProductDetail::with('category')->findOrFail($productId);
+        $product = ProductDetail::with('category','brand')->findOrFail($productId);
 
         $this->viewProductCode = $product->product_code;
         $this->viewCategoryName = $product->category->name ?? 'N/A';
+        $this->viewBrandName = $product->brand->brand_name ?? 'N/A';
         $this->viewProductName = $product->product_name;
         $this->viewSupplierPrice = $product->supplier_price;
         $this->viewSellingPrice = $product->selling_price;
@@ -344,6 +341,7 @@ class Products extends Component
         $this->reset([
             'product_code',
             'category_id',
+            'brand_id',
             'product_name',
             'supplier_price',
             'selling_price',
@@ -375,6 +373,7 @@ class Products extends Component
             fputcsv($handle, [
                 'Product Code',
                 'Category',
+                'Brand',
                 'Product Name',
                 'Supplier Price',
                 'Selling Price',
@@ -391,6 +390,7 @@ class Products extends Component
                 fputcsv($handle, [
                     $product->product_code,
                     $product->category->name ?? 'N/A',
+                    $product->brand->brand_name ?? 'N/A',
                     $product->product_name,
                     $product->supplier_price,
                     $product->selling_price,
