@@ -97,6 +97,11 @@
             /* shrink logo */
             height: auto;
         }
+        .sidebar.collapsed .sidebar-title h3 {
+            display: none;
+            /* hide title text */
+            
+        }
 
         /* Top Bar */
         .top-bar {

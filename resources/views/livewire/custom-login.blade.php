@@ -31,14 +31,14 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background-image: url("{{ asset('storage/images/woman-working-sewing-machine-with-blue-fabric.jpg') }}");
+            background-image: url("{{ asset('images/bgwatch.jpg') }}");
             background-size: cover;
             background-position: center;
             z-index: 0;
         }
 
         .login-form-overlay {
-            background: rgba(255, 255, 255, 0.85);
+            background: rgb(255 255 255 / 54%);
             backdrop-filter: blur(10px);
             border-radius: 10px;
             padding: 30px;

@@ -9,7 +9,7 @@ use Livewire\Component;
 use Livewire\WithPagination;
 
 #[Layout('components.layouts.admin')]
-#[Title('Product Categories')]
+#[Title('Product Brands')]
 class Brands extends Component
 {
        use WithPagination;
