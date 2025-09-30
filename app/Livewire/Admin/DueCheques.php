@@ -111,6 +111,14 @@ class DueCheques extends Component
                 'status' => 'complete',
             ]);
 
+            // Update the related payment status to 'Paid'
+            $payment = Payment::findOrFail($cheque->payment_id);
+            $payment->update([
+                'status' => 'Paid',
+                'is_completed' => true,
+                'payment_date' => now(),
+            ]);
+
             // Add a note to the related sale
             $sale = $cheque->payment->sale;
             $sale->update([

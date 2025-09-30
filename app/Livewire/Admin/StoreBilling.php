@@ -119,7 +119,7 @@ class StoreBilling extends Component
             'Standard Chartered Bank',
         ];
     }
-    
+
 
     public function loadCustomers()
     {
@@ -370,13 +370,27 @@ class StoreBilling extends Component
 
     public function addCheque()
     {
-        if (
-            empty($this->newCheque['number']) ||
-            empty($this->newCheque['bank']) ||
-            empty($this->newCheque['date']) ||
-            floatval($this->newCheque['amount']) <= 0
-        ) {
-            $this->js('swal.fire("Error", "Please fill all cheque details.", "error")');
+        // Validate required fields
+        $this->validate([
+            'newCheque.number' => 'required|string|max:255',
+            'newCheque.bank' => 'required|string|max:255',
+            'newCheque.date' => 'required|date|after_or_equal:today',
+            'newCheque.amount' => 'required|numeric|min:0.01',
+        ], [
+            'newCheque.number.required' => 'Cheque number is required.',
+            'newCheque.bank.required' => 'Bank name is required.',
+            'newCheque.date.required' => 'Cheque date is required.',
+            'newCheque.date.after_or_equal' => 'Cheque date cannot be in the past.',
+            'newCheque.amount.required' => 'Cheque amount is required.',
+            'newCheque.amount.min' => 'Cheque amount must be greater than 0.',
+        ]);
+
+        // Additional validation for cheque date
+        $chequeDate = strtotime($this->newCheque['date']);
+        $today = strtotime(date('Y-m-d'));
+
+        if ($chequeDate < $today) {
+            $this->js('swal.fire("Error", "Cheque date cannot be in the past. Please select today\'s date or a future date.", "error")');
             return;
         }
 
@@ -387,6 +401,12 @@ class StoreBilling extends Component
             'amount' => floatval($this->newCheque['amount']),
         ];
 
+        // Reset form after successful addition
+        $this->resetChequeForm();
+    }
+
+    public function resetChequeForm()
+    {
         $this->newCheque = [
             'number' => '',
             'bank' => '',
@@ -398,7 +418,8 @@ class StoreBilling extends Component
     public function removeCheque($index)
     {
         if (isset($this->cheques[$index])) {
-            array_splice($this->cheques, $index, 1);
+            unset($this->cheques[$index]);
+            $this->cheques = array_values($this->cheques); // Re-index the array
         }
     }
 
@@ -414,19 +435,44 @@ class StoreBilling extends Component
             'paymentType' => 'required|in:full,partial',
         ]);
 
-        if ($this->paymentType === 'full') {
-            $totalChequeAmount = collect($this->cheques)->sum('amount');
-            $totalPaid = floatval($this->cashAmount) + floatval($totalChequeAmount);
+        $totalChequeAmount = collect($this->cheques)->sum('amount');
+        $totalPaid = floatval($this->cashAmount) + floatval($totalChequeAmount);
 
+        // Handle full payment (cash)
+        if ($this->paymentType === 'full') {
+            $this->cashAmount = $this->grandTotal; // Automatically set cash amount to grand total
+            $totalPaid = $this->grandTotal;
+        }
+
+        // Full Payment validation
+        if ($this->paymentType === 'full') {
             if ($totalPaid != $this->grandTotal) {
-                $this->js('swal.fire("Error", "Cash + Cheque total must equal Grand Total.", "error")');
+                $this->js('swal.fire("Error", "Full payment must equal the grand total.", "error")');
+                return;
+            }
+        }
+
+        // Partial / Credit Payment - cash can be less than grand total, cheques are pending dues
+        if ($this->paymentType === 'partial') {
+            // For credit payments, cash amount is optional but cheques represent pending dues
+            if (floatval($this->cashAmount) < 0) {
+                $this->js('swal.fire("Error", "Cash amount cannot be negative.", "error")');
                 return;
             }
 
-            foreach ($this->cheques as $cheque) {
-                if (empty($cheque['number']) || empty($cheque['bank']) || empty($cheque['date']) || floatval($cheque['amount']) <= 0) {
-                    $this->js('swal.fire("Error", "Please fill all cheque details.", "error")');
-                    return;
+            // If cash is provided, ensure it's less than or equal to grand total
+            if (floatval($this->cashAmount) > 0 && floatval($this->cashAmount) > $this->grandTotal) {
+                $this->js('swal.fire("Error", "Cash amount cannot exceed the grand total.", "error")');
+                return;
+            }
+
+            // Validate cheque amounts if provided
+            if (!empty($this->cheques)) {
+                foreach ($this->cheques as $cheque) {
+                    if (floatval($cheque['amount']) <= 0) {
+                        $this->js('swal.fire("Error", "All cheque amounts must be greater than 0.", "error")');
+                        return;
+                    }
                 }
             }
         }
@@ -434,6 +480,22 @@ class StoreBilling extends Component
         try {
             DB::beginTransaction();
 
+            $totalChequeAmount = collect($this->cheques)->sum('amount');
+            $totalPaid = floatval($this->cashAmount) + floatval($totalChequeAmount);
+
+            // Determine payment status and due amount
+            if ($this->paymentType === 'full') {
+                $paymentStatus = 'paid';
+                $dueAmount = 0;
+            } else { // Credit payment
+                $paymentStatus = 'pending';
+                // For credit payments: due amount = grand total - cash payments + cheque amounts
+                // Cheques are considered as pending dues, not actual payments
+                $dueAmount = $this->grandTotal - (floatval($this->cashAmount) + floatval($totalChequeAmount));
+                // dd($dueAmount);
+            }
+
+            // Save sale
             $sale = Sale::create([
                 'invoice_number'   => Sale::generateInvoiceNumber(),
                 'customer_id'      => $this->customerId,
@@ -443,125 +505,80 @@ class StoreBilling extends Component
                 'discount_amount'  => $this->totalDiscount,
                 'total_amount'     => $this->grandTotal,
                 'payment_type'     => $this->paymentType,
-                'payment_status'   => $this->paymentType === 'full' ? 'paid' : 'partial',
-                'notes'            => $this->saleNotes,
-                'due_amount'       => $this->balanceAmount,
+                'payment_status'   => $paymentStatus,
+                'notes'            => $this->saleNotes ?: null,
+                'due_amount'       => $dueAmount,
             ]);
-
-            $adminSale = AdminSale::create([
-                'sale_id'        => $sale->id,
-                'admin_id'       => auth()->id(),
-                'total_quantity' => array_sum($this->quantities),
-                'total_value'    => $this->grandTotal,
-                'sold_quantity'  => 0,
-                'sold_value'     => 0,
-                'status'         => 'partial',
-            ]);
-
-            $totalSoldQty = 0;
-            $totalSoldVal = 0;
-
+            // Save Sales Items and Update Stock
             foreach ($this->cart as $id => $item) {
-                $productStock = ProductDetail::where('id', $item['id'])->first();
-
-                if (!$productStock) {
-                    throw new Exception("Product not found: {$item['name']}");
-                }
-
                 $quantityToSell = $this->quantities[$id];
-
-                if ($productStock->stock_quantity < $quantityToSell) {
-                    throw new Exception("Insufficient stock for item: {$item['name']}. Available: {$productStock->stock_quantity}");
-                }
-
-                $price = $this->prices[$id] ?? $item['price'] ?? 0;
+                $price = $this->prices[$id] ?? $item['price'];
                 $itemDiscount = $this->discounts[$id] ?? 0;
                 $total = ($price * $quantityToSell) - ($itemDiscount * $quantityToSell);
+
                 SalesItem::create([
-                    'sale_id'    => $sale->id,
+                    'sale_id' => $sale->id,
                     'product_id' => $item['id'],
-                    'quantity'   => $quantityToSell,
-                    'price'      => $price,
-                    'discount'   => $itemDiscount,
-                    'total'      => $total,
+                    'quantity' => $quantityToSell,
+                    'price' => $price,
+                    'discount' => $itemDiscount,
+                    'total' => $total,
                 ]);
 
+                $productStock = ProductDetail::find($item['id']);
                 $productStock->stock_quantity -= $quantityToSell;
                 $productStock->sold += $quantityToSell;
                 $productStock->save();
-
-                $totalSoldQty += $quantityToSell;
-                $totalSoldVal += $total;
             }
 
-            $adminSale->sold_quantity = $totalSoldQty;
-            $adminSale->sold_value = $totalSoldVal;
-            $adminSale->status = $totalSoldQty == $adminSale->total_quantity ? 'completed' : 'partial';
-            $adminSale->save();
-
-            if ($this->paymentType == 'full') {
-                if (floatval($this->cashAmount) > 0) {
-                    Payment::create([
-                        'sale_id'         => $sale->id,
-                        'admin_sale_id'   => $adminSale->id,
-                        'amount'          => floatval($this->cashAmount),
-                        'payment_method'  => 'cash',
-                        'is_completed'    => true,
-                        'payment_date'    => now(),
-                        'status'          => 'Paid',
-                    ]);
-                }
-                foreach ($this->cheques as $cheque) {
-                    $payment = Payment::create([
-                        'sale_id'         => $sale->id,
-                        'admin_sale_id'   => $adminSale->id,
-                        'amount'          => floatval($cheque['amount']),
-                        'payment_method'  => 'cheque',
-                        'payment_reference' => $cheque['number'],
-                        'bank_name'       => $cheque['bank'],
-                        'is_completed'    => true,
-                        'payment_date'    => $cheque['date'],
-                        'status'          => 'Paid',
-                    ]);
-
-                    Cheque::create([
-                        'cheque_number' => $cheque['number'],
-                        'cheque_date'   => $cheque['date'],
-                        'bank_name'     => $cheque['bank'],
-                        'cheque_amount' => $cheque['amount'],
-                        'status'        => 'pending',
-                        'customer_id'   => $this->customerId,
-                        'payment_id'    => $payment->id,
-                    ]);
-                }
-            } else {
+            // Save Payments
+            if ($this->paymentType === 'full' || floatval($this->cashAmount) > 0) {
                 Payment::create([
-                    'sale_id'         => $sale->id,
-                    'admin_sale_id'   => $adminSale->id,
-                    'amount'          => $this->grandTotal,
-                    'payment_method'  => 'credit',
-                    'is_completed'    => false,
-                    'status'          => null,
-                    'due_date'        => $this->balanceDueDate ?? now()->addDays(7),
+                    'sale_id' => $sale->id,
+                    'amount' => floatval($this->cashAmount),
+                    'payment_method' => 'cash',
+                    'is_completed' => true,
+                    'status' => 'Paid',
+                    'payment_date' => now(),
+                ]);
+            }
+
+            // Save cheques as pending payments (they represent future dues)
+            foreach ($this->cheques as $cheque) {
+                $payment = Payment::create([
+                    'sale_id' => $sale->id,
+                    'amount' => floatval($cheque['amount']),
+                    'payment_method' => 'cheque',
+                    'payment_reference' => $cheque['number'],
+                    'bank_name' => $cheque['bank'],
+                    'is_completed' => false,
+                    'status' => 'Pending',
+                    'payment_date' => $cheque['date'],
+                ]);
+
+                Cheque::create([
+                    'cheque_number' => $cheque['number'],
+                    'cheque_date' => $cheque['date'],
+                    'bank_name' => $cheque['bank'],
+                    'cheque_amount' => $cheque['amount'],
+                    'status' => 'pending',
+                    'customer_id' => $this->customerId,
+                    'payment_id' => $payment->id,
                 ]);
             }
 
             DB::commit();
 
-            $this->receipt = Sale::with(['customer', 'items.product', 'payments'])->find($sale->id);
-
-            $this->lastSaleId = $sale->id;
-            $this->showReceipt = true;
-            $this->js('swal.fire("Success", "Sale completed successfully! Invoice #' . $sale->invoice_number . '", "success")');
+            $this->js('swal.fire("Success", "Sale completed successfully!", "success")');
             $this->clearCart();
             $this->resetPaymentInfo();
-            $this->js('$("#receiptModal").modal("show")');
         } catch (Exception $e) {
             DB::rollBack();
-            Log::error('Admin sale error: ' . $e->getMessage());
-            $this->js('swal.fire("Error", "An error occurred: ' . $e->getMessage() . '", "error")');
+            $this->js('swal.fire("Error", "' . $e->getMessage() . '", "error")');
         }
     }
+
+
 
     public function resetPaymentInfo()
     {

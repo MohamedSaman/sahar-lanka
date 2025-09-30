@@ -39,6 +39,10 @@
             border: 1px solid #233D7F;
         }
 
+        .bg-gradient-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+        }
+
         @media (max-width: 767.98px) {
             .table {
                 font-size: 0.875rem;
@@ -298,7 +302,7 @@
                                                         <span class="badge bg-success me-1">
                                                             <i class="fas fa-money-bill me-1"></i>
                                                         </span>
-                                                        Payment
+                                                        Cash
                                                     </label>
                                                 </div>
                                                 <div class="form-check">
@@ -316,6 +320,7 @@
                                         </div>
 
                                         @if ($paymentType == 'full')
+                                        @else
                                         <div class="card mb-3 border">
                                             <div class="card-body p-3">
                                                 <h6 class="card-title fw-bold mb-3">
@@ -326,7 +331,7 @@
                                                     <div class="input-group">
                                                         <span class="input-group-text">Rs.</span>
                                                         <input type="number" class="form-control"
-                                                            placeholder="Enter cash amount" wire:model="cashAmount">
+                                                            placeholder="Enter cash amount (optional)" wire:model="cashAmount">
                                                     </div>
                                                 </div>
                                             </div>
@@ -337,93 +342,179 @@
                                                 <h6 class="card-title fw-bold mb-3">
                                                     <i class="fas fa-money-check-alt me-2"></i>Cheque Payments
                                                 </h6>
-                                                <form wire:submit.prevent="addCheque">
-                                                    <div class="row g-3">
-                                                        <div class="col-md-6">
-                                                            <label class="form-label small fw-bold">Cheque
-                                                                Number</label>
-                                                            <input type="text" class="form-control"
-                                                                placeholder="Enter cheque number"
-                                                                wire:model="newCheque.number">
-                                                        </div>
-                                                        <div class="col-md-6">
-                                                            <label class="form-label small fw-bold">Bank Name</label>
-                                                            <select class="form-select" wire:model="newCheque.bank">
-                                                                <option value="">-- Select a bank --</option>
-                                                                @foreach($banks as $bank)
-                                                                <option value="{{ $bank }}">{{ $bank }}</option>
-                                                                @endforeach
-                                                            </select>
-                                                            @error('newCheque.bank') <span class="text-danger small">{{ $message }}</span> @enderror
-                                                        </div>
-                                                        <div class="col-md-6">
-                                                            <label class="form-label small fw-bold">Cheque Date</label>
-                                                            <input type="date" class="form-control"
-                                                                wire:model="newCheque.date">
-                                                        </div>
-                                                        <div class="col-md-6">
-                                                            <label class="form-label small fw-bold">Cheque
-                                                                Amount</label>
-                                                            <div class="input-group">
-                                                                <span class="input-group-text">Rs.</span>
-                                                                <input type="number" class="form-control"
-                                                                    placeholder="Enter cheque amount"
-                                                                    wire:model="newCheque.amount">
+
+                                                <!-- Improved Cheque Form -->
+                                                <div class="card bg-light mb-3">
+                                                    <div class="card-header bg-white">
+                                                        <h6 class="mb-0 text-primary"><i class="fas fa-plus-circle me-2"></i>Add New Cheque</h6>
+                                                    </div>
+                                                    <div class="card-body">
+                                                        <form wire:submit.prevent="addCheque" id="chequeForm">
+                                                            <div class="row g-3">
+                                                                <div class="col-md-6">
+                                                                    <label class="form-label fw-bold">
+                                                                        <i class="fas fa-hashtag me-1"></i>Cheque Number <span class="text-danger">*</span>
+                                                                    </label>
+                                                                    <input type="text" class="form-control"
+                                                                           placeholder="Enter cheque number"
+                                                                           wire:model="newCheque.number"
+                                                                           required>
+                                                                    
+                                                                </div>
+
+                                                                <div class="col-md-6">
+                                                                    <label class="form-label fw-bold">
+                                                                        <i class="fas fa-university me-1"></i>Bank Name <span class="text-danger">*</span>
+                                                                    </label>
+                                                                    <select class="form-select" wire:model="newCheque.bank" required>
+                                                                        <option value="">-- Select a bank --</option>
+                                                                        @foreach($banks as $bank)
+                                                                        <option value="{{ $bank }}">{{ $bank }}</option>
+                                                                        @endforeach
+                                                                    </select>
+                                                                    
+                                                                    @error('newCheque.bank')
+                                                                        <div class="text-danger small mt-1">{{ $message }}</div>
+                                                                    @enderror
+                                                                </div>
+
+                                                                <div class="col-md-6">
+                                                                    <label class="form-label fw-bold">
+                                                                        <i class="fas fa-calendar-alt me-1"></i>Cheque Date <span class="text-danger">*</span>
+                                                                    </label>
+                                                                    <input type="date" class="form-control"
+                                                                           wire:model="newCheque.date"
+                                                                           min="{{ date('Y-m-d') }}"
+                                                                           required>
+                                                                    
+                                                                </div>
+
+                                                                <div class="col-md-6">
+                                                                    <label class="form-label fw-bold">
+                                                                        <i class="fas fa-money-bill-wave me-1"></i>Amount (Rs.) <span class="text-danger">*</span>
+                                                                    </label>
+                                                                    <div class="input-group">
+                                                                        <span class="input-group-text">Rs.</span>
+                                                                        <input type="number" class="form-control"
+                                                                               placeholder="0.00"
+                                                                               wire:model="newCheque.amount"
+                                                                               min="0"
+                                                                               step="0.01"
+                                                                               required>
+                                                                    </div>
+                                                                    
+                                                                </div>
                                                             </div>
-                                                        </div>
+
+                                                            <div class="d-flex justify-content-between align-items-center mt-3 pt-3 border-top">
+                                                                <div class="text-muted small">
+                                                                    <i class="fas fa-info-circle me-1"></i>All fields marked with <span class="text-danger">*</span> are required
+                                                                </div>
+                                                                <div>
+                                                                    <button type="button" class="btn btn-outline-secondary me-2" onclick="resetChequeForm()">
+                                                                        <i class="fas fa-undo me-1"></i>Reset
+                                                                    </button>
+                                                                    <button type="submit" class="btn btn-primary">
+                                                                        <i class="fas fa-plus me-1"></i> Add Cheque
+                                                                    </button>
+                                                                </div>
+                                                            </div>
+                                                        </form>
                                                     </div>
-                                                    <div class="text-end mt-3">
-                                                        <button type="submit" class="btn btn-sm btn-primary">
-                                                            <i class="fas fa-plus me-1"></i> Add Cheque
-                                                        </button>
-                                                    </div>
-                                                </form>
+                                                </div>
 
                                                 @if(!empty($cheques))
                                                 <div class="table-responsive mt-3">
-                                                    <table class="table table-sm table-bordered">
-                                                        <thead class="table-light">
-                                                            <tr>
-                                                                <th>#</th>
-                                                                <th>Number</th>
-                                                                <th>Bank</th>
-                                                                <th>Date</th>
-                                                                <th>Amount</th>
-                                                                <th>Action</th>
-                                                            </tr>
-                                                        </thead>
-                                                        <tbody>
-                                                            @foreach($cheques as $index => $cheque)
-                                                            <tr wire:key="cheque-{{ $index }}">
-                                                                <td>{{ $index + 1 }}</td>
-                                                                <td>{{ $cheque['number'] }}</td>
-                                                                <td>{{ $cheque['bank'] }}</td>
-                                                                <td>{{ $cheque['date'] }}</td>
-                                                                <td>Rs.{{ number_format($cheque['amount'], 2) }}</td>
-                                                                <td>
-                                                                    <button class="btn btn-link btn-sm text-danger p-0"
-                                                                        wire:click.prevent="removeCheque({{ $index }})">
-                                                                        <i class="bi bi-trash"></i>
-                                                                    </button>
-                                                                </td>
-                                                            </tr>
-                                                            @endforeach
-                                                        </tbody>
-                                                    </table>
+                                                    <div class="card border-0 shadow-sm">
+                                                        <div class="card-header bg-gradient-primary text-white d-flex justify-content-between align-items-center">
+                                                            <h6 class="mb-0 fw-bold">
+                                                                <i class="fas fa-list-check me-2"></i>Added Cheques
+                                                                <span class="badge bg-light text-primary ms-2">{{ count($cheques) }}</span>
+                                                            </h6>
+                                                            <small class="text-white-50">
+                                                                <i class="fas fa-info-circle me-1"></i>Total: Rs.{{ number_format(collect($cheques)->sum('amount'), 2) }}
+                                                            </small>
+                                                        </div>
+                                                        <div class="card-body p-0">
+                                                            <div class="table-responsive">
+                                                                <table class="table table-hover mb-0">
+                                                                    <thead class="table-light">
+                                                                        <tr class="text-center">
+                                                                            <th class="border-0 fw-bold text-primary" style="width: 60px;">
+                                                                                <i class="fas fa-hashtag me-1"></i>#
+                                                                            </th>
+                                                                            <th class="border-0 fw-bold text-primary">
+                                                                                <i class="fas fa-receipt me-1"></i>Cheque Details
+                                                                            </th>
+                                                                            <th class="border-0 fw-bold text-primary" style="width: 120px;">
+                                                                                <i class="fas fa-calendar-alt me-1"></i>Date
+                                                                            </th>
+                                                                            <th class="border-0 fw-bold text-primary" style="width: 120px;">
+                                                                                <i class="fas fa-money-bill-wave me-1"></i>Amount
+                                                                            </th>
+                                                                            <th class="border-0 fw-bold text-primary" style="width: 80px;">
+                                                                                <i class="fas fa-cogs me-1"></i>Action
+                                                                            </th>
+                                                                        </tr>
+                                                                    </thead>
+                                                                    <tbody>
+                                                                        @foreach($cheques as $index => $cheque)
+                                                                        <tr wire:key="cheque-{{ $index }}" class="text-center align-middle">
+                                                                            <td class="fw-bold text-muted">
+                                                                                {{ $index + 1 }}
+                                                                            </td>
+                                                                            <td class="text-start">
+                                                                                <div class="d-flex flex-column">
+                                                                                    <div class="fw-bold text-dark mb-1">
+                                                                                        <i class="fas fa-receipt text-primary me-1"></i>
+                                                                                        {{ $cheque['number'] }}
+                                                                                    </div>
+                                                                                    <div class="small text-muted">
+                                                                                        <i class="fas fa-university text-secondary me-1"></i>
+                                                                                        {{ $cheque['bank'] }}
+                                                                                    </div>
+                                                                                </div>
+                                                                            </td>
+                                                                            <td>
+                                                                                <span class="badge bg-light text-dark border">
+                                                                                    <i class="fas fa-calendar-day me-1"></i>
+                                                                                    {{ \Carbon\Carbon::parse($cheque['date'])->format('M d, Y') }}
+                                                                                </span>
+                                                                            </td>
+                                                                            <td>
+                                                                                <span class="badge bg-success text-white fw-bold fs-6">
+                                                                                    Rs.{{ number_format($cheque['amount'], 2) }}
+                                                                                </span>
+                                                                            </td>
+                                                                            <td>
+                                                                                <button class="btn btn-outline-danger btn-sm"
+                                                                                        wire:click.prevent="removeCheque({{ $index }})"
+                                                                                        title="Remove Cheque">
+                                                                                    <i class="bi bi-trash"></i>
+                                                                                </button>
+                                                                            </td>
+                                                                        </tr>
+                                                                        @endforeach
+                                                                    </tbody>
+                                                                    <tfoot class="table-light">
+                                                                        <tr class="text-center fw-bold">
+                                                                            <td colspan="3" class="text-end border-0">
+                                                                                <i class="bi bi-calculator me-2"></i>Total Cheques:
+                                                                            </td>
+                                                                            <td class="border-0">
+                                                                                <span class="badge bg-primary text-white fs-6">
+                                                                                    Rs.{{ number_format(collect($cheques)->sum('amount'), 2) }}
+                                                                                </span>
+                                                                            </td>
+                                                                            <td class="border-0"></td>
+                                                                        </tr>
+                                                                    </tfoot>
+                                                                </table>
+                                                            </div>
+                                                        </div>
+                                                    </div>
                                                 </div>
                                                 @endif
-                                            </div>
-                                        </div>
-                                        @else
-                                        <div class="card mb-3 border border-warning bg-light">
-                                            <div class="card-body p-3">
-                                                <h6 class="card-title fw-bold mb-3">
-                                                    <i class="fas fa-calendar-alt me-2"></i>Credit Sale Details
-                                                </h6>
-                                                <p class="text-info">The total amount of <strong>Rs.{{
-                                                        number_format($grandTotal, 2) }}</strong> will be recorded as a
-                                                    due payment.</p>
-
                                             </div>
                                         </div>
                                         @endif
@@ -460,10 +551,10 @@
 
                                         <div class="d-flex mt-4">
                                             <button class="btn btn-danger me-2" wire:click="clearCart">
-                                                <i class="fas fa-times me-2"></i>Clear
+                                                <i class="bi bi-x me-2"></i>Clear
                                             </button>
                                             <button class="btn btn-success flex-grow-1" wire:click="completeSale">
-                                                <i class="fas fa-check me-2"></i>Complete Sale
+                                                <i class="bi bi-check me-2"></i>Complete Sale
                                             </button>
                                         </div>
                                     </div>
@@ -637,10 +728,10 @@
                                             </div>
                                             <div class="form-check ">
                                                 <input class="form-check-input" type="radio" name="newCustomerType"
-                                                    id="newRetail" value="retail" wire:model="newCustomerType" >
+                                                    id="newRetail" value="retail" wire:model="newCustomerType">
                                                 <label class="form-check-label" for="newRetail">Retail</label>
                                             </div>
-                                            
+
                                         </div>
                                     </div>
 
@@ -695,10 +786,10 @@
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
-                                <i class="fas fa-times me-1"></i>Cancel
+                                <i class="bi bi-x me-1"></i>Cancel
                             </button>
                             <button type="button" class="btn btn-primary" wire:click="saveCustomer">
-                                <i class="fas fa-save me-1"></i>Save Customer
+                                <i class="bi bi-save me-1"></i>Save Customer
                             </button>
                         </div>
                     </div>
@@ -976,6 +1067,89 @@
                     timer: 3000,
                     timerProgressBar: true
                 });
+            });
+
+            // Cheque form validation and utilities
+            function resetChequeForm() {
+                const form = document.getElementById('chequeForm');
+                if (form) {
+                    form.reset();
+                    // Trigger Livewire to reset the form data
+                    @this.call('resetChequeForm');
+                }
+            }
+
+            function validateChequeForm() {
+                const form = document.getElementById('chequeForm');
+                if (!form) return true;
+
+                const chequeNumber = form.querySelector('input[wire\\:model="newCheque.number"]')?.value || '';
+                const bankName = form.querySelector('select[wire\\:model="newCheque.bank"]')?.value || '';
+                const chequeDate = form.querySelector('input[wire\\:model="newCheque.date"]')?.value || '';
+                const amount = form.querySelector('input[wire\\:model="newCheque.amount"]')?.value || '';
+
+                if (!chequeNumber.trim()) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Validation Error',
+                        text: 'Please enter a cheque number'
+                    });
+                    return false;
+                }
+
+                if (!bankName) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Validation Error',
+                        text: 'Please select a bank'
+                    });
+                    return false;
+                }
+
+                if (!chequeDate) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Validation Error',
+                        text: 'Please select a cheque date'
+                    });
+                    return false;
+                }
+
+                // Check if date is today or future
+                const selectedDate = new Date(chequeDate);
+                const today = new Date();
+                today.setHours(0, 0, 0, 0);
+
+                if (selectedDate < today) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Invalid Date',
+                        text: 'Cheque date cannot be in the past. Please select today\'s date or a future date.'
+                    });
+                    return false;
+                }
+
+                if (!amount || parseFloat(amount) <= 0) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Validation Error',
+                        text: 'Please enter a valid amount greater than 0'
+                    });
+                    return false;
+                }
+
+                return true;
+            }
+
+            // Add form validation on submit
+            document.addEventListener('submit', function(e) {
+                if (e.target.id === 'chequeForm') {
+                    if (!validateChequeForm()) {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        return false;
+                    }
+                }
             });
 
         });
