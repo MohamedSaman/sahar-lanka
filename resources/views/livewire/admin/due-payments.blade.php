@@ -199,9 +199,9 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                @forelse($duePayments as $payment)
+                                @forelse($items as $payment)
                                 <tr
-                                    class="border-bottom transition-all hover:bg-[#f1f5f9] {{ $loop->iteration % 2 == 0 ? 'bg-[#f9fafb]' : '' }} {{ now()->gt($payment->due_date) && $payment->status === null ? 'bg-danger bg-opacity-10' : '' }}">
+                                    class="border-bottom transition-all hover:bg-[#f1f5f9] {{ $loop->iteration % 2 == 0 ? 'bg-[#f9fafb]' : '' }} {{ isset($payment->due_date) && now()->gt($payment->due_date) && $payment->status === null ? 'bg-danger bg-opacity-10' : '' }}">
                                     <td class="ps-4" data-label="Invoice">
                                         <div class="d-flex flex-column">
                                             <h6 class="mb-0 text-sm fw-semibold text-gray-800">{{
@@ -212,12 +212,12 @@
                                     </td>
                                     <td data-label="Customer">
                                         <div class="d-flex align-items-center">
-                                           <div
-    class="icon-shape icon-md rounded-circle bg-primary bg-opacity-10 me-2 d-flex align-items-center justify-content-center">
-    <span class="text-primary fw-bold">
-        {{ substr($payment->sale?->customer?->name ?? 'N', 0, 1) }}
-    </span>
-</div>
+                                            <div
+                                                class="icon-shape icon-md rounded-circle bg-primary bg-opacity-10 me-2 d-flex align-items-center justify-content-center">
+                                                <span class="text-primary fw-bold">
+                                                    {{ substr($payment->sale?->customer?->name ?? 'N', 0, 1) }}
+                                                </span>
+                                            </div>
 
                                             <div>
                                                 <p class="text-sm fw-semibold text-gray-800 mb-0">
@@ -253,7 +253,7 @@
                                         @if ($payment->status === null)
                                         <button
                                             class="btn btn-primary text-white rounded-full shadow-sm px-4 py-2 transition-transform hover:scale-105"
-                                            wire:click="getPaymentDetails({{ $payment->id }})">
+                                            wire:click="getPaymentDetails({{ $payment->id }}, {{ $payment->is_payment ? 1 : 0 }})">
                                             <i class="bi bi-currency-dollar me-1"></i> Receive
                                         </button>
                                         @else
@@ -280,16 +280,16 @@
                             </tbody>
                         </table>
                     </div>
-                    @if ($duePayments->hasPages())
+                    @if ($items->hasPages())
                     <div class="card-footer p-4 bg-white border-top rounded-b-4">
                         <div class="d-flex flex-wrap justify-content-between align-items-center gap-3">
                             <div class="text-sm text-gray-600">
-                                Showing <span class="fw-semibold text-gray-800">{{ $duePayments->firstItem() }}</span>
-                                to <span class="fw-semibold text-gray-800">{{ $duePayments->lastItem() }}</span> of
-                                <span class="fw-semibold text-gray-800">{{ $duePayments->total() }}</span> results
+                                Showing <span class="fw-semibold text-gray-800">{{ $items->firstItem() }}</span>
+                                to <span class="fw-semibold text-gray-800">{{ $items->lastItem() }}</span> of
+                                <span class="fw-semibold text-gray-800">{{ $items->total() }}</span> results
                             </div>
                             <div class="pagination-container">
-                                {{ $duePayments->links('pagination::bootstrap-5') }}
+                                {{ $items->links('pagination::bootstrap-5') }}
                             </div>
                         </div>
                     </div>
@@ -486,17 +486,6 @@
                                             <textarea class="form-control rounded-4 shadow-sm" rows="3"
                                                 wire:model="paymentNote"
                                                 placeholder="Add any notes about this payment (optional)"></textarea>
-                                        </div>
-                                    </div>
-
-                                    <div
-                                        class="alert alert-info bg-info bg-opacity-10 border-0 rounded-4 d-flex align-items-center shadow-sm p-3 mb-4">
-                                        <i class="bi bi-info-circle-fill text-info fs-5 me-3"></i>
-                                        <div>
-                                            <p class="mb-0 text-sm text-gray-800">This payment will be sent for admin
-                                                approval.</p>
-                                            <p class="mb-0 text-xs text-gray-600">The customer's account will be updated
-                                                once approved.</p>
                                         </div>
                                     </div>
                                 </div>
@@ -759,7 +748,10 @@
             modal.hide();
         });
 
-        @this.on('showToast', ({ type, message }) => {
+        @this.on('showToast', ({
+            type,
+            message
+        }) => {
             Swal.fire({
                 toast: true,
                 position: 'top-end',
