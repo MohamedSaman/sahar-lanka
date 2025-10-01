@@ -33,7 +33,7 @@
         .sidebar {
             width: 260px;
             height: 100vh;
-            background: linear-gradient(180deg, #233D7F 0%, #1e3266 100%);
+            background: linear-gradient(90deg, #233d7f 0%, #1e3a8a 50%,rgb(28, 96, 205) 100%);
             color: #ffffff;
             position: fixed;
             border-right: none;
@@ -297,6 +297,9 @@
                 margin-left: 0;
                 width: 100%;
             }
+            .header {
+                display: none;
+            }
         }
 
         .tracking-tight {
@@ -317,7 +320,7 @@
             <div class="sidebar-header">
                 <div class="sidebar-title">
                     {{-- <img src="{{ asset('images/plus.png') }}" alt="Logo" width="200px" height="100px"> --}}
-                    <h3 class="text-center">SAHAR LANKA</h3>
+                    <h3 class="text-center" style="font-family: 'monospace'; font-weight: 800;">SAHAR LANKA</h3>
                 </div>
             </div>
             <ul class="nav flex-column">
@@ -426,10 +429,10 @@
             </button>
 
             <!-- Center Title -->
-            <div class="flex-grow-1 text-center fw-bold my-2" style="color:#233D7F; font-size:18px;">
-                <h2 style="padding: 0;margin:0"><b>SAHAR LANKA</b></h2>
-                <p style="padding: 0;margin:0; font-size:16px;">Importers & Retailers of Genuine Spares for MARUTI-LEYLAND - MAHINDRA-TATA-ALTO</p>
-            </div>
+            <div class="flex-grow-1 text-center fw-bold my-2 header" style="color:#233D7F; font-size:18px;">
+                <h2 style="padding: 0;margin:0 ; font-family:'monospace' ;font-weight: 800;"><b>SAHAR LANKA</b></h2>
+                <p style="padding: 0;margin:0; font-size:14px; color:black">Importers & Retailers of Genuine Spares for MARUTI-LEYLAND - MAHINDRA-TATA-ALTO</p>
+            </div> 
 
             <!-- Right Dropdown -->
             <div class="ms-auto dropdown">

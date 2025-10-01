@@ -35,10 +35,10 @@ class CustomerSaleDetails extends Component
             ->where(function ($query) {
                 $query->where(function ($q) {
                     $q->whereIn('payments.payment_method', ['cash', 'cheque'])
-                      ->where('payments.status', 'Paid');
+                        ->where('payments.status', 'Paid');
                 })->orWhere(function ($q) {
                     $q->where('payments.payment_method', 'cheque')
-                      ->where('payments.status', 'Pending');
+                        ->where('payments.status', 'Pending');
                 });
             })
             ->sum('payments.amount');
@@ -54,7 +54,7 @@ class CustomerSaleDetails extends Component
 
         // Get individual invoices
         $invoices = Sale::where('customer_id', $customerId)
-            ->orderBy('created_at', 'desc')
+            ->orderBy('created_at', 'asc')
             ->get();
 
         // Get product-wise sales with product details (replaced with invoice and payment data)
@@ -63,15 +63,15 @@ class CustomerSaleDetails extends Component
             ->where('sales.customer_id', $customerId)
             ->where(function ($query) {
                 $query->whereNull('payments.id') // Include invoices without payments
-                      ->orWhere(function ($q) {
-                          $q->where(function ($subQ) {
-                              $subQ->whereIn('payments.payment_method', ['cash', 'cheque'])
-                                   ->where('payments.status', 'Paid');
-                          })->orWhere(function ($subQ) {
-                              $subQ->where('payments.payment_method', 'cheque')
-                                   ->where('payments.status', 'Pending');
-                          });
-                      });
+                    ->orWhere(function ($q) {
+                        $q->where(function ($subQ) {
+                            $subQ->whereIn('payments.payment_method', ['cash', 'cheque'])
+                                ->where('payments.status', 'Paid');
+                        })->orWhere(function ($subQ) {
+                            $subQ->where('payments.payment_method', 'cheque')
+                                ->where('payments.status', 'Pending');
+                        });
+                    });
             })
             ->select(
                 'sales.id as sale_id',
@@ -84,8 +84,8 @@ class CustomerSaleDetails extends Component
                 'payments.status as payment_status',
                 'payments.created_at as payment_date'
             )
-            ->orderBy('sales.created_at', 'desc')
-            ->orderBy('payments.created_at', 'desc')
+            ->orderBy('sales.created_at', 'asc')
+            ->orderBy('payments.created_at', 'asc')
             ->get();
 
         // Process data to create the required structure
@@ -192,8 +192,8 @@ class CustomerSaleDetails extends Component
             ->join('customers', 'sales.customer_id', '=', 'customers.id')
             ->leftJoin('payments', function ($join) {
                 $join->on('sales.id', '=', 'payments.sale_id')
-                     ->where('payments.payment_method', 'cheque')
-                     ->where('payments.status', 'Pending');
+                    ->where('payments.payment_method', 'cheque')
+                    ->where('payments.status', 'Pending');
             })
             ->select(
                 'customers.id as customer_id',
@@ -253,8 +253,8 @@ class CustomerSaleDetails extends Component
             ->join('customers', 'sales.customer_id', '=', 'customers.id')
             ->leftJoin('payments', function ($join) {
                 $join->on('sales.id', '=', 'payments.sale_id')
-                     ->where('payments.payment_method', 'cheque')
-                     ->where('payments.status', 'Pending');
+                    ->where('payments.payment_method', 'cheque')
+                    ->where('payments.status', 'Pending');
             })
             ->select(
                 'customers.id as customer_id',

@@ -199,8 +199,8 @@
                                     <td class="text-center">
                                         @if($cheque->status == 'pending')
                                         <div class="d-flex justify-content-center gap-2">
-                                            <button wire:click="completePaymentDetails({{ $cheque->id }})" class="btn btn-sm btn-success rounded-pill">Complete</button>
-                                            <button wire:click="returnCheque({{ $cheque->id }})" class="btn btn-sm btn-danger rounded-pill">Return</button>
+                                            <button onclick="confirmCompletePayment({{ $cheque->id }})" class="btn btn-sm btn-success rounded-pill">Complete</button>
+                                            <button onclick="confirmReturnCheque({{ $cheque->id }})" class="btn btn-sm btn-danger rounded-pill">Return</button>
                                         </div>
                                         @elseif($cheque->status == 'return')
                                         <div class="d-flex justify-content-center gap-2">
@@ -685,13 +685,13 @@
 @push('scripts')
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
-    document.addEventListener('livewire:initialized', () => {
-        @this.on('openModal', (modalId) => {
+    document.addEventListener('livewire:init', () => {
+        Livewire.on('openModal', (modalId) => {
             let modal = new bootstrap.Modal(document.getElementById(modalId));
             modal.show();
         });
 
-        @this.on('closeModal', (modalId) => {
+        Livewire.on('closeModal', (modalId) => {
             let modalElement = document.getElementById(modalId);
             let modal = bootstrap.Modal.getInstance(modalElement);
             if (modal) {
@@ -699,15 +699,12 @@
             }
         });
 
-        @this.on('showToast', ({
-            type,
-            message
-        }) => {
+        Livewire.on('showToast', (data) => {
             Swal.fire({
                 toast: true,
                 position: 'top-end',
-                icon: type,
-                title: message,
+                icon: data.type,
+                title: data.message,
                 showConfirmButton: false,
                 timer: 3000,
                 timerProgressBar: true,
@@ -719,6 +716,70 @@
                 }
             });
         });
+
+        // Handle confirmation dialogs for actions
+        Livewire.on('confirmAction', (data) => {
+            Swal.fire({
+                title: data.title,
+                text: data.text,
+                icon: data.icon,
+                showCancelButton: true,
+                confirmButtonColor: data.icon === 'success' ? '#22c55e' : '#ef4444',
+                cancelButtonColor: '#6b7280',
+                confirmButtonText: data.confirmButtonText,
+                cancelButtonText: data.cancelButtonText,
+                reverseButtons: true,
+                allowOutsideClick: false,
+                allowEscapeKey: true,
+                focusConfirm: false,
+                focusCancel: true
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // Get the Livewire component and call the method
+                    window.livewire.find(document.querySelector('[wire\\:id]').getAttribute('wire:id'))
+                        .call(data.method, ...data.params);
+                }
+            });
+        });
+
+        // Direct confirmation functions for buttons
+        window.confirmCompletePayment = function(chequeId) {
+            Swal.fire({
+                title: 'Mark Cheque as Complete',
+                text: 'Are you sure you want to mark this cheque as complete? This action will update the payment status to "Paid".',
+                icon: 'success',
+                showCancelButton: true,
+                confirmButtonColor: '#22c55e',
+                cancelButtonColor: '#6b7280',
+                confirmButtonText: 'Yes, Mark Complete',
+                cancelButtonText: 'Cancel',
+                reverseButtons: true
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    Livewire.find(document.querySelector('[wire\\:id]').getAttribute('wire:id'))
+                        .call('completePaymentDetails', chequeId);
+                }
+            });
+        };
+
+        window.confirmReturnCheque = function(chequeId) {
+            Swal.fire({
+                title: 'Mark Cheque as Returned',
+                text: 'Are you sure you want to mark this cheque as returned? This indicates the cheque was not honored by the bank.',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#ef4444',
+                cancelButtonColor: '#6b7280',
+                confirmButtonText: 'Yes, Mark as Returned',
+                cancelButtonText: 'Cancel',
+                reverseButtons: true
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    Livewire.find(document.querySelector('[wire\\:id]').getAttribute('wire:id'))
+                        .call('returnCheque', chequeId);
+                }
+            });
+        };
 
         // Print due cheque payments table
         Livewire.on('print-due-cheque-payments', function() {

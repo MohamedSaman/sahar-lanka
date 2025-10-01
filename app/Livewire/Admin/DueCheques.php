@@ -181,6 +181,11 @@ class DueCheques extends Component
         }
     }
 
+    public function printDueChequePayments()
+    {
+        $this->dispatch('print-due-cheque-payments');
+    }
+
     public function render()
     {
         $baseQuery = Cheque::with(['customer', 'payment.sale'])
@@ -203,7 +208,7 @@ class DueCheques extends Component
         }
 
         // ❗️ Only include cheques with status 'pending'
-        $filteredQuery->whereIn('status', ['pending','complete']);
+        $filteredQuery->whereIn('status', ['pending', 'complete']);
 
         // Date range filter
         if ($this->filters['dateRange']) {

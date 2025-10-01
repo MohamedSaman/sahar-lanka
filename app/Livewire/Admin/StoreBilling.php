@@ -515,7 +515,6 @@ class StoreBilling extends Component
                 $price = $this->prices[$id] ?? $item['price'];
                 $itemDiscount = $this->discounts[$id] ?? 0;
                 $total = ($price * $quantityToSell) - ($itemDiscount * $quantityToSell);
-
                 SalesItem::create([
                     'sale_id' => $sale->id,
                     'product_id' => $item['id'],
