@@ -50,7 +50,7 @@
                                 </div>
                             </div>
 
-                             <div class="col-xl-3 col-md-6">
+                            <div class="col-xl-3 col-md-6">
                                 <div class="card border-0 shadow-lg rounded-4 h-100 transition-all hover:scale-105">
                                     <div class="card-body p-4">
                                         <div class="d-flex align-items-center">
@@ -68,7 +68,7 @@
                                 </div>
                             </div>
 
-                             <div class="col-xl-3 col-md-6">
+                            <div class="col-xl-3 col-md-6">
                                 <div class="card border-0 shadow-lg rounded-4 h-100 transition-all hover:scale-105">
                                     <div class="card-body p-4">
                                         <div class="d-flex align-items-center">
@@ -172,7 +172,6 @@
                                 <th class="text-uppercase text-xs fw-semibold py-3 text-center" style="color: #1e3a8a;">Method</th>
                                 <th class="text-uppercase text-xs fw-semibold py-3 text-center" style="color: #1e3a8a;">Status</th>
                                 <th class="text-uppercase text-xs fw-semibold py-3" style="color: #1e3a8a;">Date</th>
-                                <th class="text-uppercase text-xs fw-semibold py-3" style="color: #1e3a8a;">Staff</th>
                                 <th class="text-uppercase text-xs fw-semibold py-3 text-center" style="color: #1e3a8a;">Actions</th>
                             </tr>
                         </thead>
@@ -194,14 +193,14 @@
                                 </td>
                                 <td class="text-center">
                                     @php
-                                        $status = $payment->status ? $payment->status : ($payment->is_completed ? 'paid' : 'scheduled');
-                                        $statusClass = [
-                                            'pending' => 'warning',
-                                            'paid' => 'success',
-                                            'approved' => 'success',
-                                            'rejected' => 'danger',
-                                            'scheduled' => 'info'
-                                        ][$status] ?? 'secondary';
+                                    $status = $payment->status ? $payment->status : ($payment->is_completed ? 'paid' : 'scheduled');
+                                    $statusClass = [
+                                    'pending' => 'warning',
+                                    'Paid' => 'success',
+                                    'approved' => 'success',
+                                    'rejected' => 'danger',
+                                    'scheduled' => 'info'
+                                    ][$status] ?? 'secondary';
                                     @endphp
                                     <span class="badge rounded-pill bg-{{$statusClass}} bg-opacity-10 text-{{$statusClass}} px-3 py-2">
                                         {{ ucfirst($status) }}
@@ -216,7 +215,7 @@
                                         {{ $payment->payment_date ? $payment->payment_date->format('h:i A') : '' }}
                                     </div>
                                 </td>
-                                <td>{{ $payment->sale->user->name ?? 'N/A' }}</td>
+                                
                                 <td class="text-center">
                                     <button class="btn btn-sm btn-info text-white rounded-pill px-3" wire:click="viewPaymentDetails({{ $payment->id }})">
                                         <i class="bi bi-receipt-cutoff"></i> View
@@ -231,7 +230,7 @@
                         </tbody>
                     </table>
                 </div>
-                
+
                 @if ($payments->hasPages())
                 <div class="card-footer p-4 bg-white border-top rounded-b-4">
                     <div class="d-flex flex-wrap justify-content-between align-items-center gap-3">
@@ -253,7 +252,7 @@
     <div wire:ignore.self class="modal fade" id="payment-receipt-modal" tabindex="-1" aria-labelledby="payment-receipt-modal-label" aria-hidden="true">
         <div class="modal-dialog modal-lg modal-dialog-scrollable" role="document">
             <div class="modal-content border-0 shadow-lg rounded-4">
-                 <div class="modal-header text-white p-4" style="background: linear-gradient(90deg, #1e40af 0%, #3b82f6 100%);">
+                <div class="modal-header text-white p-4" style="background: linear-gradient(90deg, #1e40af 0%, #3b82f6 100%);">
                     <h5 class="modal-title fw-bold tracking-tight" id="payment-receipt-modal-label">
                         <i class="bi bi-receipt-cutoff me-2"></i>Payment Receipt
                     </h5>
@@ -274,7 +273,7 @@
                             <h4 class="mt-3 border-bottom border-2 pb-2">PAYMENT RECEIPT</h4>
                         </div>
 
-                        
+
 
                         <div class="row mb-4">
                             <div class="col-md-6">
@@ -303,13 +302,18 @@
                                 </div>
                             </div>
                         </div>
-                        
+
                         <h6 class="text-muted mb-2">PURCHASED ITEMS</h6>
                         <div class="table-responsive mb-4">
                             <table class="table table-bordered table-sm">
                                 <thead class="table-light">
                                     <tr>
-                                        <th>#</th><th>Item</th><th>Code</th><th>Price</th><th>Qty</th><th>Total</th>
+                                        <th>#</th>
+                                        <th>Item</th>
+                                        <th>Code</th>
+                                        <th>Price</th>
+                                        <th>Qty</th>
+                                        <th>Total</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -410,34 +414,107 @@
             </div>
         </div>
     </div>
-    
+
     @push('styles')
     <style>
-        body { font-family: 'Inter', sans-serif; font-size: 15px; color: #1f2937; }
-        .tracking-tight { letter-spacing: -0.025em; }
-        .transition-all { transition: all 0.3s ease; }
-        .transition-transform { transition: transform 0.2s ease; }
-        .hover\:scale-105:hover { transform: scale(1.05); }
-        .icon-shape { width: 2rem; height: 2rem; display: flex; align-items: center; justify-content: center; }
-        .icon-shape.icon-lg { width: 3rem; height: 3rem; }
-        .icon-shape.icon-md { width: 2.5rem; height: 2.5rem; }
-        .table { border-collapse: separate; border-spacing: 0; }
-        .table th, .table td { border: 1px solid #e5e7eb; vertical-align: middle; }
-        .table tbody tr:nth-child(even) { background-color: #f9fafb; }
-        .table tbody tr:hover { background-color: #f1f5f9; }
-        .rounded-full { border-radius: 9999px; }
-        .rounded-4 { border-radius: 1rem; }
-        .shadow-lg { box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05); }
-        .shadow-sm { box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06); }
-        .btn-light { background-color: #ffffff; border-color: #ffffff; color: #1e3a8a; }
-        .btn-light:hover { background-color: #f1f5f9; border-color: #f1f5f9; color: #1e3a8a; }
-        .form-control:focus, .form-select:focus { border-color: #1e40af; box-shadow: 0 0 0 0.2rem rgba(30, 64, 175, 0.25); }
-        
+        body {
+            font-family: 'Inter', sans-serif;
+            font-size: 15px;
+            color: #1f2937;
+        }
+
+        .tracking-tight {
+            letter-spacing: -0.025em;
+        }
+
+        .transition-all {
+            transition: all 0.3s ease;
+        }
+
+        .transition-transform {
+            transition: transform 0.2s ease;
+        }
+
+        .hover\:scale-105:hover {
+            transform: scale(1.05);
+        }
+
+        .icon-shape {
+            width: 2rem;
+            height: 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .icon-shape.icon-lg {
+            width: 3rem;
+            height: 3rem;
+        }
+
+        .icon-shape.icon-md {
+            width: 2.5rem;
+            height: 2.5rem;
+        }
+
+        .table {
+            border-collapse: separate;
+            border-spacing: 0;
+        }
+
+        .table th,
+        .table td {
+            border: 1px solid #e5e7eb;
+            vertical-align: middle;
+        }
+
+        .table tbody tr:nth-child(even) {
+            background-color: #f9fafb;
+        }
+
+        .table tbody tr:hover {
+            background-color: #f1f5f9;
+        }
+
+        .rounded-full {
+            border-radius: 9999px;
+        }
+
+        .rounded-4 {
+            border-radius: 1rem;
+        }
+
+        .shadow-lg {
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+
+        .shadow-sm {
+            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+        }
+
+        .btn-light {
+            background-color: #ffffff;
+            border-color: #ffffff;
+            color: #1e3a8a;
+        }
+
+        .btn-light:hover {
+            background-color: #f1f5f9;
+            border-color: #f1f5f9;
+            color: #1e3a8a;
+        }
+
+        .form-control:focus,
+        .form-select:focus {
+            border-color: #1e40af;
+            box-shadow: 0 0 0 0.2rem rgba(30, 64, 175, 0.25);
+        }
+
         /* Pagination Styles */
         .pagination-container .pagination {
             margin: 0;
         }
-        
+
         .pagination-container .page-link {
             color: #1e40af;
             border: 1px solid #e5e7eb;
@@ -447,19 +524,19 @@
             font-weight: 500;
             transition: all 0.2s ease;
         }
-        
+
         .pagination-container .page-link:hover {
             background-color: #eff6ff;
             border-color: #1e40af;
             color: #1d4ed8;
         }
-        
+
         .pagination-container .page-item.active .page-link {
             background-color: #1e40af;
             border-color: #1e40af;
             color: white;
         }
-        
+
         .pagination-container .page-item.disabled .page-link {
             color: #9ca3af;
             background-color: #f9fafb;

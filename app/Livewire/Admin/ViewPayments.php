@@ -16,7 +16,7 @@ class ViewPayments extends Component
     use WithPagination;
 
     protected $paginationTheme = 'bootstrap';
-    
+
     public $search = '';
     public $selectedPayment = null;
     public $filters = [
@@ -97,4 +97,3 @@ class ViewPayments extends Component
         ]);
     }
 }
-    

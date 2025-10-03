@@ -1,7 +1,7 @@
 <div class="container-fluid py-1">
 
     <!-- Header Section -->
-    <div class="card-header text-white p-2  d-flex align-items-center"
+    <div class="card-header text-white p-5  d-flex align-items-center"
         style="background: linear-gradient(90deg, #1e40af 0%, #3b82f6 100%); border-radius: 20px 20px 0 0;">
         <div
             class="icon-shape icon-lg bg-white bg-opacity-25 rounded-circle p-3 d-flex align-items-center justify-content-center me-3">
