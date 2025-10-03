@@ -199,9 +199,9 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                @forelse($items as $payment)
+                                @forelse($duePayments as $payment)
                                 <tr
-                                    class="border-bottom transition-all hover:bg-[#f1f5f9] {{ $loop->iteration % 2 == 0 ? 'bg-[#f9fafb]' : '' }} {{ isset($payment->due_date) && now()->gt($payment->due_date) && $payment->status === null ? 'bg-danger bg-opacity-10' : '' }}">
+                                    class="border-bottom transition-all hover:bg-[#f1f5f9] {{ $loop->iteration % 2 == 0 ? 'bg-[#f9fafb]' : '' }} {{ now()->gt($payment->due_date) && $payment->status === null ? 'bg-danger bg-opacity-10' : '' }}">
                                     <td class="ps-4" data-label="Invoice">
                                         <div class="d-flex flex-column">
                                             <h6 class="mb-0 text-sm fw-semibold text-gray-800">{{
@@ -250,18 +250,11 @@
                                         @endif
                                     </td>
                                     <td class="text-center" data-label="Actions">
-                                        @if ($payment->status === null)
                                         <button
                                             class="btn btn-primary text-white rounded-full shadow-sm px-4 py-2 transition-transform hover:scale-105"
-                                            wire:click="getPaymentDetails({{ $payment->id }}, {{ $payment->is_payment ? 1 : 0 }})">
+                                            wire:click="getPaymentDetails({{ $payment->id }}, 0)">
                                             <i class="bi bi-currency-dollar me-1"></i> Receive
                                         </button>
-                                        @else
-                                        <button
-                                            class="btn btn-success text-white rounded-full shadow-sm px-4 py-2 pe-none">
-                                            <i class="bi bi-check-circle-fill me-1"></i> Paid
-                                        </button>
-                                        @endif
                                     </td>
                                 </tr>
                                 @empty
@@ -280,16 +273,16 @@
                             </tbody>
                         </table>
                     </div>
-                    @if ($items->hasPages())
+                    @if ($duePayments->hasPages())
                     <div class="card-footer p-4 bg-white border-top rounded-b-4">
                         <div class="d-flex flex-wrap justify-content-between align-items-center gap-3">
                             <div class="text-sm text-gray-600">
-                                Showing <span class="fw-semibold text-gray-800">{{ $items->firstItem() }}</span>
-                                to <span class="fw-semibold text-gray-800">{{ $items->lastItem() }}</span> of
-                                <span class="fw-semibold text-gray-800">{{ $items->total() }}</span> results
+                                Showing <span class="fw-semibold text-gray-800">{{ $duePayments->firstItem() }}</span>
+                                to <span class="fw-semibold text-gray-800">{{ $duePayments->lastItem() }}</span> of
+                                <span class="fw-semibold text-gray-800">{{ $duePayments->total() }}</span> results
                             </div>
                             <div class="pagination-container">
-                                {{ $items->links('pagination::bootstrap-5') }}
+                                {{ $duePayments->links('pagination::bootstrap-5') }}
                             </div>
                         </div>
                     </div>
@@ -398,9 +391,13 @@
                                             <div class="col-md-6">
                                                 <label class="form-label text-xs fw-semibold">Bank Name <span
                                                         class="text-danger">*</span></label>
-                                                <input type="text"
-                                                    class="form-control form-control-sm rounded-3 shadow-sm"
-                                                    wire:model="bankName" placeholder="Bank Name">
+                                                <select class="form-select form-select-sm rounded-3 shadow-sm"
+                                                    wire:model="bankName">
+                                                    <option value="">Select Bank</option>
+                                                    @foreach ($banks as $bank)
+                                                    <option value="{{ $bank }}">{{ $bank }}</option>
+                                                    @endforeach
+                                                </select>
                                                 @error('bankName') <span class="text-danger text-xs">{{ $message
                                                     }}</span> @enderror
                                             </div>
@@ -727,6 +724,137 @@
         border-color: #1e40af;
         box-shadow: 0 0 0 0.2rem rgba(30, 64, 175, 0.25);
     }
+
+    /* Modern SweetAlert2 Styles */
+    .modern-swal-popup {
+        border-radius: 16px !important;
+        box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25) !important;
+        border: none !important;
+        font-family: 'Inter', sans-serif !important;
+        max-width: 400px !important;
+    }
+
+    .modern-swal-title {
+        font-weight: 600 !important;
+        color: #111827 !important;
+        font-size: 20px !important;
+        margin: 20px 0 12px 0 !important;
+        line-height: 1.4 !important;
+    }
+
+    .modern-swal-content {
+        color: #6b7280 !important;
+        font-size: 16px !important;
+        line-height: 1.6 !important;
+        margin: 0 0 32px 0 !important;
+        font-weight: 400 !important;
+    }
+
+    .modern-swal-button {
+        background: #6366f1 !important;
+        border: none !important;
+        border-radius: 12px !important;
+        padding: 12px 32px !important;
+        font-weight: 600 !important;
+        font-size: 16px !important;
+        transition: all 0.2s ease !important;
+        min-width: 100px !important;
+        color: #ffffff !important;
+    }
+
+    .modern-swal-button:hover {
+        background: #4f46e5 !important;
+        transform: translateY(-1px) !important;
+        box-shadow: 0 8px 25px rgba(99, 102, 241, 0.4) !important;
+    }
+
+    .modern-swal-button:focus {
+        outline: none !important;
+        box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.3) !important;
+    }
+
+    .modern-swal-icon {
+        margin: 20px auto 16px auto !important;
+        border: none !important;
+        width: 80px !important;
+        height: 80px !important;
+    }
+
+    /* Success Icon Styling */
+    .swal2-icon.swal2-success {
+        background: transparent !important;
+        border: 4px solid #10b981 !important;
+        border-radius: 50% !important;
+        color: #10b981 !important;
+        width: 80px !important;
+        height: 80px !important;
+    }
+
+    .swal2-icon.swal2-success .swal2-success-ring {
+        border: 4px solid rgba(16, 185, 129, 0.3) !important;
+        border-radius: 50% !important;
+        width: 80px !important;
+        height: 80px !important;
+    }
+
+    .swal2-icon.swal2-success .swal2-success-fix {
+        background: #10b981 !important;
+        width: 5px !important;
+        height: 90px !important;
+    }
+
+    .swal2-icon.swal2-success [class^="swal2-success-line"] {
+        background: #10b981 !important;
+        border-radius: 2px !important;
+        height: 5px !important;
+    }
+
+    /* Error Icon Styling */
+    .swal2-icon.swal2-error {
+        background: transparent !important;
+        border: 4px solid #ef4444 !important;
+        border-radius: 50% !important;
+        color: #ef4444 !important;
+        width: 80px !important;
+        height: 80px !important;
+    }
+
+    .swal2-icon.swal2-error .swal2-x-mark {
+        width: 50px !important;
+        height: 50px !important;
+    }
+
+    .swal2-icon.swal2-error .swal2-x-mark-line-left,
+    .swal2-icon.swal2-error .swal2-x-mark-line-right {
+        background: #ef4444 !important;
+        width: 47px !important;
+        height: 5px !important;
+        border-radius: 2px !important;
+    }
+
+    /* Warning Icon Styling */
+    .swal2-icon.swal2-warning {
+        background: transparent !important;
+        border: 4px solid #f59e0b !important;
+        border-radius: 50% !important;
+        color: #f59e0b !important;
+        width: 80px !important;
+        height: 80px !important;
+        font-size: 60px !important;
+        line-height: 80px !important;
+    }
+
+    /* Info Icon Styling */
+    .swal2-icon.swal2-info {
+        background: transparent !important;
+        border: 4px solid #3b82f6 !important;
+        border-radius: 50% !important;
+        color: #3b82f6 !important;
+        width: 80px !important;
+        height: 80px !important;
+        font-size: 60px !important;
+        line-height: 80px !important;
+    }
 </style>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link href="https://cdn.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css" rel="stylesheet">
@@ -748,43 +876,21 @@
             modal.hide();
         });
 
-        @this.on('showToast', ({
-            type,
-            message
-        }) => {
-            Swal.fire({
-                toast: true,
-                position: 'top-end',
-                icon: type,
-                title: message,
-                showConfirmButton: false,
-                timer: 3000,
-                timerProgressBar: true,
-                background: '#ffffff',
-                color: '#1f2937',
-                didOpen: (toast) => {
-                    toast.addEventListener('mouseenter', Swal.stopTimer);
-                    toast.addEventListener('mouseleave', Swal.resumeTimer);
-                }
-            });
-        });
-
         // Print due payments table
         Livewire.on('print-due-payments', function() {
             const tableElement = document.querySelector('.table.table-hover');
             if (!tableElement || tableElement.querySelectorAll('tbody tr').length === 0) {
-                Swal.fire({
+                swal.fire({
                     icon: 'error',
                     title: 'No Data to Print',
                     text: 'No due payments are available to print.',
                     confirmButtonText: 'OK',
-                    confirmButtonColor: '#1e40af',
                 });
                 return;
             }
 
             const clonedTable = tableElement.cloneNode(true);
-            const actionColumnIndex = 4; // Corrected index for Actions column
+            const actionColumnIndex = 4;
             const headerRow = clonedTable.querySelector('thead tr');
             const headerCells = headerRow.querySelectorAll('th');
             if (headerCells.length > actionColumnIndex) {
@@ -797,9 +903,6 @@
                     cells[actionColumnIndex].remove();
                 }
             });
-
-            // Debug: Log the cloned table HTML
-            console.log('Cloned Table HTML:', clonedTable.outerHTML);
 
             const htmlContent = `
                 <!DOCTYPE html>

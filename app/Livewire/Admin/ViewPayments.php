@@ -15,6 +15,8 @@ class ViewPayments extends Component
 {
     use WithPagination;
 
+    protected $paginationTheme = 'bootstrap';
+    
     public $search = '';
     public $selectedPayment = null;
     public $filters = [
@@ -22,6 +24,16 @@ class ViewPayments extends Component
         'paymentMethod' => '',
         'dateRange' => '',
     ];
+
+    public function updatingSearch()
+    {
+        $this->resetPage();
+    }
+
+    public function updatedFilters()
+    {
+        $this->resetPage();
+    }
 
     public function viewPaymentDetails($paymentId)
     {

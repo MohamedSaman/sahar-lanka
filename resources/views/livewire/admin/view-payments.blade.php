@@ -218,7 +218,7 @@
                                 </td>
                                 <td>{{ $payment->sale->user->name ?? 'N/A' }}</td>
                                 <td class="text-center">
-                                    <button class="btn btn-sm btn-info rounded-pill px-3" wire:click="viewPaymentDetails({{ $payment->id }})">
+                                    <button class="btn btn-sm btn-info text-white rounded-pill px-3" wire:click="viewPaymentDetails({{ $payment->id }})">
                                         <i class="bi bi-receipt-cutoff"></i> View
                                     </button>
                                 </td>
@@ -231,9 +231,21 @@
                         </tbody>
                     </table>
                 </div>
-                 <div class="px-4 py-3 border-top">
-                    {{ $payments->links() }}
+                
+                @if ($payments->hasPages())
+                <div class="card-footer p-4 bg-white border-top rounded-b-4">
+                    <div class="d-flex flex-wrap justify-content-between align-items-center gap-3">
+                        <div class="text-sm text-gray-600">
+                            Showing <span class="fw-semibold text-gray-800">{{ $payments->firstItem() }}</span>
+                            to <span class="fw-semibold text-gray-800">{{ $payments->lastItem() }}</span> of
+                            <span class="fw-semibold text-gray-800">{{ $payments->total() }}</span> results
+                        </div>
+                        <div class="pagination-container">
+                            {{ $payments->onEachSide(2)->links() }}
+                        </div>
+                    </div>
                 </div>
+                @endif
             </div>
         </div>
     </div>
@@ -420,6 +432,38 @@
         .btn-light { background-color: #ffffff; border-color: #ffffff; color: #1e3a8a; }
         .btn-light:hover { background-color: #f1f5f9; border-color: #f1f5f9; color: #1e3a8a; }
         .form-control:focus, .form-select:focus { border-color: #1e40af; box-shadow: 0 0 0 0.2rem rgba(30, 64, 175, 0.25); }
+        
+        /* Pagination Styles */
+        .pagination-container .pagination {
+            margin: 0;
+        }
+        
+        .pagination-container .page-link {
+            color: #1e40af;
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            margin: 0 2px;
+            padding: 8px 12px;
+            font-weight: 500;
+            transition: all 0.2s ease;
+        }
+        
+        .pagination-container .page-link:hover {
+            background-color: #eff6ff;
+            border-color: #1e40af;
+            color: #1d4ed8;
+        }
+        
+        .pagination-container .page-item.active .page-link {
+            background-color: #1e40af;
+            border-color: #1e40af;
+            color: white;
+        }
+        
+        .pagination-container .page-item.disabled .page-link {
+            color: #9ca3af;
+            background-color: #f9fafb;
+        }
     </style>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
