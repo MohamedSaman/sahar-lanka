@@ -9,12 +9,16 @@ use App\Models\Cheque;
 use App\Models\Payment;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use Livewire\WithPagination;
 
 #[Layout('components.layouts.admin')]
 #[Title('Due Cheques')]
 
 class DueChequesReturn extends Component
 {
+    use WithPagination;
+
+    protected $paginationTheme = 'bootstrap';
     public $chequeDetails;
     public $cheques = []; // Temporary array for new cheques
     public $chequeNumber;
@@ -38,7 +42,7 @@ class DueChequesReturn extends Component
         // Load cheques with customer relationship
         $this->chequeDetails = Cheque::with('customer')
             ->where('status', 'return')
-            ->get();
+            ->paginate(10);
     }
 
     public function loadBanks()

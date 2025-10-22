@@ -16,6 +16,7 @@ use App\Models\ProductDetail;
 class ProductStocks extends Component
 {
     use WithPagination;
+    protected $paginationTheme = 'bootstrap';
 
     public $search = '';
     

@@ -1,6 +1,9 @@
 <?php
 
 namespace App\Livewire\Admin;
+
+use App\Models\ProductDetail;
+use App\Models\Sale;
 use Exception;
 use Livewire\Component;
 use App\Models\StaffSale;
@@ -15,6 +18,7 @@ use Illuminate\Support\Facades\DB;
 class StaffSaleDetails extends Component
 {
     use WithPagination;
+    protected $paginationTheme = 'bootstrap';
     
     public $isViewModalOpen = false;
     public $staffId;
@@ -47,8 +51,8 @@ class StaffSaleDetails extends Component
         //     ->first();
             
         // Get product-wise details
-        $this->productDetails = StaffProduct::join('watch_details', 'staff_products.watch_id', '=', 'watch_details.id')
-            ->where('staff_products.staff_id', $userId)
+        $this->productDetails = ProductDetail::join('watch_details', 'product_details.watch_id', '=', 'watch_details.id')
+            ->where('product_details.staff_id', $userId)
             ->select(
                 'staff_products.*',
                 'watch_details.name as watch_name',
@@ -68,7 +72,7 @@ class StaffSaleDetails extends Component
     {
         $summaryStats = [];
         try{
-            $summaryStats = StaffSale::where('staff_id', $staffId)
+            $summaryStats = Sale::where('staff_id', $staffId)
                 ->select(
                     DB::raw('SUM(total_quantity) as total_quantity'),
                     DB::raw('SUM(sold_quantity) as sold_quantity'),
@@ -101,8 +105,8 @@ class StaffSaleDetails extends Component
         // Get all the necessary data for printing
         $staffDetails = DB::table('users')->where('id', $staffId)->first();
         $summaryStats = $this->getSummaryStats($staffId);
-        $productDetails = StaffProduct::join('watch_details', 'staff_products.watch_id', '=', 'watch_details.id')
-            ->where('staff_products.staff_id', $staffId)
+        $productDetails = ProductDetail::join('watch_details', 'product_details.watch_id', '=', 'watch_details.id')
+            ->where('product_details.staff_id', $staffId)
             ->select(
                 'staff_products.*',
                 'watch_details.name as watch_name',
@@ -119,7 +123,7 @@ class StaffSaleDetails extends Component
     
     public function render()
     {
-       $staffSales = StaffSale::join('users', 'staff_sales.staff_id', '=', 'users.id')
+       $staffSales = Sale::join('users', 'staff_sales.staff_id', '=', 'users.id')
             ->select(
                 'users.id as user_id',
                 'users.name',

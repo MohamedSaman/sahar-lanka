@@ -282,7 +282,7 @@
                                 <span class="fw-semibold text-gray-800">{{ $duePayments->total() }}</span> results
                             </div>
                             <div class="pagination-container">
-                                {{ $duePayments->links('pagination::bootstrap-5') }}
+                                {{ $duePayments->links('livewire::bootstrap') }}
                             </div>
                         </div>
                     </div>

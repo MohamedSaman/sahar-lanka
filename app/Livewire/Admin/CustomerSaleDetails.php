@@ -16,6 +16,8 @@ class CustomerSaleDetails extends Component
 {
     use WithPagination;
 
+    protected $paginationTheme = 'bootstrap';
+    
     public $modalData = null;
 
     public function viewSaleDetails($customerId)

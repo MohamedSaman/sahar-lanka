@@ -21,6 +21,7 @@ use Carbon\Carbon;
 class DuePayments extends Component
 {
     use WithPagination, WithFileUploads;
+    protected $paginationTheme = 'bootstrap';
 
     public $search = '';
     public $selectedPayment = null;

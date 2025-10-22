@@ -14,7 +14,6 @@ use Illuminate\Support\Facades\Storage;
 class ViewPayments extends Component
 {
     use WithPagination;
-
     protected $paginationTheme = 'bootstrap';
 
     public $search = '';

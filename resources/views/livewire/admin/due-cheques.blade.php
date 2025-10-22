@@ -220,7 +220,7 @@
                         </table>
                     </div>
                     <div class="px-4 py-3 border-top">
-                        {{ $duePayments->links() }} <!-- Add pagination -->
+                        {{ $duePayments->links('livewire::bootstrap') }} <!-- Add pagination -->
                     </div>
                 </div>
             </div>

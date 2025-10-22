@@ -355,10 +355,10 @@
                                                                         <i class="fas fa-hashtag me-1"></i>Cheque Number <span class="text-danger">*</span>
                                                                     </label>
                                                                     <input type="text" class="form-control"
-                                                                           placeholder="Enter cheque number"
-                                                                           wire:model="newCheque.number"
-                                                                           required>
-                                                                    
+                                                                        placeholder="Enter cheque number"
+                                                                        wire:model="newCheque.number"
+                                                                        required>
+
                                                                 </div>
 
                                                                 <div class="col-md-6">
@@ -371,9 +371,9 @@
                                                                         <option value="{{ $bank }}">{{ $bank }}</option>
                                                                         @endforeach
                                                                     </select>
-                                                                    
+
                                                                     @error('newCheque.bank')
-                                                                        <div class="text-danger small mt-1">{{ $message }}</div>
+                                                                    <div class="text-danger small mt-1">{{ $message }}</div>
                                                                     @enderror
                                                                 </div>
 
@@ -382,10 +382,10 @@
                                                                         <i class="fas fa-calendar-alt me-1"></i>Cheque Date <span class="text-danger">*</span>
                                                                     </label>
                                                                     <input type="date" class="form-control"
-                                                                           wire:model="newCheque.date"
-                                                                           min="{{ date('Y-m-d') }}"
-                                                                           required>
-                                                                    
+                                                                        wire:model="newCheque.date"
+                                                                        min="{{ date('Y-m-d') }}"
+                                                                        required>
+
                                                                 </div>
 
                                                                 <div class="col-md-6">
@@ -395,13 +395,13 @@
                                                                     <div class="input-group">
                                                                         <span class="input-group-text">Rs.</span>
                                                                         <input type="number" class="form-control"
-                                                                               placeholder="0.00"
-                                                                               wire:model="newCheque.amount"
-                                                                               min="0"
-                                                                               step="0.01"
-                                                                               required>
+                                                                            placeholder="0.00"
+                                                                            wire:model="newCheque.amount"
+                                                                            min="0"
+                                                                            step="0.01"
+                                                                            required>
                                                                     </div>
-                                                                    
+
                                                                 </div>
                                                             </div>
 
@@ -487,8 +487,8 @@
                                                                             </td>
                                                                             <td>
                                                                                 <button class="btn btn-outline-danger btn-sm"
-                                                                                        wire:click.prevent="removeCheque({{ $index }})"
-                                                                                        title="Remove Cheque">
+                                                                                    wire:click.prevent="removeCheque({{ $index }})"
+                                                                                    title="Remove Cheque">
                                                                                     <i class="bi bi-trash"></i>
                                                                                 </button>
                                                                             </td>
@@ -822,14 +822,13 @@
                                     <h5 class="mb-1 fw-medium" style="color: #233D7F;">Importers & Retailers of Genuine Spares for <br> MARUTI-LEYLAND - MAHINDRA-TATA-ALTO</h5>
                                     <p class="mb-0 text-muted small" style="color: #6B7280;">NO. 397/, DUNU ELA, THIHARIYA, KALAGEDIHENA</p>
                                     <p class="mb-0 text-muted small" style="color: #6B7280;">Phone: 077 6718838</p>
-                                    <h4 class="mt-3 border-bottom border-2 pb-2 fw-bold"
-                                        style="color: #233D7F; border-color: #233D7F;">SALES RECEIPT</h4>
+                                    <hr style=" border: 2px solid #233D7F;">
                                 </div>
 
-                                <div class="row mb-4">
+
+                                <div class="row mb-2">
                                     <div class="col-md-6">
-                                        <h6 class="text-muted mb-2 fw-medium" style="color: #6B7280;">INVOICE DETAILS
-                                        </h6>
+                                        
                                         <p class="mb-1" style="color: #233D7F;"><strong>Invoice Number:</strong> {{
                                             $receipt->invoice_number }}</p>
                                         <p class="mb-1" style="color: #233D7F;"><strong>Date:</strong> {{
@@ -850,20 +849,17 @@
                                         </p>
                                     </div>
                                     <div class="col-md-6">
-                                        <h6 class="text-muted mb-2 fw-medium" style="color: #6B7280;">CUSTOMER DETAILS
-                                        </h6>
+                                        
                                         @if ($receipt->customer)
-                                        <p class="mb-1" style="color: #233D7F;"><strong>Name:</strong> {{
+                                        <p class="mb-1" style="color: #233D7F;"><strong>Customer Name:</strong> {{
                                             $receipt->customer->name }}</p>
                                         <p class="mb-1" style="color: #233D7F;"><strong>Address:</strong> {{
-                                            $receipt->customer->address }}</p>
+                                            $receipt->customer->address }} : {{ $receipt->customer->phone }}</p>
                                         @else
                                         <p class="text-muted" style="color: #6B7280;">Walk-in Customer</p>
                                         @endif
                                     </div>
                                 </div>
-
-                                <h6 class="text-muted mb-2 fw-medium" style="color: #6B7280;">PURCHASED ITEMS</h6>
                                 <div class="table-responsive mb-4">
                                     <table class="table table-bordered table-sm border-1"
                                         style="border-color: #233D7F;">
@@ -874,24 +870,21 @@
                                                 <th scope="col" class="text-center py-2">Code</th>
                                                 <th scope="col" class="text-center py-2">Price</th>
                                                 <th scope="col" class="text-center py-2">Qty</th>
-                                                <th scope="col" class="text-center py-2">Discount</th>
                                                 <th scope="col" class="text-center py-2">Total</th>
                                             </tr>
                                         </thead>
                                         <tbody style="color: #233D7F;">
                                             @foreach ($receipt->items as $index => $item)
                                             <tr class="transition-all hover:bg-gray-50">
-                                                <td class="text-center py-2">{{ $index + 1 }}</td>
-                                                <td class="text-center py-2">{{ $item->product->product_name ?? 'N/A' }}
+                                                <td class="text-center py-1">{{ $index + 1 }}</td>
+                                                <td class="text-center py-1">{{ $item->product->product_name ?? 'N/A' }}
                                                 </td>
-                                                <td class="text-center py-2">{{ $item->product->product_code ?? 'N/A' }}
+                                                <td class="text-center py-1">{{ $item->product->product_code ?? 'N/A' }}
                                                 </td>
-                                                <td class="text-center py-2">Rs.{{ number_format($item->price, 2) }}
+                                                <td class="text-center py-1">Rs.{{ number_format($item->price, 2) }}
                                                 </td>
-                                                <td class="text-center py-2">{{ $item->quantity }}</td>
-                                                <td class="text-center py-2">Rs.{{ number_format($item->discount *
-                                                    $item->quantity, 2) }}</td>
-                                                <td class="text-center py-2">Rs.{{ number_format(($item->price *
+                                                <td class="text-center py-1">{{ $item->quantity }}</td>
+                                                <td class="text-center py-1">Rs.{{ number_format(($item->price *
                                                     $item->quantity) - ($item->discount * $item->quantity), 2) }}</td>
                                             </tr>
                                             @endforeach
@@ -900,71 +893,12 @@
                                 </div>
 
                                 <div class="row">
-                                    <div class="col-md-6">
-                                        <h6 class="text-muted mb-2 fw-medium" style="color: #6B7280;">PAYMENT
-                                            INFORMATION</h6>
-                                        @if ($receipt->payments->count() > 0)
-                                        @foreach ($receipt->payments as $payment)
-                                        <div class="mb-2 p-2 border-start border-3 rounded-2"
-                                            style="border-color: {{ $payment->is_completed ? '#0F5132' : '#664D03' }}; background-color: #F8F9FA;">
-                                            <p class="mb-1" style="color: #233D7F;">
-                                                <strong>{{ $payment->is_completed ? 'Payment' : 'Scheduled Payment'
-                                                    }}:</strong>
-                                                Rs.{{ number_format($payment->amount, 2) }}
-                                            </p>
-                                            <p class="mb-1" style="color: #233D7F;">
-                                                <strong>Method:</strong> {{ ucfirst(str_replace('_', ' ',
-                                                $payment->payment_method)) }}
-                                            </p>
-                                            @if ($payment->payment_reference)
-                                            <p class="mb-1" style="color: #233D7F;">
-                                                <strong>Reference:</strong> {{ $payment->payment_reference }}
-                                            </p>
-                                            @endif
-                                            @if ($payment->payment_date)
-                                            <p class="mb-0" style="color: #233D7F;">
-                                                <strong>Date:</strong> {{ \Carbon\Carbon::parse($payment->payment_date)->format('d/m/Y') }}
-                                            </p>
-                                            @endif
-                                            @if ($payment->due_date)
-                                            <p class="mb-0" style="color: #233D7F;">
-                                                <strong>Due Date:</strong> {{ \Carbon\Carbon::parse($payment->due_date)->format('d/m/Y') }}
-                                            </p>
-                                            @endif
-                                        </div>
-                                        @endforeach
-                                        @else
-                                        <p class="text-muted" style="color: #6B7280;">No payment information available
-                                        </p>
-                                        @endif
-
-                                        @if ($receipt->notes)
-                                        <h6 class="text-muted mt-3 mb-2 fw-medium" style="color: #6B7280;">NOTES</h6>
-                                        <p class="font-italic" style="color: #6B7280;">{{ $receipt->notes }}</p>
-                                        @endif
-                                    </div>
-                                    <div class="col-md-6">
-                                        <div class="card border-1 rounded-3 shadow-sm" style="border-color: #233D7F;">
-                                            <div class="card-body p-3">
-                                                <h6 class="card-title fw-bold tracking-tight" style="color: #233D7F;">
-                                                    ORDER SUMMARY</h6>
-                                                <div class="d-flex justify-content-between mb-2"
-                                                    style="color: #233D7F;">
-                                                    <span>Subtotal:</span>
-                                                    <span>Rs.{{ number_format($receipt->subtotal, 2) }}</span>
-                                                </div>
-                                                <div class="d-flex justify-content-between mb-2"
-                                                    style="color: #233D7F;">
-                                                    <span>Total Discount:</span>
-                                                    <span>Rs.{{ number_format($receipt->discount_amount, 2) }}</span>
-                                                </div>
-                                                <hr style="border-color: #233D7F;">
-                                                <div class="d-flex justify-content-between" style="color: #233D7F;">
-                                                    <span class="fw-bold">Grand Total:</span>
-                                                    <span class="fw-bold">Rs.{{ number_format($receipt->total_amount, 2)
+                                    <div class="col-md-12">
+                                        <hr style="border-color: #233D7F;">
+                                        <div class="d-flex justify-content-between" style="color: #233D7F;">
+                                            <span class="fw-bold">Grand Total:</span>
+                                            <span class="fw-bold">Rs.{{ number_format($receipt->total_amount, 2)
                                                         }}</span>
-                                                </div>
-                                            </div>
                                         </div>
                                     </div>
                                 </div>
@@ -1017,7 +951,7 @@
                     <title>Sales Receipt - Print</title>
                     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
                     <style>
-                        body { font-family: sans-serif; padding: 20px; font-size: 14px; }
+                        body { font-family: sans-serif; padding: 10px; font-size: 12px; }
                         .table-bordered th, .table-bordered td { border: 1px solid #233D7F !important; }
                         @media print { .no-print { display: none; } }
                     </style>

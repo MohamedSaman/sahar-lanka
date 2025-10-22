@@ -239,8 +239,8 @@
                             to <span class="fw-semibold text-gray-800">{{ $payments->lastItem() }}</span> of
                             <span class="fw-semibold text-gray-800">{{ $payments->total() }}</span> results
                         </div>
-                        <div class="pagination-container">
-                            {{ $payments->onEachSide(2)->links() }}
+                        <div>
+                            {{ $payments->links('livewire::bootstrap') }}
                         </div>
                     </div>
                 </div>

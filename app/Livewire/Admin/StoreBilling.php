@@ -566,7 +566,14 @@ class StoreBilling extends Component
                 ]);
             }
 
-            DB::commit();
+             DB::commit();
+
+            // Load the receipt data with all relationships
+            $this->receipt = Sale::with(['customer', 'items.product', 'payments'])
+                ->find($sale->id);
+
+            // Show the receipt modal
+            $this->dispatch('showModal', ['modalId' => 'receiptModal']);
 
             $this->js('swal.fire("Success", "Sale completed successfully!", "success")');
             $this->clearCart();
@@ -576,7 +583,6 @@ class StoreBilling extends Component
             $this->js('swal.fire("Error", "' . $e->getMessage() . '", "error")');
         }
     }
-
 
 
     public function resetPaymentInfo()

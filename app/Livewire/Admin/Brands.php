@@ -12,7 +12,9 @@ use Livewire\WithPagination;
 #[Title('Product Brands')]
 class Brands extends Component
 {
-       use WithPagination;
+    use WithPagination;
+
+    protected $paginationTheme = 'bootstrap';
 
     public $brand_name, $notes, $search = '';
     public $showAddModal = false;
@@ -65,7 +67,7 @@ class Brands extends Component
 
         $this->showAddModal = false;
         $this->reset(['brand_name', 'notes']);
-        session()->flash('message', 'Brand added successfully!');
+        $this->js('swal.fire("Success", "Brand added successfully!", "success")');
     }
 
     public function update()
@@ -80,7 +82,7 @@ class Brands extends Component
 
         $this->showEditModal = false;
         $this->reset(['brand_name', 'notes', 'editingBrandId']);
-        session()->flash('message', 'Brand updated successfully!');
+        $this->js('swal.fire("Success", "Brand updated successfully!", "success")');
     }
 
     public function delete()
@@ -90,7 +92,7 @@ class Brands extends Component
 
         $this->showDeleteModal = false;
         $this->deletingBrandId = null;
-        session()->flash('message', 'Brand deleted successfully!');
+        $this->js('swal.fire("Success", "Brand deleted successfully", "success")');
     }
     public function render()
     {

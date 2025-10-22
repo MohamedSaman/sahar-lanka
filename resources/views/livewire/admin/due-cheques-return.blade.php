@@ -71,6 +71,9 @@
                                 </tbody>
                             </table>
                         </div>
+                        <div class="mt-4">
+                            {{ $chequeDetails->links('livewire::bootstrap') }}
+                        </div>
                     </div>
                 </div>
             </div>

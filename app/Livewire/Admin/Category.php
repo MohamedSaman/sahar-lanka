@@ -14,6 +14,8 @@ class Category extends Component
 {
     use WithPagination;
 
+    protected $paginationTheme = 'bootstrap';
+
     public $name, $description, $search = '';
     public $showAddModal = false;
     public $showEditModal = false;
@@ -65,7 +67,7 @@ class Category extends Component
 
         $this->showAddModal = false;
         $this->reset(['name', 'description']);
-        session()->flash('message', 'Category added successfully!');
+        $this->js('swal.fire("Success", "Category added successfully!", "success")');
     }
 
     public function update()
@@ -80,7 +82,7 @@ class Category extends Component
 
         $this->showEditModal = false;
         $this->reset(['name', 'description', 'editingCategoryId']);
-        session()->flash('message', 'Category updated successfully!');
+        $this->js('swal.fire("Success", Category updated successfully!", "success")');
     }
 
     public function delete()
@@ -90,7 +92,7 @@ class Category extends Component
 
         $this->showDeleteModal = false;
         $this->deletingCategoryId = null;
-        session()->flash('message', 'Category deleted successfully!');
+        $this->js('swal.fire("Success", "Category deleted successfully!", "success")');
     }
 
     public function render()

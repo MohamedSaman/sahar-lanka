@@ -125,7 +125,7 @@
                 </table>
             </div>
             <div class="mt-3">
-                {{ $customerSales->links('livewire.custom-pagination') }}
+                {{ $customerSales->links('livewire::bootstrap') }}
             </div>
             @else
             <div class="text-center py-6">

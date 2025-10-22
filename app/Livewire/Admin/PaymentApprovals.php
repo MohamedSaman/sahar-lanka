@@ -15,6 +15,7 @@ use Illuminate\Support\Facades\DB;
 class PaymentApprovals extends Component
 {
     use WithPagination;
+    protected $paginationTheme = 'bootstrap';
     
     public $search = '';
     public $selectedPayment = null;

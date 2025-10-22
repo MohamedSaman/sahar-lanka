@@ -293,7 +293,7 @@
                         </div>
 
                         <div class="px-4 pt-4">
-                            {{ $payments->links() }}
+                            {{ $payments->links('livewire::bootstrap') }}
                         </div>
                     </div>
                 </div>

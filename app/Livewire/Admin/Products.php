@@ -18,6 +18,7 @@ use Symfony\Component\HttpFoundation\StreamedResponse;
 class Products extends Component
 {
     use WithPagination;
+    protected $paginationTheme = 'bootstrap';
 
     public $product_code, $category_id,$brand_id, $product_name, $supplier_price, $selling_price, $sold, $status;
     public $search = '';
@@ -288,7 +289,7 @@ class Products extends Component
 
         $this->resetFields();
         $this->showEditModal = false;
-        session()->flash('message', 'Product updated successfully!');
+        $this->js('swal.fire("Success", "Product updated successfully", "success")');
     }
 
 
@@ -309,7 +310,7 @@ class Products extends Component
         $this->deletingProductId = null;
         $this->deletingProductName = '';
 
-        session()->flash('message', 'Product deleted successfully!');
+        $this->js('swal.fire("Success", "Product deleted successfully!", "success")');
     }
 
     public function viewProduct($productId)
@@ -412,7 +413,7 @@ class Products extends Component
             ->where('product_code', 'like', '%' . $this->search . '%')
             ->orWhere('product_name', 'like', '%' . $this->search . '%')
             ->orderBy('created_at', 'asc')
-            ->paginate(10);
+            ->paginate(1);
 
         return view('livewire.admin.products', [
             'products' => $products

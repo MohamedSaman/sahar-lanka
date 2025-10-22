@@ -13,6 +13,7 @@ use Illuminate\Support\Facades\Response;
 class StaffDueDetails extends Component
 {
     use WithPagination;
+    protected $paginationTheme = 'bootstrap';
     
     public function render()
     {
