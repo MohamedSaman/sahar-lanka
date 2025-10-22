@@ -413,7 +413,7 @@ class Products extends Component
             ->where('product_code', 'like', '%' . $this->search . '%')
             ->orWhere('product_name', 'like', '%' . $this->search . '%')
             ->orderBy('created_at', 'asc')
-            ->paginate(1);
+            ->paginate(10);
 
         return view('livewire.admin.products', [
             'products' => $products
