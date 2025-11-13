@@ -379,6 +379,12 @@
                                 </a>
                             </li>
                             <li class="nav-item">
+                                <a class="nav-link py-2 {{ request()->routeIs('admin.view-invoice') ? 'active' : '' }}"
+                                    href="{{ route('admin.view-invoice') }}">
+                                    <i class="bi bi-credit-card-2-back"></i> <span>View Invoices</span>
+                                </a>
+                            </li>
+                            <li class="nav-item">
                                 <a class="nav-link py-2 {{ request()->routeIs('admin.due-payments') ? 'active' : '' }}"
                                     href="{{ route('admin.due-payments') }}">
                                     <i class="bi bi-cash-coin"></i> <span>Due Payments</span>

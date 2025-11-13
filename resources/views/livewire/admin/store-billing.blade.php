@@ -828,7 +828,7 @@
 
                                 <div class="row mb-2">
                                     <div class="col-md-6">
-                                        
+
                                         <p class="mb-1" style="color: #233D7F;"><strong>Invoice Number:</strong> {{
                                             $receipt->invoice_number }}</p>
                                         <p class="mb-1" style="color: #233D7F;"><strong>Date:</strong> {{
@@ -849,7 +849,7 @@
                                         </p>
                                     </div>
                                     <div class="col-md-6">
-                                        
+
                                         @if ($receipt->customer)
                                         <p class="mb-1" style="color: #233D7F;"><strong>Customer Name:</strong> {{
                                             $receipt->customer->name }}</p>
@@ -895,10 +895,10 @@
                                 <div class="row">
                                     <div class="col-md-12">
                                         <hr style="border-color: #233D7F;">
-                                        <div class="d-flex justify-content-between" style="color: #233D7F;">
-                                            <span class="fw-bold">Grand Total:</span>
-                                            <span class="fw-bold">Rs.{{ number_format($receipt->total_amount, 2)
-                                                        }}</span>
+                                        <div class="d-flex justify-content-end" style="color: #233D7F;">
+                                            <div style="text-align: right;">
+                                                <span class="fw-bold">Grand Total: Rs.{{ number_format($receipt->total_amount, 2) }}</span>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
@@ -949,11 +949,96 @@
                 <html>
                 <head>
                     <title>Sales Receipt - Print</title>
-                    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
                     <style>
-                        body { font-family: sans-serif; padding: 10px; font-size: 12px; }
-                        .table-bordered th, .table-bordered td { border: 1px solid #233D7F !important; }
-                        @media print { .no-print { display: none; } }
+                        * {
+                            margin: 0;
+                            padding: 0;
+                            box-sizing: border-box;
+                        }
+                        body { 
+                            font-family: 'Courier New', monospace !important; 
+                            padding: 20px;
+                            font-size: 12px;
+                            line-height: 1.4;
+                        }
+                        .receipt-container {
+                            max-width: 800px;
+                            margin: 0 auto;
+                            border: 2px solid #000;
+                            padding: 20px;
+                        }
+                        .text-center { text-align: center; }
+                        .text-right { text-align: right; }
+                        .text-muted { color: #000 !important; }
+                        .fw-bold { font-weight: bold; }
+                        .fw-medium { font-weight: 600; }
+                        .mb-0 { margin-bottom: 0; }
+                        .mb-1 { margin-bottom: 0.25rem; }
+                        .mb-2 { margin-bottom: 0.5rem; }
+                        .mb-4 { margin-bottom: 1.5rem; }
+                        .mt-4 { margin-top: 1.5rem; }
+                        .pt-3 { padding-top: 1rem; }
+                        .d-flex { display: flex; }
+                        .justify-content-between { justify-content: space-between; }
+                        .justify-content-end { justify-content: flex-end; }
+                        .small { font-size: 11px; }
+                        hr { 
+                            border: none;
+                            border-top: 2px solid #000;
+                            margin: 10px 0;
+                        }
+                        .row {
+                            display: flex;
+                            flex-wrap: wrap;
+                            margin: 0 -10px;
+                        }
+                        .col-md-6 {
+                            flex: 0 0 50%;
+                            max-width: 50%;
+                            padding: 0 10px;
+                        }
+                        .col-md-12 {
+                            flex: 0 0 100%;
+                            max-width: 100%;
+                            padding: 0 10px;
+                        }
+                        table {
+                            width: 100%;
+                            border-collapse: collapse;
+                            margin: 10px 0;
+                        }
+                        table th, table td {
+                            border: 1px solid #000;
+                            padding: 8px;
+                            text-align: left;
+                            font-family: 'Courier New', monospace !important;
+                        }
+                        table th {
+                            background-color: #f0f0f0;
+                            font-weight: bold;
+                        }
+                        .border-top {
+                            border-top: 1px solid #000 !important;
+                        }
+                        .card {
+                            border: 1px solid #000;
+                            padding: 10px;
+                            margin-bottom: 10px;
+                        }
+                        h3, h4, h5, h6, p, strong, span, td, th, div {
+                            font-family: 'Courier New', monospace !important;
+                            color: #000 !important;
+                        }
+                        .badge {
+                            background-color: transparent !important;
+                            border: 1px solid #000 !important;
+                            color: #000 !important;
+                        }
+                        @media print { 
+                            .no-print { display: none; }
+                            body { padding: 10px; }
+                            * { color: #000 !important; }
+                        }
                     </style>
                 </head>
                 <body>
