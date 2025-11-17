@@ -827,6 +827,18 @@
 
 
                                 <div class="row mb-2">
+
+                                    <div class="col-md-6">
+
+                                        @if ($receipt->customer)
+                                        <p class="mb-1" style="color: #233D7F;"><strong>Customer Name:</strong> {{
+                                            $receipt->customer->name }}</p>
+                                        <p class="mb-1" style="color: #233D7F;"><strong>Address:</strong> {{
+                                            $receipt->customer->address }} : {{ $receipt->customer->phone }}</p>
+                                        @else
+                                        <p class="text-muted" style="color: #6B7280;">Walk-in Customer</p>
+                                        @endif
+                                    </div>
                                     <div class="col-md-6">
 
                                         <p class="mb-1" style="color: #233D7F;"><strong>Invoice Number:</strong> {{
@@ -848,17 +860,6 @@
                                             @endif
                                         </p>
                                     </div>
-                                    <div class="col-md-6">
-
-                                        @if ($receipt->customer)
-                                        <p class="mb-1" style="color: #233D7F;"><strong>Customer Name:</strong> {{
-                                            $receipt->customer->name }}</p>
-                                        <p class="mb-1" style="color: #233D7F;"><strong>Address:</strong> {{
-                                            $receipt->customer->address }} : {{ $receipt->customer->phone }}</p>
-                                        @else
-                                        <p class="text-muted" style="color: #6B7280;">Walk-in Customer</p>
-                                        @endif
-                                    </div>
                                 </div>
                                 <div class="table-responsive mb-4">
                                     <table class="table table-bordered table-sm border-1"
@@ -877,14 +878,14 @@
                                             @foreach ($receipt->items as $index => $item)
                                             <tr class="transition-all hover:bg-gray-50">
                                                 <td class="text-center py-1">{{ $index + 1 }}</td>
-                                                <td class="text-center py-1">{{ $item->product->product_name ?? 'N/A' }}
+                                                <td class="text-left py-1">{{ $item->product->product_name ?? 'N/A' }}
                                                 </td>
                                                 <td class="text-center py-1">{{ $item->product->product_code ?? 'N/A' }}
                                                 </td>
-                                                <td class="text-center py-1">Rs.{{ number_format($item->price, 2) }}
+                                                <td class="text-right py-1">Rs.{{ number_format($item->price, 2) }}
                                                 </td>
                                                 <td class="text-center py-1">{{ $item->quantity }}</td>
-                                                <td class="text-center py-1">Rs.{{ number_format(($item->price *
+                                                <td class="text-right py-1">Rs.{{ number_format(($item->price *
                                                     $item->quantity) - ($item->discount * $item->quantity), 2) }}</td>
                                             </tr>
                                             @endforeach
@@ -941,97 +942,213 @@
         });
 
         function printSalesReceipt() {
-            const receiptContent = document.querySelector('#receiptContent')?.innerHTML || '';
+            const receiptContent = document.querySelector('#receiptContent');
+            if (!receiptContent) {
+                alert('Receipt content not found.');
+                return;
+            }
+
+            // Extract data from receipt modal
+            const rowDiv = receiptContent.querySelector('.row.mb-2');
+            const leftCol = rowDiv?.querySelector('.col-md-6:first-child');
+            const rightCol = rowDiv?.querySelector('.col-md-6:last-child');
+
+            // Extract customer information (from left column)
+            let customerName = 'Walk-in Customer';
+            let customerAddress = '';
+
+            if (leftCol) {
+                const customerNameP = leftCol.querySelector('p:first-child');
+                if (customerNameP && customerNameP.textContent.includes('Customer Name:')) {
+                    customerName = customerNameP.textContent.replace('Customer Name:', '').trim();
+                }
+
+                const customerAddressP = leftCol.querySelector('p:nth-child(2)');
+                if (customerAddressP && customerAddressP.textContent.includes('Address:')) {
+                    customerAddress = customerAddressP.textContent.replace('Address:', '').trim();
+                }
+            }
+
+            // Extract invoice information (from right column)
+            let invoiceNumber = '';
+            let date = '';
+            let paymentStatus = 'N/A';
+
+            if (rightCol) {
+                const invoiceP = rightCol.querySelector('p:first-child');
+                if (invoiceP && invoiceP.textContent.includes('Invoice Number:')) {
+                    invoiceNumber = invoiceP.textContent.replace('Invoice Number:', '').trim();
+                }
+
+                const dateP = rightCol.querySelector('p:nth-child(2)');
+                if (dateP && dateP.textContent.includes('Date:')) {
+                    date = dateP.textContent.replace('Date:', '').trim();
+                }
+
+                const statusP = rightCol.querySelector('p:nth-child(3)');
+                if (statusP) {
+                    const statusBadge = statusP.querySelector('.badge');
+                    if (statusBadge) {
+                        paymentStatus = statusBadge.textContent.trim();
+                    }
+                }
+            }
+
+            // Get items table and total
+            const itemsTable = receiptContent.querySelector('.table-bordered');
+            const totalText = receiptContent.querySelector('.justify-content-end .fw-bold')?.textContent || '';
+            const grandTotal = totalText.replace('Grand Total:', '').trim();
+
             const printWindow = window.open('', '_blank', 'height=600,width=800');
 
             printWindow.document.write(`
                 <!DOCTYPE html>
                 <html>
                 <head>
-                    <title>Sales Receipt - Print</title>
+                    <title>Sales Receipt - ${invoiceNumber}</title>
                     <style>
                         * {
                             margin: 0;
                             padding: 0;
                             box-sizing: border-box;
                         }
+                        @page { size: A4; margin: 1cm; }
                         body { 
                             font-family: 'Courier New', monospace !important; 
                             padding: 20px;
                             font-size: 12px;
                             line-height: 1.4;
+                            color: #000;
+                            font-weight: bold;
                         }
                         .receipt-container {
                             max-width: 800px;
                             margin: 0 auto;
-                            border: 2px solid #000;
-                            padding: 20px;
+                            padding: 0;
+                        }
+                        .company-header {
+                            text-align: center;
+                            margin-bottom: 5px;
+                            border-bottom: 2px solid #000;
+                            padding-bottom: 15px;
+                            font-weight: bold;
+                        }
+                        .company-name {
+                            font-size: 24px;
+                            font-weight: bold;
+                            color: #000;
+                            margin-bottom: 5px;
+                        }
+                        .company-address {
+                            font-size: 16px;
+                            color: #000;
+                            margin: 3px 0;
+                        }
+                        .receipt-title {
+                            font-size: 14px;
+                            font-weight: bold;
+                            color: #000;
+                            text-align: right;
+                            margin: 5px 0;
+                            padding-bottom: 10px;
+                        }
+                        .info-row {
+                            display: flex;
+                            justify-content: space-between;
+                            margin-bottom: 5px;
+                        }
+                        .info-section {
+                            width: 48%;
+                            padding: 10px;
+                        }
+                        .info-section h6 {
+                            color: #000;
+                            font-weight: bold;
+                            padding-bottom: 5px;
+                            margin-bottom: 5px;
+                            font-size: 13px;
+                        }
+                        .info-section table {
+                            width: 100%;
+                            font-size: 12px;
+                            border: none;
+                        }
+                        .info-section td {
+                            padding: 3px 0;
+                            color: #000 !important;
+                            border: none;
+                        }
+                        .info-label {
+                            font-weight: bold;
+                            display: inline-block;
+                            width: 140px;
+                        }
+                        .info-value {
+                            display: inline-block;
                         }
                         .text-center { text-align: center; }
                         .text-right { text-align: right; }
-                        .text-muted { color: #000 !important; }
                         .fw-bold { font-weight: bold; }
-                        .fw-medium { font-weight: 600; }
-                        .mb-0 { margin-bottom: 0; }
                         .mb-1 { margin-bottom: 0.25rem; }
                         .mb-2 { margin-bottom: 0.5rem; }
-                        .mb-4 { margin-bottom: 1.5rem; }
-                        .mt-4 { margin-top: 1.5rem; }
-                        .pt-3 { padding-top: 1rem; }
-                        .d-flex { display: flex; }
-                        .justify-content-between { justify-content: space-between; }
-                        .justify-content-end { justify-content: flex-end; }
-                        .small { font-size: 11px; }
-                        hr { 
-                            border: none;
-                            border-top: 2px solid #000;
-                            margin: 10px 0;
-                        }
-                        .row {
-                            display: flex;
-                            flex-wrap: wrap;
-                            margin: 0 -10px;
-                        }
-                        .col-md-6 {
-                            flex: 0 0 50%;
-                            max-width: 50%;
-                            padding: 0 10px;
-                        }
-                        .col-md-12 {
-                            flex: 0 0 100%;
-                            max-width: 100%;
-                            padding: 0 10px;
-                        }
                         table {
                             width: 100%;
                             border-collapse: collapse;
-                            margin: 10px 0;
+                            margin: 20px 0;
                         }
                         table th, table td {
                             border: 1px solid #000;
                             padding: 8px;
                             text-align: left;
                             font-family: 'Courier New', monospace !important;
+                            color: #000 !important;
                         }
                         table th {
+                            
                             background-color: #f0f0f0;
                             font-weight: bold;
                         }
-                        .border-top {
-                            border-top: 1px solid #000 !important;
+                        .summary-section {
+                            display: flex;
+                            justify-content: flex-end;
+                            margin-top: 20px;
                         }
-                        .card {
-                            border: 1px solid #000;
-                            padding: 10px;
-                            margin-bottom: 10px;
+                        .summary-box {
+                            width: 400px;
+                            border: 2px solid #000;
+                            padding: 15px;
+                        }
+                        .summary-box h6 {
+                            color: #000;
+                            font-weight: bold;
+                            margin-bottom: 15px;
+                            font-size: 13px;
+                        }
+                        .summary-row {
+                            display: flex;
+                            justify-content: space-between;
+                            padding: 5px 0;
+                            border-bottom: 1px solid #000;
+                            color: #000;
+                        }
+                        .summary-row.total {
+                            font-size: 16px;
+                            font-weight: bold;
+                            border-top: 2px solid #000;
+                            margin-top: 10px;
+                            padding-top: 10px;
+                            border-bottom: none;
+                        }
+                        .footer {
+                            text-align: center;
+                            margin-top: 40px;
+                            padding-top: 20px;
+                            border-top: 1px solid #000;
+                            font-size: 14px;
+                            color: #000;
                         }
                         h3, h4, h5, h6, p, strong, span, td, th, div {
                             font-family: 'Courier New', monospace !important;
-                            color: #000 !important;
-                        }
-                        .badge {
-                            background-color: transparent !important;
-                            border: 1px solid #000 !important;
                             color: #000 !important;
                         }
                         @media print { 
@@ -1042,7 +1159,49 @@
                     </style>
                 </head>
                 <body>
-                    ${receiptContent}
+                    <div class="receipt-container">
+                        <div class="company-header">
+                            <div class="company-name">SAHAR LANKA</div>
+                            <div class="company-address">Importers & Retailers of Genuine Spares for</div>
+                            <div class="company-address">MARUTI-LEYLAND - MAHINDRA-TATA-ALTO</div>
+                            <div class="company-address">Phone: 077 6718838 | Address: No. 397/3, Dunu Ela, Thihariya, Kalagedihena.</div>
+                        </div>
+                        
+                        <div class="receipt-title">SALES INVOICE</div>
+                        
+                        <div class="info-row">
+                            <div class="info-section">
+                                
+                                <table>
+                                    <tr><td>Name:</td><td>${customerName}</td></tr>
+                                    <tr><td>Phone/Address:</td><td>${customerAddress || 'N/A'}</td></tr>
+                                </table>
+                            </div>
+                            <div class="info-section">
+                                <table>
+                                    <tr><td>Invoice Number:</td><td>${invoiceNumber}</td></tr>
+                                    <tr><td>Date:</td><td>${date}</td></tr>
+                                    <tr><td>Payment Status:</td><td>${paymentStatus}</td></tr>
+                                </table>
+                            </div>
+                        </div>
+                        
+                        ${itemsTable ? itemsTable.outerHTML : ''}
+                        
+                        <div class="summary-section">
+                            <div class="summary-box">
+                                <h6>Payment Summary</h6>
+                                <div class="summary-row total">
+                                    <span>Grand Total:</span>
+                                    <span>${grandTotal}</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="footer">
+                            <p><strong>Thank you for your purchase!</strong></p>
+                        </div>
+                    </div>
                 </body>
                 </html>
             `);
@@ -1050,7 +1209,6 @@
             printWindow.document.close();
             printWindow.focus();
 
-            // Use a timeout to ensure content is loaded before printing
             setTimeout(() => {
                 printWindow.print();
                 printWindow.close();

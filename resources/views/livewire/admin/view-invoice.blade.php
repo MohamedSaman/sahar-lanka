@@ -270,15 +270,15 @@
                             <table class="table table-sm table-borderless">
                                 <tr>
                                     <td class="text-muted">Invoice Number:</td>
-                                    <td class="fw-semibold">#{{ $saleDetails['sale']->invoice_number }}</td>
+                                    <td class="fw-semibold">{{ $saleDetails['sale']->invoice_number }}</td>
                                 </tr>
                                 <tr>
                                     <td class="text-muted">Date:</td>
                                     <td>{{ $saleDetails['sale']->created_at->format('d M Y, h:i A') }}</td>
                                 </tr>
                                 <tr>
-                                    <td class="text-muted">Cashier:</td>
-                                    <td>{{ $saleDetails['sale']->user->name ?? 'N/A' }}</td>
+                                    <td class="text-muted">Payment Status:</td>
+                                    <td>{{ $saleDetails['sale']->payment_status ?? 'N/A' }}</td>
                                 </tr>
                             </table>
                         </div>
@@ -290,29 +290,23 @@
                         <table class="table table-bordered">
                             <thead style="background-color: #eff6ff;">
                                 <tr>
-                                    <th>Product</th>
-                                    <th class="text-center">Size</th>
+                                    <th>No</th>
+                                    <th class="text-center">Item </th>
+                                    <th class="text-center">Code</th>
+                                    <th class="text-center">Price</th>
                                     <th class="text-center">Quantity</th>
-                                    <th class="text-end">Price</th>
-                                    <th class="text-end">Discount</th>
-                                    <th class="text-end">Total</th>
+                                    <th class="text-center">Total</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 @foreach($saleDetails['items'] as $item)
                                 <tr>
+                                    <td>{{ $loop->iteration }}</td>
                                     <td>{{ $item->product->product_name ?? 'N/A' }}</td>
-                                    <td class="text-center">
-                                        @if($item->product && $item->product->customer_field)
-                                        {{ $item->product->customer_field['Size'] ?? '-' }}
-                                        @else
-                                        -
-                                        @endif
-                                    </td>
+                                    <td class="text-center">{{ $item->product->product_code ?? 'N/A' }}</td>
+                                    <td class="text-right">Rs.{{ number_format($item->price, 2) }}</td>
                                     <td class="text-center">{{ $item->quantity }}</td>
-                                    <td class="text-end">Rs.{{ number_format($item->price, 2) }}</td>
-                                    <td class="text-end">Rs.{{ number_format($item->discount, 2) }}</td>
-                                    <td class="text-end fw-bold">Rs.{{ number_format(($item->quantity * $item->price) - $item->discount, 2) }}</td>
+                                    <td class="text-right fw-bold">Rs.{{ number_format(($item->quantity * $item->price) - $item->discount, 2) }}</td>
                                 </tr>
                                 @endforeach
                             </tbody>
@@ -573,8 +567,18 @@
         const invoiceNumber = modal.querySelector('.modal-title').textContent.split('#')[1]?.trim() || '';
         const modalBody = modal.querySelector('.modal-body');
 
-        const customerSection = modalBody.querySelectorAll('.col-md-5')[0];
-        const invoiceSection = modalBody.querySelectorAll('.col-md-5')[1];
+        // Extract customer information
+        const customerSection = modalBody.querySelector('.col-md-5:first-child');
+        const customerTable = customerSection?.querySelector('table');
+        const customerName = customerTable?.querySelectorAll('tr')[0]?.querySelectorAll('td')[1]?.textContent.trim() || 'N/A';
+        const customerPhone = customerTable?.querySelectorAll('tr')[1]?.querySelectorAll('td')[1]?.textContent.trim() || 'N/A';
+
+        // Extract invoice information
+        const invoiceSection = modalBody.querySelector('.col-md-5:last-child');
+        const invoiceTable = invoiceSection?.querySelector('table');
+        const invoiceNum = invoiceTable?.querySelectorAll('tr')[0]?.querySelectorAll('td')[1]?.textContent.trim() || invoiceNumber;
+        const invoiceDate = invoiceTable?.querySelectorAll('tr')[1]?.querySelectorAll('td')[1]?.textContent.trim() || 'N/A';
+        const paymentStatus = invoiceTable?.querySelectorAll('tr')[2]?.querySelectorAll('td')[1]?.textContent.trim() || 'N/A';
 
         const itemsTable = modalBody.querySelector('.table-bordered');
 
@@ -592,24 +596,19 @@
             }
         }
 
+        // Extract payment summary
         const summaryCard = modalBody.querySelector('.col-md-6.offset-md-6 .card-body');
-        let summaryHTML = '';
-        if (summaryCard) {
-            const summaryTable = summaryCard.querySelector('table');
-            if (summaryTable) {
-                const rows = summaryTable.querySelectorAll('tr');
-                rows.forEach(row => {
-                    const label = row.querySelector('td:first-child')?.textContent.trim() || '';
-                    const value = row.querySelector('td:last-child')?.textContent.trim() || '';
-                    const isTotal = row.classList.contains('border-top');
-                    summaryHTML += `
-                        <div class="summary-row ${isTotal ? 'total' : ''}">
-                            <span>${label}</span>
-                            <span>${value}</span>
-                        </div>
-                    `;
-                });
-            }
+        const summaryTable = summaryCard?.querySelector('table');
+        const rows = summaryTable?.querySelectorAll('tr');
+
+        let subtotal = 'Rs.0.00';
+        let discount = 'Rs.0.00';
+        let grandTotal = 'Rs.0.00';
+
+        if (rows) {
+            subtotal = rows[0]?.querySelectorAll('td')[1]?.textContent.trim() || 'Rs.0.00';
+            discount = rows[1]?.querySelectorAll('td')[1]?.textContent.trim() || 'Rs.0.00';
+            grandTotal = rows[2]?.querySelectorAll('td')[1]?.textContent.trim() || 'Rs.0.00';
         }
 
         let printFrame = document.getElementById('printFrame');
@@ -627,164 +626,159 @@
             <!DOCTYPE html>
             <html>
             <head>
-                <title>Invoice ${invoiceNumber}</title>
-                <meta charset="UTF-8">
-                <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-                <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
-                <style>
-                    * {
-                        margin: 0;
-                        padding: 0;
-                        box-sizing: border-box;
-                    }
-                    @page { size: A4; margin: 1cm; }
-                    body {
-                        font-family: 'Courier New', monospace !important;
-                        font-size: 12px;
-                        line-height: 1.4;
-                        padding: 20px;
-                    }
-                    .company-header {
-                        text-align: center;
-                        margin-bottom: 20px;
-                        border-bottom: 2px solid #000;
-                        padding-bottom: 15px;
-                    }
-                    .company-name {
-                        font-size: 20px;
-                        font-weight: bold;
-                        color: #000;
-                        margin: 0;
-                    }
-                    .company-address {
-                        font-size: 11px;
-                        color: #000;
-                        margin: 5px 0;
-                    }
-                    .receipt-title {
-                        font-size: 18px;
-                        font-weight: bold;
-                        color: #000;
-                        text-align: center;
-                        margin: 15px 0;
-                        border-bottom: 2px solid #000;
-                        padding-bottom: 10px;
-                    }
-                    .info-row {
-                        display: flex;
-                        justify-content: space-between;
-                        margin-bottom: 20px;
-                    }
-                    .info-section {
-                        width: 48%;
-                        border: 1px solid #000;
-                        padding: 10px;
-                    }
-                    .info-section h6 {
-                        color: #000;
-                        font-weight: bold;
-                        border-bottom: 1px solid #000;
-                        padding-bottom: 5px;
-                        margin-bottom: 10px;
-                        font-size: 13px;
-                    }
-                    .info-section table {
-                        width: 100%;
-                        font-size: 12px;
-                    }
-                    .info-section td {
-                        padding: 3px 0;
-                        color: #000;
-                    }
-                    .items-table {
-                        width: 100%;
-                        border-collapse: collapse;
-                        margin: 20px 0;
-                    }
-                    .items-table th {
-                        background-color: #f0f0f0;
-                        color: #000;
-                        border: 1px solid #000;
-                        padding: 8px;
-                        text-align: left;
-                        font-size: 12px;
-                        font-weight: bold;
-                    }
-                    .items-table td {
-                        padding: 6px 8px;
-                        border: 1px solid #000;
-                        font-size: 12px;
-                        color: #000;
-                    }
-                    .summary-section {
-                        display: flex;
-                        justify-content: flex-end;
-                        margin-top: 20px;
-                    }
-                    .summary-box {
-                        width: 400px;
-                        border: 2px solid #000;
-                        padding: 15px;
-                    }
-                    .summary-row {
-                        display: flex;
-                        justify-content: space-between;
-                        padding: 5px 0;
-                        border-bottom: 1px solid #000;
-                        color: #000;
-                    }
-                    .summary-row.total {
-                        font-size: 16px;
-                        font-weight: bold;
-                        color: #000;
-                        border-top: 2px solid #000;
-                        margin-top: 10px;
-                        padding-top: 10px;
-                        border-bottom: none;
-                    }
-                    .footer {
-                        text-align: center;
-                        margin-top: 40px;
-                        padding-top: 20px;
-                        border-top: 1px solid #000;
-                        font-size: 11px;
-                        color: #000;
-                        clear: both;
-                    }
-                    h3, h4, h5, h6, p, strong, span, td, th, div {
-                        margin: 0;
-                        padding: 0;
-                        font-family: 'Courier New', monospace !important;
-                        color: #000 !important;
-                    }
-                    .text-muted { color: #000 !important; }
-                    .table { border-collapse: collapse; }
-                    .table th, .table td {
-                        border: 1px solid #000;
-                        padding: 8px;
-                        color: #000 !important;
-                    }
-                    .table-light, .table thead th {
-                        background-color: #f0f0f0;
-                        font-weight: bold;
-                    }
-                    .badge {
-                        display: inline-block;
-                        padding: 3px 8px;
-                        border: 1px solid #000 !important;
-                        background-color: transparent !important;
-                        font-size: 10px;
-                        font-weight: bold;
-                        color: #000 !important;
-                    }
-                    i { display: none !important; }
-                    @media print {
-                        body { padding: 10px; }
-                        * { color: #000 !important; }
-                        .no-print { display: none; }
-                    }
-                </style>
-            </head>
+                    <title>Sales Receipt - ${invoiceNumber}</title>
+                    <style>
+                        * {
+                            margin: 0;
+                            padding: 0;
+                            box-sizing: border-box;
+                        }
+                        @page { size: A4; margin: 1cm; }
+                        body { 
+                            font-family: 'Courier New', monospace !important; 
+                            padding: 20px;
+                            font-size: 12px;
+                            line-height: 1.4;
+                            color: #000;
+                            font-weight: bold;
+                        }
+                        .receipt-container {
+                            max-width: 800px;
+                            margin: 0 auto;
+                            padding: 0;
+                        }
+                        .company-header {
+                            text-align: center;
+                            margin-bottom: 5px;
+                            border-bottom: 2px solid #000;
+                            padding-bottom: 15px;
+                            font-weight: bold;
+                        }
+                        .company-name {
+                            font-size: 24px;
+                            font-weight: bold;
+                            color: #000;
+                            margin-bottom: 5px;
+                        }
+                        .company-address {
+                            font-size: 16px;
+                            color: #000;
+                            margin: 3px 0;
+                        }
+                        .receipt-title {
+                            font-size: 14px;
+                            font-weight: bold;
+                            color: #000;
+                            text-align: right;
+                            margin: 5px 0;
+                            padding-bottom: 10px;
+                        }
+                        .info-row {
+                            display: flex;
+                            justify-content: space-between;
+                            margin-bottom: 5px;
+                        }
+                        .info-section {
+                            width: 48%;
+                            padding: 10px;
+                        }
+                        .info-section h6 {
+                            color: #000;
+                            font-weight: bold;
+                            padding-bottom: 5px;
+                            margin-bottom: 5px;
+                            font-size: 13px;
+                        }
+                        .info-section table {
+                            width: 100%;
+                            font-size: 12px;
+                            border: none;
+                        }
+                        .info-section td {
+                            padding: 3px 0;
+                            color: #000 !important;
+                            border: none;
+                        }
+                        .info-label {
+                            font-weight: bold;
+                            display: inline-block;
+                            width: 140px;
+                        }
+                        .info-value {
+                            display: inline-block;
+                        }
+                        .text-center { text-align: center; }
+                        .text-right { text-align: right; }
+                        .fw-bold { font-weight: bold; }
+                        .mb-1 { margin-bottom: 0.25rem; }
+                        .mb-2 { margin-bottom: 0.5rem; }
+                        table {
+                            width: 100%;
+                            border-collapse: collapse;
+                            margin: 20px 0;
+                        }
+                        table th, table td {
+                            border: 1px solid #000;
+                            padding: 8px;
+                            text-align: left;
+                            font-family: 'Courier New', monospace !important;
+                            color: #000 !important;
+                        }
+                        table th {
+                            
+                            background-color: #f0f0f0;
+                            font-weight: bold;
+                        }
+                        .summary-section {
+                            display: flex;
+                            justify-content: flex-end;
+                            margin-top: 20px;
+                        }
+                        .summary-box {
+                            width: 400px;
+                            border: 2px solid #000;
+                            padding: 15px;
+                        }
+                        .summary-box h6 {
+                            color: #000;
+                            font-weight: bold;
+                            margin-bottom: 15px;
+                            font-size: 13px;
+                        }
+                        .summary-row {
+                            display: flex;
+                            justify-content: space-between;
+                            padding: 5px 0;
+                            border-bottom: 1px solid #000;
+                            color: #000;
+                        }
+                        .summary-row.total {
+                            font-size: 16px;
+                            font-weight: bold;
+                            border-top: 2px solid #000;
+                            margin-top: 10px;
+                            padding-top: 10px;
+                            border-bottom: none;
+                        }
+                        .footer {
+                            text-align: center;
+                            margin-top: 40px;
+                            padding-top: 20px;
+                            border-top: 1px solid #000;
+                            font-size: 14px;
+                            color: #000;
+                        }
+                        h3, h4, h5, h6, p, strong, span, td, th, div {
+                            font-family: 'Courier New', monospace !important;
+                            color: #000 !important;
+                        }
+                        @media print { 
+                            .no-print { display: none; }
+                            body { padding: 10px; }
+                            * { color: #000 !important; }
+                        }
+                    </style>
+                </head>
             <body>
                 <div class="company-header">
                     <div class="company-name">SAHAR LANKA</div>
@@ -797,22 +791,32 @@
                 
                 <div class="info-row">
                     <div class="info-section">
-                        ${customerSection ? customerSection.innerHTML : ''}
+                        <h6>Customer Information</h6>
+                        <table>
+                            <tr><td>Name:</td><td>${customerName}</td></tr>
+                            <tr><td>Phone:</td><td>${customerPhone}</td></tr>
+                        </table>
                     </div>
                     <div class="info-section">
-                        ${invoiceSection ? invoiceSection.innerHTML : ''}
+                        <h6>Invoice Information</h6>
+                        <table>
+                            <tr><td>Invoice Number:</td><td>${invoiceNum}</td></tr>
+                            <tr><td>Date:</td><td>${invoiceDate}</td></tr>
+                            <tr><td>Payment Status:</td><td>${paymentStatus}</td></tr>
+                        </table>
                     </div>
                 </div>
-                
-                <h6 style="color: #9d1c20; font-weight: bold; margin-top: 20px; margin-bottom: 10px;">Items Purchased</h6>
-                ${itemsTable ? itemsTable.outerHTML : ''}
+                ${itemsTable ? itemsTable.outerHTML : '<p>No items found</p>'}
                 
                 ${returnHTML}
                 
                 <div class="summary-section">
                     <div class="summary-box">
-                        <h6 style="color: #9d1c20; font-weight: bold; margin-bottom: 15px;">Payment Summary</h6>
-                        ${summaryHTML}
+                        <h6>Payment Summary</h6>
+                        <div class="summary-row total">
+                            <span>Grand Total:</span>
+                            <span>${grandTotal}</span>
+                        </div>
                     </div>
                 </div>
                 
