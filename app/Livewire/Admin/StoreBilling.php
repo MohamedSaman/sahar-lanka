@@ -311,12 +311,12 @@ class StoreBilling extends Component
     public function calculateOverallDiscount()
     {
         $baseAmount = $this->subtotal - $this->totalDiscount;
-        
+
         if ($baseAmount <= 0) {
             $this->calculatedDiscount = 0;
             return;
         }
-        
+
         if ($this->discountType === 'percentage') {
             $percentage = min(100, max(0, floatval($this->discountValue)));
             $this->calculatedDiscount = ($baseAmount * $percentage) / 100;
@@ -344,7 +344,7 @@ class StoreBilling extends Component
 
         // Grand total = subtotal - item discounts - overall discount
         $this->grandTotal = $this->subtotal - $this->totalDiscount - $this->calculatedDiscount;
-        
+
         // Ensure grand total doesn't go negative
         if ($this->grandTotal < 0) {
             $this->grandTotal = 0;
@@ -551,7 +551,7 @@ class StoreBilling extends Component
                 $price = $this->prices[$id] ?? $item['price'];
                 $itemDiscount = $this->discounts[$id] ?? 0;
                 $total = ($price * $quantityToSell) - ($itemDiscount * $quantityToSell);
-                
+
                 SalesItem::create([
                     'sale_id' => $sale->id,
                     'product_id' => $item['id'],
