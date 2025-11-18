@@ -50,22 +50,29 @@
                                                 {{ ucfirst($cheque->status) }}
                                             </span>
                                         </td>
-                                        <td class="text-center d-flex justify-content-center gap-2">
-                                            @if($cheque->status === 'return')
-                                            <button wire:click="openReentryModal({{ $cheque->id }})" class="btn btn-sm btn-primary rounded-pill px-3 transition-all hover:shadow" style="background-color: #00C8FF; border-color: #00C8FF; color: white;" onmouseover="this.style.backgroundColor='#233D7F'; this.style.borderColor='#233D7F';" onmouseout="this.style.backgroundColor='#00C8FF'; this.style.borderColor='#00C8FF';">
-                                                <i class="bi bi-redo me-1"></i>Re-entry
-                                            </button>
-                                            <button wire:click="openCompleteModal({{ $cheque->id }})" class="btn btn-sm btn-success rounded-pill px-3 transition-all hover:shadow" style="background-color: #28a745; border-color: #28a745; color: white;" onmouseover="this.style.backgroundColor='#1e7e34'; this.style.borderColor='#1e7e34';" onmouseout="this.style.backgroundColor='#28a745'; this.style.borderColor='#28a745';">
-                                                <i class="bi bi-check-circle me-1"></i>To Complete
-                                            </button>
-                                            @else
-                                            <span class="badge rounded-pill bg-success bg-opacity-10 text-success px-3 py-2">Processed</span>
-                                            @endif
+                                        <td class="text-center">
+                                            <div class="d-flex justify-content-center gap-2">
+                                                @if($cheque->status === 'return')
+                                                <button wire:click="openReentryModal({{ $cheque->id }})" class="btn btn-sm btn-primary rounded-pill px-3 transition-all hover:shadow" style="background-color: #00C8FF; border-color: #00C8FF; color: white;" onmouseover="this.style.backgroundColor='#233D7F'; this.style.borderColor='#233D7F';" onmouseout="this.style.backgroundColor='#00C8FF'; this.style.borderColor='#00C8FF';">
+                                                    <i class="bi bi-redo me-1"></i>Re-entry
+                                                </button>
+                                                <button wire:click="openCompleteModal({{ $cheque->id }})" class="btn btn-sm btn-success rounded-pill px-3 transition-all hover:shadow" style="background-color: #28a745; border-color: #28a745; color: white;" onmouseover="this.style.backgroundColor='#1e7e34'; this.style.borderColor='#1e7e34';" onmouseout="this.style.backgroundColor='#28a745'; this.style.borderColor='#28a745';">
+                                                    <i class="bi bi-check-circle me-1"></i>To Complete
+                                                </button>
+                                                @else
+                                                <span class="badge rounded-pill bg-success bg-opacity-10 text-success px-3 py-2">Processed</span>
+                                                @endif
+                                            </div>
                                         </td>
                                     </tr>
                                     @empty
                                     <tr>
-                                        <td colspan="7" class="text-center py-4 text-gray-600">No returned cheques found.</td>
+                                        <td colspan="7" class="text-center py-5">
+                                            <div class="text-muted">
+                                                <i class="bi bi-inbox fs-1 mb-3 d-block"></i>
+                                                <p class="mb-0">No returned cheques found.</p>
+                                            </div>
+                                        </td>
                                     </tr>
                                     @endforelse
                                 </tbody>
@@ -90,6 +97,15 @@
                         <button type="button" class="btn-close btn-close-white opacity-75 hover:opacity-100" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body p-5">
+                        <!-- Display general errors -->
+                        @if($errors->has('general'))
+                        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                            <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                            {{ $errors->first('general') }}
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                        @endif
+
                         <div class="row g-4">
                             <!-- Original Cheque Details Column -->
                             <div class="col-md-3">
@@ -120,7 +136,7 @@
                                                 <label class="form-label fw-medium" style="color: #233D7F; font-size: 0.95rem;">Cheque Number</label>
                                                 <div class="input-group">
                                                     <span class="input-group-text bg-white border-2 border-end-0" style=" color: #233D7F;"><i class="bi bi-hash"></i></span>
-                                                    <input type="text" class="form-control border-2 shadow-sm rounded-4" placeholder="Enter Cheque Number" wire:model="chequeNumber" style=" color: #233D7F; font-size: 0.9rem;">
+                                                    <input type="text" class="form-control border-2 shadow-sm" placeholder="Enter Cheque Number" wire:model="chequeNumber" style=" color: #233D7F; font-size: 0.9rem;">
                                                 </div>
                                                 @error('chequeNumber') <div class="text-danger small mt-1" style="font-size: 0.85rem;">{{ $message }}</div> @enderror
                                             </div>
@@ -130,7 +146,7 @@
                                                     <span class="input-group-text bg-white border-2 border-end-0" style="color: #233D7F;">
                                                         <i class="bi bi-bank"></i>
                                                     </span>
-                                                    <select class="form-select" wire:model="bankName">
+                                                    <select class="form-select border-2 shadow-sm" wire:model="bankName" style="color: #233D7F; font-size: 0.9rem;">
                                                         <option value="">-- Select a bank --</option>
                                                         @foreach($banks as $bank)
                                                         <option value="{{ $bank }}">{{ $bank }}</option>
@@ -143,7 +159,7 @@
                                                 <label class="form-label fw-medium" style="color: #233D7F; font-size: 0.95rem;">Amount</label>
                                                 <div class="input-group">
                                                     <span class="input-group-text bg-white border-2 border-end-0" style=" color: #233D7F;">Rs.</span>
-                                                    <input type="number" class="form-control border-2 shadow-sm rounded-4" placeholder="Enter Amount" wire:model="chequeAmount" step="0.01" style=" color: #233D7F; font-size: 0.9rem;">
+                                                    <input type="number" class="form-control border-2 shadow-sm" placeholder="Enter Amount" wire:model="chequeAmount" step="0.01" style=" color: #233D7F; font-size: 0.9rem;">
                                                 </div>
                                                 @error('chequeAmount') <div class="text-danger small mt-1" style="font-size: 0.85rem;">{{ $message }}</div> @enderror
                                             </div>
@@ -151,7 +167,7 @@
                                                 <label class="form-label fw-medium" style="color: #233D7F; font-size: 0.95rem;">Cheque Date</label>
                                                 <div class="input-group">
                                                     <span class="input-group-text bg-white border-2 border-end-0" style=" color: #233D7F;"><i class="bi bi-calendar"></i></span>
-                                                    <input type="date" class="form-control border-2 shadow-sm rounded-4" wire:model="chequeDate" style=" color: #233D7F; font-size: 0.9rem;">
+                                                    <input type="date" class="form-control border-2 shadow-sm" wire:model="chequeDate" min="{{ date('Y-m-d') }}" style=" color: #233D7F; font-size: 0.9rem;">
                                                 </div>
                                                 @error('chequeDate') <div class="text-danger small mt-1" style="font-size: 0.85rem;">{{ $message }}</div> @enderror
                                             </div>
@@ -169,9 +185,9 @@
                                         <h6 class="fw-bold mb-3" style="color: #233D7F; font-size: 1.25rem;">Added Cheques</h6>
                                         <div class="table-responsive">
                                             <table class="table table-hover align-middle">
-                                                <thead style="background-color: #f8f9fa;">
+                                                <thead style="background-color: #e6f3ff;">
                                                     <tr>
-                                                        <th class="ps-4 text-uppercase text-xs fw-semibold py-3 text-center" style="color: #233D7F; font-size: 0.85rem;">Cheque No</th>
+                                                        <th class="text-uppercase text-xs fw-semibold py-3 text-center" style="color: #233D7F; font-size: 0.85rem;">Cheque No</th>
                                                         <th class="text-uppercase text-xs fw-semibold py-3 text-center" style="color: #233D7F; font-size: 0.85rem;">Bank</th>
                                                         <th class="text-uppercase text-xs fw-semibold py-3 text-center" style="color: #233D7F; font-size: 0.85rem;">Date</th>
                                                         <th class="text-uppercase text-xs fw-semibold py-3 text-center" style="color: #233D7F; font-size: 0.85rem;">Amount</th>
@@ -179,21 +195,33 @@
                                                     </tr>
                                                 </thead>
                                                 <tbody>
-                                                    @forelse($cheques as $index => $cheque)
+                                                    @if(!empty($cheques) && count($cheques) > 0)
+                                                        @foreach($cheques as $index => $cheque)
+                                                        <tr>
+                                                            <td class="text-center" style="font-size: 0.9rem;">{{ $cheque['number'] }}</td>
+                                                            <td class="text-center" style="font-size: 0.9rem;">{{ $cheque['bank'] }}</td>
+                                                            <td class="text-center" style="font-size: 0.9rem;">{{ \Carbon\Carbon::parse($cheque['date'])->format('d/m/Y') }}</td>
+                                                            <td class="text-center" style="font-size: 0.9rem;">Rs. {{ number_format($cheque['amount'], 2) }}</td>
+                                                            <td class="text-center">
+                                                                <button type="button" wire:click="removeCheque({{ $index }})" class="btn btn-sm btn-danger rounded-pill px-3 transition-all hover:shadow" style="font-size: 0.85rem;">
+                                                                    <i class="bi bi-trash me-1"></i>Remove
+                                                                </button>
+                                                            </td>
+                                                        </tr>
+                                                        @endforeach
+                                                        <tr style="background-color: #e6f3ff;">
+                                                            <td colspan="3" class="text-end fw-bold" style="color: #233D7F;">Total Cheques:</td>
+                                                            <td class="text-center fw-bold" style="color: #233D7F;">Rs. {{ number_format(collect($cheques)->sum('amount'), 2) }}</td>
+                                                            <td></td>
+                                                        </tr>
+                                                    @else
                                                     <tr>
-                                                        <td class="text-center" style="font-size: 0.9rem;">{{ $cheque['number'] }}</td>
-                                                        <td class="text-center" style="font-size: 0.9rem;">{{ $cheque['bank'] }}</td>
-                                                        <td class="text-center" style="font-size: 0.9rem;">{{ \Carbon\Carbon::parse($cheque['date'])->format('d/m/Y') }}</td>
-                                                        <td class="text-center" style="font-size: 0.9rem;">Rs. {{ number_format($cheque['amount'], 2) }}</td>
-                                                        <td class="text-center">
-                                                            <button type="button" wire:click="removeCheque({{ $index }})" class="btn btn-sm btn-danger rounded-pill px-3 transition-all hover:shadow" style="font-size: 0.85rem;">Remove</button>
+                                                        <td colspan="5" class="text-center py-4 text-muted" style="font-size: 0.9rem;">
+                                                            <i class="bi bi-inbox fs-3 d-block mb-2"></i>
+                                                            No new cheques added yet.
                                                         </td>
                                                     </tr>
-                                                    @empty
-                                                    <tr>
-                                                        <td colspan="5" class="text-center py-4 text-gray-600" style="font-size: 0.9rem;">No new cheques added yet.</td>
-                                                    </tr>
-                                                    @endforelse
+                                                    @endif
                                                 </tbody>
                                             </table>
                                         </div>
@@ -212,9 +240,12 @@
                                                 <label class="form-label fw-medium" style="color: #233D7F; font-size: 0.95rem;">Cash Amount</label>
                                                 <div class="input-group">
                                                     <span class="input-group-text bg-white border-2 border-end-0" style=" color: #233D7F;">Rs.</span>
-                                                    <input type="number" class="form-control border-2 shadow-sm rounded-4" placeholder="Enter Cash Amount" wire:model="cashAmount" step="0.01" style=" color: #233D7F; font-size: 0.9rem;">
+                                                    <input type="number" class="form-control border-2 shadow-sm" placeholder="Enter Cash Amount" wire:model="cashAmount" step="0.01" style=" color: #233D7F; font-size: 0.9rem;">
                                                 </div>
                                                 @error('cashAmount') <div class="text-danger small mt-1" style="font-size: 0.85rem;">{{ $message }}</div> @enderror
+                                                @if($cashAmount > 0)
+                                                <small class="text-success mt-1 d-block">Cash: Rs. {{ number_format($cashAmount, 2) }}</small>
+                                                @endif
                                             </div>
                                         </div>
                                     </div>
@@ -226,7 +257,7 @@
                                         <p class="text-sm text-gray-600 mb-4" style="font-size: 0.9rem;">Add any additional notes for this re-entry.</p>
                                         <div class="row g-3">
                                             <div class="col-12">
-                                                <textarea class="form-control border-2 shadow-sm rounded-4" rows="6" placeholder="Enter notes here" wire:model="note" style="border-color: #233D7F; color: #233D7F; font-size: 0.9rem;"></textarea>
+                                                <textarea class="form-control border-2 shadow-sm" rows="6" placeholder="Enter notes here" wire:model="note" style="border-color: #233D7F; color: #233D7F; font-size: 0.9rem;"></textarea>
                                                 @error('note') <div class="text-danger small mt-1" style="font-size: 0.85rem;">{{ $message }}</div> @enderror
                                             </div>
                                         </div>
@@ -234,24 +265,22 @@
                                 </div>
                             </div>
                         </div>
-
-                        @if($errors->any())
-                        <div class="alert alert-danger mt-4" style="border-color: #dc3545; color: #dc3545; font-size: 0.9rem;">
-                            <ul class="mb-0">
-                                @foreach ($errors->all() as $error)
-                                <li>{{ $error }}</li>
-                                @endforeach
-                            </ul>
-                        </div>
-                        @endif
                     </div>
-                    <div class="modal-footer py-3 px-4 d-flex justify-content-end gap-3" style="border-top: 1px solid #233D7F; background: #f8f9fa;">
-                        <button type="button" class="btn btn-secondary rounded-pill px-4 fw-medium transition-all hover:shadow" data-bs-dismiss="modal" style="background-color: #6B7280; border-color: #6B7280; color: white; font-size: 0.9rem;">
-                            <i class="bi bi-x me-1"></i>Cancel
-                        </button>
-                        <button type="button" wire:click="submitNewCheque" class="btn btn-primary rounded-pill px-4 fw-medium transition-all hover:shadow" style="background-color: #00C8FF; border-color: #00C8FF; color: white; font-size: 0.9rem;" onmouseover="this.style.backgroundColor='#233D7F'; this.style.borderColor='#233D7F';" onmouseout="this.style.backgroundColor='#00C8FF'; this.style.borderColor='#00C8FF';">
-                            <i class="bi bi-check2-circle me-1"></i>Save Cheque(s)
-                        </button>
+                    <div class="modal-footer py-3 px-4 d-flex justify-content-between align-items-center gap-3" style="border-top: 1px solid #233D7F; background: #f8f9fa;">
+                        <div class="text-muted small">
+                            <strong>Total Amount:</strong> Rs. {{ number_format((collect($cheques)->sum('amount') + ($cashAmount ?: 0)), 2) }}
+                            @if($originalCheque)
+                            <span class="ms-2">/ Rs. {{ number_format($originalCheque->cheque_amount, 2) }}</span>
+                            @endif
+                        </div>
+                        <div class="d-flex gap-2">
+                            <button type="button" class="btn btn-secondary rounded-pill px-4 fw-medium transition-all hover:shadow" data-bs-dismiss="modal" style="background-color: #6B7280; border-color: #6B7280; color: white; font-size: 0.9rem;">
+                                <i class="bi bi-x me-1"></i>Cancel
+                            </button>
+                            <button type="button" wire:click="submitNewCheque" class="btn btn-primary rounded-pill px-4 fw-medium transition-all hover:shadow" style="background-color: #00C8FF; border-color: #00C8FF; color: white; font-size: 0.9rem;" onmouseover="this.style.backgroundColor='#233D7F'; this.style.borderColor='#233D7F';" onmouseout="this.style.backgroundColor='#00C8FF'; this.style.borderColor='#00C8FF';">
+                                <i class="bi bi-check2-circle me-1"></i>Save Cheque(s)
+                            </button>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -284,14 +313,14 @@
                             <label class="form-label fw-medium" style="color: #233D7F;">Cash Amount <span class="text-danger">*</span></label>
                             <div class="input-group">
                                 <span class="input-group-text bg-white border-2 border-end-0" style="border-color: #233D7F; color: #233D7F;">Rs.</span>
-                                <input type="number" class="form-control border-2 shadow-sm rounded-4" wire:model="completeCashAmount" step="0.01" style="border-color: #233D7F; color: #233D7F;">
+                                <input type="number" class="form-control border-2 shadow-sm" wire:model="completeCashAmount" step="0.01" style="border-color: #233D7F; color: #233D7F;">
                             </div>
                             @error('completeCashAmount') <div class="text-danger small mt-1">{{ $message }}</div> @enderror
                         </div>
 
                         <div class="mb-4">
                             <label class="form-label fw-medium" style="color: #233D7F;">Note <span class="text-danger">*</span></label>
-                            <textarea class="form-control border-2 shadow-sm rounded-4" rows="3" placeholder="Enter note here" wire:model="completeNote" style="border-color: #233D7F; color: #233D7F;"></textarea>
+                            <textarea class="form-control border-2 shadow-sm" rows="3" placeholder="Enter note here" wire:model="completeNote" style="border-color: #233D7F; color: #233D7F;"></textarea>
                             @error('completeNote') <div class="text-danger small mt-1">{{ $message }}</div> @enderror
                         </div>
                     </div>
@@ -321,14 +350,6 @@
 
             .transition-all {
                 transition: all 0.3s ease;
-            }
-
-            .transition-transform {
-                transition: transform 0.2s ease;
-            }
-
-            .hover\:scale-105:hover {
-                transform: scale(1.05);
             }
 
             .icon-shape {
@@ -363,10 +384,6 @@
                 background-color: #f1f5f9;
             }
 
-            .rounded-full {
-                border-radius: 9999px;
-            }
-
             .rounded-4 {
                 border-radius: 1rem;
             }
@@ -379,21 +396,9 @@
                 box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
             }
 
-            .btn-light {
-                background-color: #ffffff;
-                border-color: #ffffff;
-                color: #233D7F;
-            }
-
-            .btn-light:hover {
-                background-color: #f1f5f9;
-                border-color: #f1f5f9;
-                color: #233D7F;
-            }
-
             .form-control,
             .form-select {
-                border-radius: 1rem;
+                border-radius: 0.5rem;
                 border: 2px solid #e5e7eb;
             }
 
@@ -401,6 +406,10 @@
             .form-select:focus {
                 border-color: #233D7F;
                 box-shadow: 0 0 0 0.2rem rgba(35, 61, 127, 0.25);
+            }
+
+            .modal-backdrop {
+                backdrop-filter: blur(4px);
             }
         </style>
         <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -432,9 +441,9 @@
 
                 @this.on('notify', event => {
                     Swal.fire({
-                        icon: event.detail.type,
-                        title: event.detail.type === 'success' ? 'Success!' : 'Error!',
-                        text: event.detail.message,
+                        icon: event.type || 'info',
+                        title: event.type === 'success' ? 'Success!' : event.type === 'error' ? 'Error!' : 'Info',
+                        text: event.message,
                         toast: true,
                         position: 'top-end',
                         showConfirmButton: false,

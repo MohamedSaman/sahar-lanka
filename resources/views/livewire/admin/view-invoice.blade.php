@@ -239,156 +239,166 @@
     <!-- Invoice Details Modal -->
     @if($saleDetails)
     <div wire:ignore.self class="modal fade" id="invoiceModal" tabindex="-1" aria-hidden="true">
-        <div class="modal-dialog modal-xl modal-dialog-scrollable">
-            <div class="modal-content rounded-4 shadow-lg">
-                <div class="modal-header text-white p-4" style="background: linear-gradient(90deg, #1e40af 0%, #3b82f6 100%);">
-                    <h5 class="modal-title fw-bold">
-                        <i class="bi bi-receipt me-2"></i> Invoice Details - #{{ $saleDetails['sale']->invoice_number }}
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content rounded-4 shadow-xl"
+                style="border: 2px solid #233D7F; background: linear-gradient(145deg, #FFFFFF, #F8F9FA);">
+                <div class="modal-header"
+                    style="background-color: #233D7F; color: #FFFFFF; border-top-left-radius: 0.5rem; border-top-right-radius: 0.5rem;">
+                    <h5 class="modal-title fw-bold tracking-tight">
+                        <i class="bi bi-receipt me-2"></i>Sales Receipt
                     </h5>
-                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                    <div class="ms-auto d-flex gap-2">
+                        <button type="button" class="btn btn-sm rounded-full px-3 transition-all hover:shadow"
+                            onclick="printInvoice()" style="background-color: #233D7F;border-color:#fff; color: #fff;">
+                            <i class="bi bi-printer me-1"></i>Print
+                        </button>
+                        <button type="button" class="btn-close btn-close-white opacity-75 hover:opacity-100"
+                            data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
                 </div>
-                <div class="modal-body p-5">
-                    <div class="row mb-4">
-                        <!-- Customer Info -->
-                        <div class="col-md-5">
-                            <h6 class="fw-bold mb-3" style="color: #1e40af;">Customer Information</h6>
-                            <table class="table table-sm table-borderless">
-                                <tr>
-                                    <td class="text-muted">Name:</td>
-                                    <td class="fw-semibold">{{ $saleDetails['sale']->customer->name ?? 'N/A' }}</td>
-                                </tr>
-                                <tr>
-                                    <td class="text-muted">Phone:</td>
-                                    <td>{{ $saleDetails['sale']->customer->phone ?? 'N/A' }}</td>
-                                </tr>
-                            </table>
+                <div class="modal-body p-4" id="invoiceContent">
+                    <div class="receipt-container">
+                        <div class="text-center mb-4">
+                            <h3 class="mb-1 fw-bold tracking-tight" style="color: #233D7F;">SAHAR LANKA</h3>
+                            <h5 class="mb-1 fw-medium" style="color: #233D7F;">Importers & Retailers of Genuine Spares for <br> MARUTI-LEYLAND - MAHINDRA-TATA-ALTO</h5>
+                            <p class="mb-0 text-muted small" style="color: #6B7280;">NO. 397/, DUNU ELA, THIHARIYA, KALAGEDIHENA</p>
+                            <p class="mb-0 text-muted small" style="color: #6B7280;">Phone: 077 6718838</p>
+                            <hr style="border: 2px solid #233D7F;">
                         </div>
 
-                        <!-- Invoice Info -->
-                        <div class="col-md-5">
-                            <h6 class="fw-bold mb-3" style="color: #1e40af;">Invoice Information</h6>
-                            <table class="table table-sm table-borderless">
-                                <tr>
-                                    <td class="text-muted">Invoice Number:</td>
-                                    <td class="fw-semibold">{{ $saleDetails['sale']->invoice_number }}</td>
-                                </tr>
-                                <tr>
-                                    <td class="text-muted">Date:</td>
-                                    <td>{{ $saleDetails['sale']->created_at->format('d M Y, h:i A') }}</td>
-                                </tr>
-                                <tr>
-                                    <td class="text-muted">Payment Status:</td>
-                                    <td>{{ $saleDetails['sale']->payment_status ?? 'N/A' }}</td>
-                                </tr>
-                            </table>
-                        </div>
-                    </div>
-
-                    <!-- Items Table -->
-                    <h6 class="fw-bold mb-3" style="color: #1e40af;">Items Purchased</h6>
-                    <div class="table-responsive mb-4">
-                        <table class="table table-bordered">
-                            <thead style="background-color: #eff6ff;">
-                                <tr>
-                                    <th>No</th>
-                                    <th class="text-center">Item </th>
-                                    <th class="text-center">Code</th>
-                                    <th class="text-center">Price</th>
-                                    <th class="text-center">Quantity</th>
-                                    <th class="text-center">Total</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @foreach($saleDetails['items'] as $item)
-                                <tr>
-                                    <td>{{ $loop->iteration }}</td>
-                                    <td>{{ $item->product->product_name ?? 'N/A' }}</td>
-                                    <td class="text-center">{{ $item->product->product_code ?? 'N/A' }}</td>
-                                    <td class="text-right">Rs.{{ number_format($item->price, 2) }}</td>
-                                    <td class="text-center">{{ $item->quantity }}</td>
-                                    <td class="text-right fw-bold">Rs.{{ number_format(($item->quantity * $item->price) - $item->discount, 2) }}</td>
-                                </tr>
-                                @endforeach
-                            </tbody>
-                        </table>
-                    </div>
-
-                    <!-- Return Items -->
-                    @if($saleDetails['returnItems']->count() > 0)
-                    <h6 class="fw-bold mb-3 text-danger">
-                        <i class="bi bi-arrow-return-left me-2"></i>Returned Items
-                    </h6>
-                    <div class="table-responsive mb-4">
-                        <table class="table table-bordered">
-                            <thead class="table-danger">
-                                <tr>
-                                    <th>Product</th>
-                                    <th class="text-center">Quantity</th>
-                                    <th class="text-end">Price</th>
-                                    <th class="text-end">Total</th>
-                                    <th>Notes</th>
-                                    <th>Date</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @foreach($saleDetails['returnItems'] as $return)
-                                <tr>
-                                    <td>{{ $return->product->product_name ?? 'N/A' }}</td>
-                                    <td class="text-center">{{ $return->return_quantity }}</td>
-                                    <td class="text-end">Rs.{{ number_format($return->selling_price, 2) }}</td>
-                                    <td class="text-end fw-bold">Rs.{{ number_format($return->total_amount, 2) }}</td>
-                                    <td>{{ $return->notes ?? '-' }}</td>
-                                    <td>{{ $return->created_at->format('d M Y') }}</td>
-                                </tr>
-                                @endforeach
-                                <tr class="table-danger">
-                                    <td colspan="3" class="text-end fw-bold">Total Returns:</td>
-                                    <td class="text-end fw-bold">Rs.{{ number_format($saleDetails['totalReturnAmount'], 2) }}</td>
-                                    <td colspan="2"></td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                    @endif
-
-                    <!-- Payment Summary -->
-                    <div class="row">
-                        <div class="col-md-6 offset-md-6">
-                            <div class="card border-0 shadow-sm">
-                                <div class="card-body">
-                                    <h6 class="fw-bold mb-3" style="color: #1e40af;">Payment Summary</h6>
-                                    <table class="table table-sm table-borderless mb-0">
-                                        <tr>
-                                            <td class="text-muted">Subtotal:</td>
-                                            <td class="text-end">Rs.{{ number_format($saleDetails['sale']->subtotal, 2) }}</td>
-                                        </tr>
-                                        <tr>
-                                            <td class="text-muted">Discount:</td>
-                                            <td class="text-end text-danger">-Rs.{{ number_format($saleDetails['sale']->discount_amount, 2) }}</td>
-                                        </tr>
-                                        @if($saleDetails['totalReturnAmount'] > 0)
-                                        <tr>
-                                            <td class="text-muted">Returns:</td>
-                                            <td class="text-end text-danger">-Rs.{{ number_format($saleDetails['totalReturnAmount'], 2) }}</td>
-                                        </tr>
-                                        @endif
-                                        <tr class="border-top">
-                                            <td class="fw-bold fs-5" style="color: #1e40af;">Grand Total:</td>
-                                            <td class="text-end fw-bold fs-5" style="color: #1e40af;">
-                                                Rs.{{ number_format($saleDetails['adjustedGrandTotal'], 2) }}
-                                            </td>
-                                        </tr>
-                                    </table>
-                                </div>
+                        <div class="row mb-2">
+                            <div class="col-md-6">
+                                @if ($saleDetails['sale']->customer)
+                                <p class="mb-1" style="color: #233D7F;"><strong>Customer Name:</strong> {{ $saleDetails['sale']->customer->name }}</p>
+                                <p class="mb-1" style="color: #233D7F;"><strong>Address:</strong> {{ $saleDetails['sale']->customer->address ?? 'N/A' }}</p>
+                                <p class="mb-1" style="color: #233D7F;"><strong>Phone:</strong> {{ $saleDetails['sale']->customer->phone ?? 'N/A' }}</p>
+                                @else
+                                <p class="text-muted" style="color: #6B7280;">Walk-in Customer</p>
+                                @endif
+                            </div>
+                            <div class="col-md-6">
+                                <p class="mb-1" style="color: #233D7F;"><strong>Invoice Number:</strong> {{ $saleDetails['sale']->invoice_number }}</p>
+                                <p class="mb-1" style="color: #233D7F;"><strong>Date:</strong> {{ $saleDetails['sale']->created_at->setTimezone('Asia/Colombo')->format('d/m/Y h:i A') }}</p>
+                                <p class="mb-1"><strong>Payment Status:</strong>
+                                    @if(ucfirst($saleDetails['sale']->payment_status) == 'Paid')
+                                    <span class="badge" style="background-color: #0F5132; color: #FFFFFF;">Paid</span>
+                                    @else
+                                    <span class="badge" style="background-color: #842029; color: #FFFFFF;">Credit</span>
+                                    @endif
+                                </p>
                             </div>
                         </div>
+
+                        <div class="table-responsive mb-4">
+                            <table class="table table-bordered table-sm border-1" style="border-color: #233D7F;">
+                                <thead style="background-color: #233D7F; color: #FFFFFF;">
+                                    <tr>
+                                        <th scope="col" class="text-center py-2">No</th>
+                                        <th scope="col" class="text-center py-2">Code</th>
+                                        <th scope="col" class="text-center py-2">Product Name</th>
+                                        <th scope="col" class="text-center py-2">Qty</th>
+                                        <th scope="col" class="text-center py-2">Unit Price</th>
+                                        <th scope="col" class="text-center py-2">Total</th>
+                                    </tr>
+                                </thead>
+                                <tbody style="color: #233D7F;">
+                                    @foreach ($saleDetails['items'] as $index => $item)
+                                    <tr>
+                                        <td class="text-center py-1">{{ $index + 1 }}</td>
+                                        <td class="text-center py-1">{{ $item->product->product_code ?? 'N/A' }}</td>
+                                        <td class="text-left py-1">{{ $item->product->product_name ?? 'N/A' }}</td>
+                                        <td class="text-center py-1">{{ $item->quantity }}</td>
+                                        <td class="text-right py-1">{{ number_format($item->price, 2) }}</td>
+                                        <td class="text-right py-1">{{ number_format(($item->price * $item->quantity) - ($item->discount * $item->quantity), 2) }}</td>
+                                    </tr>
+                                    @endforeach
+                                    
+                                    <!-- Summary rows -->
+                                    <tr style="background-color: #f8f9fa;">
+                                        <td colspan="5" class="text-right py-2 fw-bold" style="font-size: 14px;">Amount (LKR):</td>
+                                        <td class="text-right py-2 fw-bold" style="font-size: 14px;">{{ number_format($saleDetails['sale']->subtotal, 2) }}</td>
+                                    </tr>
+                                    @if($saleDetails['sale']->discount_amount > 0)
+                                    <tr style="background-color: #f8f9fa;">
+                                        <td colspan="5" class="text-right py-2 fw-bold text-danger" style="font-size: 14px;">Total Discount:</td>
+                                        <td class="text-right py-2 fw-bold text-danger" style="font-size: 14px;">({{ number_format($saleDetails['sale']->discount_amount, 2) }})</td>
+                                    </tr>
+                                    <tr style="background-color: #233D7F; color: #FFFFFF;">
+                                        <td colspan="5" class="text-right py-2 fw-bold fs-6" style="font-size: 14px;">Total:</td>
+                                        <td class="text-right py-2 fw-bold fs-6" style="font-size: 14px;">{{ number_format($saleDetails['adjustedGrandTotal'], 2) }}</td>
+                                    </tr>
+                                    @else
+                                    <tr style="background-color: #f8f9fa;">
+                                        <td colspan="5" class="text-right py-2 fw-bold text-danger" style="font-size: 14px;">Total Discount:</td>
+                                        <td class="text-right py-2 fw-bold text-danger" style="font-size: 14px;"></td>
+                                    </tr>
+                                    <tr style="background-color: #233D7F; color: #FFFFFF;">
+                                        <td colspan="5" class="text-right py-2 fw-bold fs-6" style="font-size: 14px;">Total:</td>
+                                        <td class="text-right py-2 fw-bold fs-6" style="font-size: 14px;"></td>
+                                    </tr>
+                                    @endif
+                                    
+                                    @if($saleDetails['totalReturnAmount'] > 0)
+                                    <tr style="background-color: #f8f9fa;">
+                                        <td colspan="5" class="text-right py-2 fw-bold text-danger" style="font-size: 14px;">Returns:</td>
+                                        <td class="text-right py-2 fw-bold text-danger" style="font-size: 14px;">({{ number_format($saleDetails['totalReturnAmount'], 2) }})</td>
+                                    </tr>
+                                    <tr style="background-color: #233D7F; color: #FFFFFF;">
+                                        <td colspan="5" class="text-right py-2 fw-bold fs-6" style="font-size: 14px;">After Return Total:</td>
+                                        <td class="text-right py-2 fw-bold fs-6" style="font-size: 14px;"></td>
+                                    </tr>
+                                    @endif
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <!-- Return Items Section (if any) -->
+                        @if($saleDetails['returnItems']->count() > 0)
+                        <div class="return-items-section mb-4">
+                            <h6 class="fw-bold mb-3 text-danger">
+                                <i class="bi bi-arrow-return-left me-2"></i>Returned Items Details
+                            </h6>
+                            <div class="table-responsive">
+                                <table class="table table-bordered table-sm">
+                                    <thead class="table-danger">
+                                        <tr>
+                                            <th class="text-center">No</th>
+                                            <th>Product</th>
+                                            <th class="text-center">Quantity</th>
+                                            <th class="text-right">Price</th>
+                                            <th class="text-right">Total</th>
+                                            <th>Notes</th>
+                                            <th class="text-center">Date</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach($saleDetails['returnItems'] as $index => $return)
+                                        <tr>
+                                            <td class="text-center">{{ $index + 1 }}</td>
+                                            <td>{{ $return->product->product_name ?? 'N/A' }}</td>
+                                            <td class="text-center">{{ $return->return_quantity }}</td>
+                                            <td class="text-right">Rs.{{ number_format($return->selling_price, 2) }}</td>
+                                            <td class="text-right fw-bold">Rs.{{ number_format($return->total_amount, 2) }}</td>
+                                            <td>{{ $return->notes ?? '-' }}</td>
+                                            <td class="text-center">{{ $return->created_at->format('d M Y') }}</td>
+                                        </tr>
+                                        @endforeach
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        @endif
+
+                        <div class="text-center mt-4 pt-3 border-top" style="border-color: #233D7F;">
+                            <p class="mb-0 text-muted small" style="color: #6B7280;">Thank you for your purchase!</p>
+                        </div>
                     </div>
                 </div>
-                <div class="modal-footer p-4">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    <button type="button" class="btn btn-primary" onclick="printInvoice()" style="background-color: #1e40af; border-color: #1e40af;">
-                        <i class="bi bi-printer me-2"></i>Print Invoice
-                    </button>
+                <div class="modal-footer border-top py-3" style="border-color: #233D7F; background: #F8F9FA;">
+                    <button type="button"
+                        class="btn btn-secondary rounded-pill px-4 fw-medium transition-all hover:shadow"
+                        data-bs-dismiss="modal"
+                        style="background-color: #6B7280; border-color: #6B7280; color: #FFFFFF;">Close</button>
                 </div>
             </div>
         </div>
@@ -564,278 +574,270 @@
             return;
         }
 
-        const invoiceNumber = modal.querySelector('.modal-title').textContent.split('#')[1]?.trim() || '';
-        const modalBody = modal.querySelector('.modal-body');
-
+        const modalBody = modal.querySelector('#invoiceContent');
+        
         // Extract customer information
-        const customerSection = modalBody.querySelector('.col-md-5:first-child');
-        const customerTable = customerSection?.querySelector('table');
-        const customerName = customerTable?.querySelectorAll('tr')[0]?.querySelectorAll('td')[1]?.textContent.trim() || 'N/A';
-        const customerPhone = customerTable?.querySelectorAll('tr')[1]?.querySelectorAll('td')[1]?.textContent.trim() || 'N/A';
+        const leftCol = modalBody.querySelector('.col-md-6:first-child');
+        let customerName = 'Walk-in Customer';
+        let customerAddress = '';
+        let customerPhone = '';
+
+        if (leftCol) {
+            const paragraphs = leftCol.querySelectorAll('p');
+            if (paragraphs.length >= 3) {
+                customerName = paragraphs[0].textContent.replace('Customer Name:', '').trim();
+                customerAddress = paragraphs[1].textContent.replace('Address:', '').trim();
+                customerPhone = paragraphs[2].textContent.replace('Phone:', '').trim();
+            }
+        }
 
         // Extract invoice information
-        const invoiceSection = modalBody.querySelector('.col-md-5:last-child');
-        const invoiceTable = invoiceSection?.querySelector('table');
-        const invoiceNum = invoiceTable?.querySelectorAll('tr')[0]?.querySelectorAll('td')[1]?.textContent.trim() || invoiceNumber;
-        const invoiceDate = invoiceTable?.querySelectorAll('tr')[1]?.querySelectorAll('td')[1]?.textContent.trim() || 'N/A';
-        const paymentStatus = invoiceTable?.querySelectorAll('tr')[2]?.querySelectorAll('td')[1]?.textContent.trim() || 'N/A';
+        const rightCol = modalBody.querySelector('.col-md-6:last-child');
+        let invoiceNumber = '';
+        let date = '';
 
+        if (rightCol) {
+            const paragraphs = rightCol.querySelectorAll('p');
+            if (paragraphs.length >= 2) {
+                invoiceNumber = paragraphs[0].textContent.replace('Invoice Number:', '').trim();
+                date = paragraphs[1].textContent.replace('Date:', '').trim();
+            }
+        }
+
+        // Get the main items table
         const itemsTable = modalBody.querySelector('.table-bordered');
-
-        const returnSection = modalBody.querySelector('.text-danger')?.closest('div');
-        let returnHTML = '';
+        
+        // Check for return items section
+        const returnSection = modalBody.querySelector('.return-items-section');
+        let returnTableHTML = '';
         if (returnSection) {
-            const returnTable = returnSection.querySelector('.table-bordered');
+            const returnTable = returnSection.querySelector('.table');
             if (returnTable) {
-                returnHTML = `
-                    <h6 style="color: #dc3545; font-weight: bold; margin-top: 20px; margin-bottom: 10px;">
-                        <i class="bi bi-arrow-return-left"></i> Returned Items
+                returnTableHTML = `
+                    <h6 style="color: #000; font-weight: bold; margin-top: 20px; margin-bottom: 10px; font-size: 12px;">
+                        RETURNED ITEMS DETAILS
                     </h6>
                     ${returnTable.outerHTML}
                 `;
             }
         }
 
-        // Extract payment summary
-        const summaryCard = modalBody.querySelector('.col-md-6.offset-md-6 .card-body');
-        const summaryTable = summaryCard?.querySelector('table');
-        const rows = summaryTable?.querySelectorAll('tr');
+        const printWindow = window.open('', '_blank', 'height=600,width=800');
 
-        let subtotal = 'Rs.0.00';
-        let discount = 'Rs.0.00';
-        let grandTotal = 'Rs.0.00';
-
-        if (rows) {
-            subtotal = rows[0]?.querySelectorAll('td')[1]?.textContent.trim() || 'Rs.0.00';
-            discount = rows[1]?.querySelectorAll('td')[1]?.textContent.trim() || 'Rs.0.00';
-            grandTotal = rows[2]?.querySelectorAll('td')[1]?.textContent.trim() || 'Rs.0.00';
-        }
-
-        let printFrame = document.getElementById('printFrame');
-        if (!printFrame) {
-            printFrame = document.createElement('iframe');
-            printFrame.id = 'printFrame';
-            printFrame.style.position = 'absolute';
-            printFrame.style.width = '0';
-            printFrame.style.height = '0';
-            printFrame.style.border = 'none';
-            document.body.appendChild(printFrame);
-        }
-
-        const htmlContent = `
+        printWindow.document.write(`
             <!DOCTYPE html>
             <html>
             <head>
-                    <title>Sales Receipt - ${invoiceNumber}</title>
-                    <style>
-                        * {
-                            margin: 0;
-                            padding: 0;
-                            box-sizing: border-box;
-                        }
-                        @page { size: A4; margin: 1cm; }
-                        body { 
-                            font-family: 'Courier New', monospace !important; 
-                            padding: 20px;
-                            font-size: 12px;
-                            line-height: 1.4;
-                            color: #000;
-                            font-weight: bold;
-                        }
-                        .receipt-container {
-                            max-width: 800px;
-                            margin: 0 auto;
-                            padding: 0;
-                        }
-                        .company-header {
-                            text-align: center;
-                            margin-bottom: 5px;
-                            border-bottom: 2px solid #000;
-                            padding-bottom: 15px;
-                            font-weight: bold;
-                        }
-                        .company-name {
-                            font-size: 24px;
-                            font-weight: bold;
-                            color: #000;
-                            margin-bottom: 5px;
-                        }
-                        .company-address {
-                            font-size: 16px;
-                            color: #000;
-                            margin: 3px 0;
-                        }
-                        .receipt-title {
-                            font-size: 14px;
-                            font-weight: bold;
-                            color: #000;
-                            text-align: right;
-                            margin: 5px 0;
-                            padding-bottom: 10px;
-                        }
-                        .info-row {
-                            display: flex;
-                            justify-content: space-between;
-                            margin-bottom: 5px;
-                        }
-                        .info-section {
-                            width: 48%;
-                            padding: 10px;
-                        }
-                        .info-section h6 {
-                            color: #000;
-                            font-weight: bold;
-                            padding-bottom: 5px;
-                            margin-bottom: 5px;
-                            font-size: 13px;
-                        }
-                        .info-section table {
-                            width: 100%;
-                            font-size: 12px;
-                            border: none;
-                        }
-                        .info-section td {
-                            padding: 3px 0;
-                            color: #000 !important;
-                            border: none;
-                        }
-                        .info-label {
-                            font-weight: bold;
-                            display: inline-block;
-                            width: 140px;
-                        }
-                        .info-value {
-                            display: inline-block;
-                        }
-                        .text-center { text-align: center; }
-                        .text-right { text-align: right; }
-                        .fw-bold { font-weight: bold; }
-                        .mb-1 { margin-bottom: 0.25rem; }
-                        .mb-2 { margin-bottom: 0.5rem; }
-                        table {
-                            width: 100%;
-                            border-collapse: collapse;
-                            margin: 20px 0;
-                        }
-                        table th, table td {
-                            border: 1px solid #000;
-                            padding: 8px;
-                            text-align: left;
-                            font-family: 'Courier New', monospace !important;
-                            color: #000 !important;
-                        }
-                        table th {
-                            
-                            background-color: #f0f0f0;
-                            font-weight: bold;
-                        }
-                        .summary-section {
-                            display: flex;
-                            justify-content: flex-end;
-                            margin-top: 20px;
-                        }
-                        .summary-box {
-                            width: 400px;
-                            border: 2px solid #000;
-                            padding: 15px;
-                        }
-                        .summary-box h6 {
-                            color: #000;
-                            font-weight: bold;
-                            margin-bottom: 15px;
-                            font-size: 13px;
-                        }
-                        .summary-row {
-                            display: flex;
-                            justify-content: space-between;
-                            padding: 5px 0;
-                            border-bottom: 1px solid #000;
-                            color: #000;
-                        }
-                        .summary-row.total {
-                            font-size: 16px;
-                            font-weight: bold;
-                            border-top: 2px solid #000;
-                            margin-top: 10px;
-                            padding-top: 10px;
-                            border-bottom: none;
-                        }
-                        .footer {
-                            text-align: center;
-                            margin-top: 40px;
-                            padding-top: 20px;
-                            border-top: 1px solid #000;
-                            font-size: 14px;
-                            color: #000;
-                        }
-                        h3, h4, h5, h6, p, strong, span, td, th, div {
-                            font-family: 'Courier New', monospace !important;
-                            color: #000 !important;
-                        }
-                        @media print { 
-                            .no-print { display: none; }
-                            body { padding: 10px; }
-                            * { color: #000 !important; }
-                        }
-                    </style>
-                </head>
+                <title>Sales Receipt - ${invoiceNumber}</title>
+                <style>
+                    * {
+                        margin: 0;
+                        padding: 0;
+                        box-sizing: border-box;
+                    }
+                    @page { size: A4; margin: 1cm; }
+                    body { 
+                        font-family: 'Courier New', monospace !important; 
+                        padding: 20px;
+                        font-size: 12px;
+                        line-height: 1.4;
+                        color: #000;
+                        font-weight: bold;
+                    }
+                    .receipt-container {
+                        max-width: 800px;
+                        margin: 0 auto;
+                        padding: 0;
+                    }
+                    .company-header {
+                        text-align: center;
+                        margin-bottom: 5px;
+                        border-bottom: 2px solid #000;
+                        padding-bottom: 15px;
+                        font-weight: bold;
+                    }
+                    .company-name {
+                        font-size: 24px;
+                        font-weight: bold;
+                        color: #000;
+                        margin-bottom: 5px;
+                    }
+                    .company-address {
+                        font-size: 16px;
+                        color: #000;
+                        margin: 3px 0;
+                    }
+                    .info-row {
+                        display: flex;
+                        justify-content: space-between;
+                        margin-bottom: 2px;
+                    }
+                    .info-section {
+                        width: 48%;
+                        padding: 8px;
+                    }
+                    .info-section table {
+                        width: 100%;
+                        font-size: 11px;
+                        border: none;
+                    }
+                    .info-section td {
+                        padding: 2px 0;
+                        color: #000 !important;
+                        border: none;
+                    }
+                    table {
+                        width: 100%;
+                        border-collapse: collapse;
+                        margin: 5px 0 20px;
+                    }
+                    table th, table td {
+                        border: 1px solid #000;
+                        padding: 3px;
+                        text-align: left;
+                        font-family: 'Courier New', monospace !important;
+                        color: #000 !important;
+                        font-size: 11px;
+                    }
+                    table th {
+                        background-color: #f0f0f0;
+                        font-weight: bold;
+                    }
+                    .text-center { text-align: center; }
+                    .text-right { text-align: right; }
+                    .text-left { text-align: left; }
+                    
+                    /* Footer Styling */
+                    .footer {
+                        text-align: center;
+                        margin-top: 30px;
+                        padding-top: 20px;
+                        color: #000;
+                    }
+                    
+                    .signature-row {
+                        display: flex;
+                        justify-content: space-around;
+                        margin-bottom: 5px;
+                        text-align: center;
+                    }
+                    
+                    .check {
+                        flex: 1;
+                        padding: 0 10px;
+                    }
+                    
+                    .check .signature-line {
+                        padding-bottom: 2px;
+                        min-height: 30px;
+                    }
+                    
+                    .check .label {
+                        font-size: 11px;
+                        font-weight: bold;
+                        color: #000 !important;
+                    }
+                    
+                    .footer p {
+                        margin: 0;
+                        font-size: 11px;
+                        color: #000 !important;
+                        font-weight: bold;
+                    }
+                    
+                    .footer .original {
+                        font-size: 12px;
+                        font-weight: bold;
+                        margin: 25px 0 0;
+                        letter-spacing: 2px;
+                    }
+                    
+                    .footer .bank-info {
+                        font-size: 11px;
+                        margin: 2px 0;
+                    }
+                    
+                    .footer .return-policy {
+                        font-size: 11px;
+                        margin-top: 5px;
+                        padding: 3px 0;
+                        font-weight: bold;
+                    }
+                    
+                    h3, h4, h5, h6, p, strong, span, td, th, div {
+                        font-family: 'Courier New', monospace !important;
+                        color: #000 !important;
+                    }
+                    
+                    @media print { 
+                        .no-print { display: none; }
+                        body { padding: 10px; }
+                        * { color: #000 !important; }
+                    }
+                </style>
+            </head>
             <body>
-                <div class="company-header">
-                    <div class="company-name">SAHAR LANKA</div>
-                    <div class="company-address">Importers & Retailers of Genuine Spares for</div>
-                    <div class="company-address">MARUTI-LEYLAND - MAHINDRA-TATA-ALTO</div>
-                    <div class="company-address">Phone: 077 6718838 | Address: No. 397/3, Dunu Ela, Thihariya, Kalagedihena.</div>
-                </div>
-                
-                <div class="receipt-title">SALES INVOICE</div>
-                
-                <div class="info-row">
-                    <div class="info-section">
-                        <h6>Customer Information</h6>
-                        <table>
-                            <tr><td>Name:</td><td>${customerName}</td></tr>
-                            <tr><td>Phone:</td><td>${customerPhone}</td></tr>
-                        </table>
+                <div class="receipt-container">
+                    <div class="company-header">
+                        <div class="company-name">SAHAR LANKA</div>
+                        <div class="company-address">Importers & Retailers of Genuine Spares for</div>
+                        <div class="company-address">MARUTI - LEYLAND - MAHINDRA - TATA - ALTO</div>
+                        <div class="company-address">Phone: 077 6718838 | Address: No. 397/3, Dunu Ela, Thihariya, Kalagedihena.</div>
                     </div>
-                    <div class="info-section">
-                        <h6>Invoice Information</h6>
-                        <table>
-                            <tr><td>Invoice Number:</td><td>${invoiceNum}</td></tr>
-                            <tr><td>Date:</td><td>${invoiceDate}</td></tr>
-                            <tr><td>Payment Status:</td><td>${paymentStatus}</td></tr>
-                        </table>
-                    </div>
-                </div>
-                ${itemsTable ? itemsTable.outerHTML : '<p>No items found</p>'}
-                
-                ${returnHTML}
-                
-                <div class="summary-section">
-                    <div class="summary-box">
-                        <h6>Payment Summary</h6>
-                        <div class="summary-row total">
-                            <span>Grand Total:</span>
-                            <span>${grandTotal}</span>
+                    
+                    <div class="info-row">
+                        <div class="info-section">
+                            <table>
+                                <tr><td>Name:</td><td>${customerName}</td></tr>
+                                <tr><td>Address:</td><td>${customerAddress}</td></tr>
+                                <tr><td>Phone:</td><td>${customerPhone}</td></tr>
+                            </table>
+                        </div>
+                        <div class="info-section">
+                            <table>
+                                <tr><td>Invoice Number:</td><td>${invoiceNumber}</td></tr>
+                                <tr><td>Date:</td><td>${date}</td></tr>
+                            </table>
                         </div>
                     </div>
-                </div>
-                
-                <div class="footer">
-                    <p><strong>Thank you for your purchase!</strong></p>
+                    
+                    ${itemsTable ? itemsTable.outerHTML : ''}
+                    
+                    ${returnTableHTML}
+                    
+                    <div class="footer">
+                        <div class="signature-row">
+                            <div class="check">
+                                <div class="signature-line">...........................</div>
+                                <div class="label">Receiver's Signature</div>
+                            </div>
+                            <div class="check">
+                                <div class="signature-line">...........................</div>
+                                <div class="label">Check By</div>
+                            </div>
+                            <div class="check">
+                                <div class="signature-line">...........................</div>
+                                <div class="label">Authorized Signature</div>
+                            </div>
+                        </div>
+                        
+                        <p class="original">*****ORIGINAL*****</p>
+                        <p>Please draw the cheque in favor of M.A.Z Ahamed</p>
+                        <p class="bank-info">Peoples Bank Acc No: 278100102421207</p>
+                        <p class="return-policy">||RETURN GOODS WILL BE ACCEPTED WITHIN 30 DAYS ONLY||</p>
+                    </div>
                 </div>
             </body>
             </html>
-        `;
+        `);
 
-        const frameDoc = printFrame.contentWindow || printFrame.contentDocument;
-        frameDoc.document.open();
-        frameDoc.document.write(htmlContent);
-        frameDoc.document.close();
+        printWindow.document.close();
+        printWindow.focus();
 
         setTimeout(() => {
-            printFrame.contentWindow.focus();
-            printFrame.contentWindow.print();
-        }, 500);
+            printWindow.print();
+            printWindow.close();
+        }, 250);
     }
 
     document.addEventListener('livewire:initialized', () => {

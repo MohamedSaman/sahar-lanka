@@ -43,6 +43,44 @@
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
         }
 
+        .discount-type-btn {
+            padding: 8px 16px;
+            border: 2px solid #dee2e6;
+            background: white;
+            color: #6c757d;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border-radius: 0;
+        }
+
+        .discount-type-btn:hover {
+            background: #f8f9fa;
+            border-color: #adb5bd;
+            transform: translateY(-1px);
+        }
+
+        .discount-type-btn.active {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+            border-color: #667eea !important;
+            color: white !important;
+            font-weight: bold;
+        }
+
+        .discount-type-btn.active i {
+            color: white !important;
+        }
+
+        .discount-type-btn:first-child {
+            border-top-left-radius: 0.375rem;
+            border-bottom-left-radius: 0.375rem;
+        }
+
+        .discount-type-btn:last-child {
+            border-top-right-radius: 0.375rem;
+            border-bottom-right-radius: 0.375rem;
+            border-left: none;
+        }
+
         @media (max-width: 767.98px) {
             .table {
                 font-size: 0.875rem;
@@ -50,10 +88,8 @@
 
             .table td:nth-child(3),
             .table th:nth-child(3),
-            /* Code */
             .table td:nth-child(6),
             .table th:nth-child(6) {
-                /* Discount */
                 display: none;
             }
 
@@ -162,8 +198,8 @@
                                             Unit Price</th>
                                         <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
                                             Quantity</th>
-                                        <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
-                                            Discount</th>
+                                        <!-- <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
+                                            Discount</th> -->
                                         <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
                                             Total</th>
                                         <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
@@ -207,7 +243,6 @@
                                         </td>
                                         <td>
                                             <div style="width: 100px;">
-                                                {{-- FIXED: Removed wire:change and other attributes to simplify and prevent conflicts --}}
                                                 <input type="number"
                                                     class="form-control form-control-sm text-center quantity-input"
                                                     value="{{ $quantities[$id] }}" min="1"
@@ -217,7 +252,7 @@
                                             </div>
                                         </td>
 
-                                        <td>
+                                        <!-- <td>
                                             <div class="input-group input-group-sm" style="width: 150px;">
                                                 <span class="input-group-text">Rs.</span>
                                                 <input type="number" class="form-control form-control-sm"
@@ -225,7 +260,7 @@
                                                     max="{{ $prices[$id] }}" step="0.01"
                                                     wire:model.blur="discounts.{{ $id }}">
                                             </div>
-                                        </td>
+                                        </td> -->
                                         <td>
                                             <p class="text-xs font-weight-bold mb-0">
                                                 Rs.{{ number_format(($prices[$id]) *
@@ -233,10 +268,6 @@
                                             </p>
                                         </td>
                                         <td>
-                                            <!-- <button class="btn btn-link btn-sm text-info rounded-circle "
-                                                wire:click="showDetail({{ $id }})">
-                                                <i class="bi bi-eye"></i>
-                                            </button> -->
                                             <button class="btn btn-link btn-sm text-danger rounded-circle "
                                                 wire:click="removeFromCart({{ $id }})">
                                                 <i class="bi bi-trash"></i>
@@ -342,7 +373,6 @@
                                                     <i class="fas fa-money-check-alt me-2"></i>Cheque Payments
                                                 </h6>
 
-                                                <!-- Improved Cheque Form -->
                                                 <div class="card bg-light mb-3">
                                                     <div class="card-header bg-white">
                                                         <h6 class="mb-0 text-primary"><i class="fas fa-plus-circle me-2"></i>Add New Cheque</h6>
@@ -358,7 +388,6 @@
                                                                         placeholder="Enter cheque number"
                                                                         wire:model="newCheque.number"
                                                                         required>
-
                                                                 </div>
 
                                                                 <div class="col-md-6">
@@ -385,7 +414,6 @@
                                                                         wire:model="newCheque.date"
                                                                         min="{{ date('Y-m-d') }}"
                                                                         required>
-
                                                                 </div>
 
                                                                 <div class="col-md-6">
@@ -401,7 +429,6 @@
                                                                             step="0.01"
                                                                             required>
                                                                     </div>
-
                                                                 </div>
                                                             </div>
 
@@ -529,479 +556,570 @@
 
                             </div>
                             <div class="col-md-6">
-                                <div class="card">
-                                    <div class="card-header bg-light">
-                                        <h6 class="mb-0 fw-bold">Order Summary</h6>
+                                <div class="card-body">
+                                    <div class="d-flex justify-content-between mb-2">
+                                        <span>Subtotal:</span>
+                                        <span>Rs.{{ number_format($subtotal, 2) }}</span>
                                     </div>
-                                    <div class="card-body">
-                                        <div class="d-flex justify-content-between mb-2">
-                                            <span>Subtotal:</span>
-                                            <span>Rs.{{ number_format($subtotal, 2) }}</span>
-                                        </div>
-                                        <div class="d-flex justify-content-between mb-2">
-                                            <span>Total Discount:</span>
-                                            <span>Rs.{{ number_format($totalDiscount, 2) }}</span>
-                                        </div>
-                                        <hr>
-                                        <div class="d-flex justify-content-between">
-                                            <span class="fw-bold">Grand Total:</span>
-                                            <span class="fw-bold">Rs.{{ number_format($grandTotal, 2) }}</span>
-                                        </div>
-
-                                        <div class="d-flex mt-4">
-                                            <button class="btn btn-danger me-2" wire:click="clearCart">
-                                                <i class="bi bi-x me-2"></i>Clear
-                                            </button>
-                                            <button class="btn btn-success flex-grow-1" wire:click="completeSale">
-                                                <i class="bi bi-check me-2"></i>Complete Sale
-                                            </button>
-                                        </div>
+                                    <div class="d-flex justify-content-between mb-2">
+                                        <span>Item Discounts:</span>
+                                        <span class="text-danger">-Rs.{{ number_format($totalDiscount, 2) }}</span>
                                     </div>
-                                </div>
-                            </div>
-                        </div>
 
-                    </div>
-                </div>
-            </div>
+                                    <!-- Overall Discount Section with Icon Buttons -->
+                                    <div class="card bg-light p-3 mb-3 mt-3">
+                                        <h6 class="fw-bold mb-3">
+                                            <i class="fas fa-tag me-2"></i>Additional Discount
+                                        </h6>
 
-
-            <div wire:ignore.self class="modal fade" id="viewDetailModal" tabindex="-1"
-                aria-labelledby="viewDetailModalLabel" aria-hidden="true">
-                <div class="modal-dialog modal-xl modal-dialog-scrollable">
-                    <div class="modal-content">
-                        <div class="modal-header bg-primary">
-                            <h1 class="modal-title fs-5 text-white" id="viewDetailModalLabel">Watch Details</h1>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                        </div>
-                        @if ($productDetails)
-                        <div class="modal-body p-4">
-                            <div class="card shadow-sm border-0">
-                                <div class="card-body p-0">
-                                    <div class="row g-0">
-                                        <div class="col-md-4 border-end">
-                                            <div class="position-relative h-100">
-                                                @if ($productDetails->image)
-                                                <img src="{{ asset('public/storage/' . $productDetails->image) }}"
-                                                    alt="{{ $productDetails->name }}"
-                                                    class="img-fluid rounded-start h-100 w-100 object-fit-cover">
+                                        <!-- Discount Value Input with Type Icons -->
+                                        <div class="mb-2">
+                                            <label class="form-label small fw-bold">Discount Value</label>
+                                            <div class="input-group">
+                                                @if($discountType === 'percentage')
+                                                <input type="number" class="form-control"
+                                                    placeholder="Enter percentage"
+                                                    wire:model.live="discountValue"
+                                                    min="0"
+                                                    max="100"
+                                                    step="0.01">
                                                 @else
-                                                <div
-                                                    class="bg-light d-flex flex-column align-items-center justify-content-center h-100">
-                                                    <i class="bi bi-box-seam text-muted" style="font-size: 5rem;"></i>
-                                                    <p class="text-muted mt-2">No image available</p>
-                                                </div>
+                                                <span class="input-group-text">Rs.</span>
+                                                <input type="number" class="form-control"
+                                                    placeholder="Enter amount"
+                                                    wire:model.live="discountValue"
+                                                    min="0"
+                                                    max="{{ $subtotal - $totalDiscount }}"
+                                                    step="0.01">
                                                 @endif
-                                                <div class="position-absolute top-0 end-0 p-2 d-flex flex-column gap-2">
-                                                    @if ($productDetails->available_stock > 0)
-                                                    <span class="badge bg-success">
-                                                        <i class="bi bi-check-circle-fill"></i> In Stock
-                                                    </span>
-                                                    @else
-                                                    <span class="badge bg-danger">
-                                                        <i class="bi bi-x-circle-fill"></i> Out of Stock
-                                                    </span>
-                                                    @endif
+
+                                                <!-- Discount Type Toggle Buttons -->
+                                                <div class="btn-group" role="group" aria-label="Discount Type">
+                                                    <button type="button"
+                                                        class="discount-type-btn {{ $discountType === 'amount' ? 'active' : '' }}"
+                                                        wire:click="$set('discountType', 'amount')"
+                                                        title="Amount Discount">
+                                                        <i class="fas fa-dollar-sign"></i> Rs
+                                                    </button>
+                                                    <button type="button"
+                                                        class="discount-type-btn {{ $discountType === 'percentage' ? 'active' : '' }}"
+                                                        wire:click="$set('discountType', 'percentage')"
+                                                        title="Percentage Discount">
+                                                        <i class="fas fa-percent"></i> %
+                                                    </button>
                                                 </div>
                                             </div>
+                                            @if($discountType === 'percentage')
+                                            <small class="text-muted">Max: 100%</small>
+                                            @else
+                                            <small class="text-muted">Max: Rs.{{ number_format($subtotal - $totalDiscount, 2) }}</small>
+                                            @endif
                                         </div>
 
-                                        <div class="col-md-8">
-                                            <div class="p-4">
-                                                <div class="d-flex justify-content-between align-items-center mb-3">
-                                                    <h3 class="fw-bold mb-0 text-primary">{{
-                                                        $productDetails->product_name }}</h3>
-                                                </div>
-
-                                                <div class="mb-3">
-                                                    <span class="badge bg-dark p-2 fs-6">Code: {{
-                                                        $productDetails->product_code ?? 'N/A' }}</span>
-                                                </div>
-
-                                                <div class="mb-4">
-                                                    <p class="text-muted mb-1">Description</p>
-                                                    <p>{{ $productDetails->description ?? 'N/A' }}</p>
-                                                </div>
-
-                                                <div class="card bg-light p-3 mb-3">
-                                                    <div class="d-flex justify-content-between align-items-center">
-                                                        <div>
-                                                            <h4 class="text-primary fw-bold">
-                                                                Rs.{{ number_format($productDetails->selling_price, 2)
-                                                                }}
-                                                            </h4>
-                                                            @if ($productDetails->available_stock > 0)
-                                                            <small class="text-success">
-                                                                <i class="bi bi-check-circle-fill"></i> {{
-                                                                $productDetails->available_stock }} units available
-                                                            </small>
-                                                            @else
-                                                            <small class="text-danger fw-bold">
-                                                                <i class="bi bi-exclamation-triangle-fill"></i> OUT OF
-                                                                STOCK
-                                                            </small>
-                                                            @endif
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
+                                        <!-- Calculated Discount Display -->
+                                        @if($calculatedDiscount > 0)
+                                        <div class="alert alert-success mb-0 py-2">
+                                            <small class="fw-bold">
+                                                <i class="fas fa-check-circle me-1"></i>
+                                                Discount Applied: Rs.{{ number_format($calculatedDiscount, 2) }}
+                                                @if($discountType === 'percentage')
+                                                ({{ number_format($discountValue, 2) }}%)
+                                                @endif
+                                            </small>
                                         </div>
-                                    </div>
-                                </div>
-
-                                <div class="accordion mt-4" id="productDetailsAccordion">
-                                    <div class="accordion-item">
-                                        <h2 class="accordion-header">
-                                            <button class="accordion-button" type="button" data-bs-toggle="collapse"
-                                                data-bs-target="#inventory-collapse" aria-expanded="true"
-                                                aria-controls="inventory-collapse">
-                                                <i class="bi bi-box-seam me-2"></i> Inventory
-                                            </button>
-                                        </h2>
-                                        <div id="inventory-collapse" class="accordion-collapse collapse show"
-                                            data-bs-parent="#productDetailsAccordion">
-                                            <div class="accordion-body">
-                                                <div class="row">
-                                                    <div class="col-md-6">
-                                                        <div class="card mb-3 border-danger">
-                                                            <div class="card-body d-flex justify-content-between">
-                                                                <p class="card-text fw-bold">Damage Stock</p>
-                                                                <h4 class="card-title text-danger">{{
-                                                                    $productDetails->damage_quantity }}</h4>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                    <div class="col-md-6">
-                                                        <div
-                                                            class="card mb-3 {{ $productDetails->available_stock > 0 ? 'border-success' : 'border-danger' }}">
-                                                            <div class="card-body d-flex justify-content-between">
-                                                                <p class="card-text fw-bold">Available Stock</p>
-                                                                <h4
-                                                                    class="card-title {{ $productDetails->available_stock > 0 ? 'text-success' : 'text-danger' }}">
-                                                                    {{ $productDetails->available_stock }}
-                                                                </h4>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
-                        </div>
-                        @endif
-
-
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-
-            <div wire:ignore.self class="modal fade" id="addCustomerModal" tabindex="-1"
-                aria-labelledby="addCustomerModalLabel" aria-hidden="true">
-                <div class="modal-dialog modal-lg">
-                    <div class="modal-content">
-                        <div class="modal-header bg-primary text-white">
-                            <h5 class="modal-title" id="addCustomerModalLabel">
-                                <i class="bi bi-user-plus me-2"></i>Add New Customer
-                            </h5>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                        </div>
-                        <div class="modal-body">
-                            <form wire:submit.prevent="saveCustomer">
-                                <div class="row g-3">
-                                    <div class="col-md-12">
-                                        <label class="form-label">Customer Type</label>
-                                        <div class="d-flex">
-                                            <div class="form-check me-4">
-                                                <input class="form-check-input" type="radio" name="newCustomerType"
-                                                    id="newWholesale" value="wholesale" wire:model="newCustomerType" checked>
-                                                <label class="form-check-label" for="newWholesale">Wholesale</label>
-                                            </div>
-                                            <div class="form-check ">
-                                                <input class="form-check-input" type="radio" name="newCustomerType"
-                                                    id="newRetail" value="retail" wire:model="newCustomerType">
-                                                <label class="form-check-label" for="newRetail">Retail</label>
-                                            </div>
-
-                                        </div>
-                                    </div>
-
-                                    <div class="col-md-6">
-                                        <label class="form-label">Full Name <span class="text-danger">*</span></label>
-                                        <div class="input-group">
-                                            <span class="input-group-text"><i class="bi bi-person"></i></span>
-                                            <input type="text" class="form-control" placeholder="Enter customer name"
-                                                wire:model="newCustomerName" required>
-                                        </div>
-                                        @error('newCustomerName')
-                                        <small class="text-danger">{{ $message }}</small>
-                                        @enderror
-                                    </div>
-                                    <div class="col-md-6">
-                                        <label class="form-label">Phone Number</label>
-                                        <div class="input-group">
-                                            <span class="input-group-text"><i class="bi bi-telephone"></i></span>
-                                            <input type="text" class="form-control" placeholder="Enter phone number"
-                                                wire:model="newCustomerPhone">
-                                        </div>
-                                        @error('newCustomerPhone')
-                                        <small class="text-danger">{{ $message }}</small>
-                                        @enderror
-                                    </div>
-
-                                    <div class="col-md-6">
-                                        <label class="form-label">Email Address</label>
-                                        <div class="input-group">
-                                            <span class="input-group-text"><i class="bi bi-envelope-at"></i></span>
-                                            <input type="email" class="form-control" placeholder="Enter email address"
-                                                wire:model="newCustomerEmail">
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <label class="form-label">Address</label>
-                                        <div class="input-group">
-                                            <span class="input-group-text"><i class="bi bi-geo-alt"></i></span>
-                                            <input type="text" class="form-control" placeholder="Enter address"
-                                                wire:model="newCustomerAddress">
-                                        </div>
-                                    </div>
-
-                                    <div class="col-md-12">
-                                        <label class="form-label">Additional Information</label>
-                                        <textarea class="form-control" rows="3"
-                                            placeholder="Add any additional information about this customer"
-                                            wire:model="newCustomerNotes"></textarea>
-                                    </div>
-                                </div>
-                            </form>
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
-                                <i class="bi bi-x me-1"></i>Cancel
-                            </button>
-                            <button type="button" class="btn btn-primary" wire:click="saveCustomer">
-                                <i class="bi bi-save me-1"></i>Save Customer
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div wire:ignore.self class="modal fade" id="receiptModal" tabindex="-1" aria-labelledby="receiptModalLabel"
-                aria-hidden="true">
-                <div class="modal-dialog modal-lg">
-                    <div class="modal-content rounded-4 shadow-xl"
-                        style="border: 2px solid #233D7F; background: linear-gradient(145deg, #FFFFFF, #F8F9FA);">
-                        <div class="modal-header"
-                            style="background-color: #233D7F; color: #FFFFFF; border-top-left-radius: 0.5rem; border-top-right-radius: 0.5rem;">
-                            <h5 class="modal-title fw-bold tracking-tight" id="receiptModalLabel">
-                                <i class="bi bi-receipt me-2"></i>Sales Receipt
-                            </h5>
-                            <div class="ms-auto d-flex gap-2">
-                                <button type="button" class="btn btn-sm rounded-full px-3 transition-all hover:shadow"
-                                    id="printButton" style="background-color: #233D7F;border-color:#fff; color: #fff;">
-                                    <i class="bi bi-printer me-1"></i>Print
-                                </button>
-                                <button type="button" class="btn-close btn-close-white opacity-75 hover:opacity-100"
-                                    data-bs-dismiss="modal" aria-label="Close"></button>
-                            </div>
-                        </div>
-                        <div class="modal-body p-4" id="receiptContent">
-                            @if ($receipt)
-                            <div class="receipt-container">
-                                <div class="text-center mb-4">
-                                    <h3 class="mb-1 fw-bold tracking-tight" style="color: #233D7F;">SAHAR LANKA</h3>
-                                    <h5 class="mb-1 fw-medium" style="color: #233D7F;">Importers & Retailers of Genuine Spares for <br> MARUTI-LEYLAND - MAHINDRA-TATA-ALTO</h5>
-                                    <p class="mb-0 text-muted small" style="color: #6B7280;">NO. 397/, DUNU ELA, THIHARIYA, KALAGEDIHENA</p>
-                                    <p class="mb-0 text-muted small" style="color: #6B7280;">Phone: 077 6718838</p>
-                                    <hr style=" border: 2px solid #233D7F;">
-                                </div>
-
-
-                                <div class="row mb-2">
-
-                                    <div class="col-md-6">
-
-                                        @if ($receipt->customer)
-                                        <p class="mb-1" style="color: #233D7F;"><strong>Customer Name:</strong> {{
-                                            $receipt->customer->name }}</p>
-                                        <p class="mb-1" style="color: #233D7F;"><strong>Address:</strong> {{
-                                            $receipt->customer->address }} : {{ $receipt->customer->phone }}</p>
-                                        @else
-                                        <p class="text-muted" style="color: #6B7280;">Walk-in Customer</p>
                                         @endif
                                     </div>
-                                    <div class="col-md-6">
 
-                                        <p class="mb-1" style="color: #233D7F;"><strong>Invoice Number:</strong> {{
-                                            $receipt->invoice_number }}</p>
-                                        <p class="mb-1" style="color: #233D7F;"><strong>Date:</strong> {{
-                                            $receipt->created_at->setTimezone('Asia/Colombo')->format('d/m/Y h:i A') }}
-                                        </p>
-                                        <p class="mb-1"><strong>Payment Status:</strong>
-                                            @if(ucfirst($receipt->payment_status) == 'Paid')
-                                            <span class="badge"
-                                                style="background-color: {{ $receipt->payment_status == 'paid' ? '#0F5132' : ($receipt->payment_status == 'partial' ? '#664D03' : '#842029') }}; color: #FFFFFF;">
-                                                Paid
-                                            </span>
-                                            @else
-                                            <span class="badge"
-                                                style="background-color: {{ $receipt->payment_status == 'paid' ? '#0F5132' : ($receipt->payment_status == 'partial' ? '#664D03' : '#842029') }}; color: #FFFFFF;">
-                                                Credit
-                                            </span>
-                                            @endif
-                                        </p>
+                                    <!-- Show overall discount if applied -->
+                                    @if($calculatedDiscount > 0)
+                                    <div class="d-flex justify-content-between mb-2">
+                                        <span>Additional Discount:</span>
+                                        <span class="text-danger">-Rs.{{ number_format($calculatedDiscount, 2) }}</span>
+                                    </div>
+                                    @endif
+
+                                    <hr>
+                                    <div class="d-flex justify-content-between">
+                                        <span class="fw-bold">Grand Total:</span>
+                                        <span class="fw-bold text-success">Rs.{{ number_format($grandTotal, 2) }}</span>
+                                    </div>
+
+                                    <div class="d-flex mt-4">
+                                        <button class="btn btn-danger me-2" wire:click="clearCart">
+                                            <i class="bi bi-x me-2"></i>Clear
+                                        </button>
+                                        <button class="btn btn-success flex-grow-1" wire:click="completeSale">
+                                            <i class="bi bi-check me-2"></i>Complete Sale
+                                        </button>
                                     </div>
                                 </div>
-                                <div class="table-responsive mb-4">
-                                    <table class="table table-bordered table-sm border-1"
-                                        style="border-color: #233D7F;">
-                                        <thead style="background-color: #233D7F; color: #FFFFFF;">
-                                            <tr>
-                                                <th scope="col" class="text-center py-2">No</th>
-                                                <th scope="col" class="text-center py-2">Item</th>
-                                                <th scope="col" class="text-center py-2">Code</th>
-                                                <th scope="col" class="text-center py-2">Price</th>
-                                                <th scope="col" class="text-center py-2">Qty</th>
-                                                <th scope="col" class="text-center py-2">Total</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody style="color: #233D7F;">
-                                            @foreach ($receipt->items as $index => $item)
-                                            <tr class="transition-all hover:bg-gray-50">
-                                                <td class="text-center py-1">{{ $index + 1 }}</td>
-                                                <td class="text-left py-1">{{ $item->product->product_name ?? 'N/A' }}
-                                                </td>
-                                                <td class="text-center py-1">{{ $item->product->product_code ?? 'N/A' }}
-                                                </td>
-                                                <td class="text-right py-1">Rs.{{ number_format($item->price, 2) }}
-                                                </td>
-                                                <td class="text-center py-1">{{ $item->quantity }}</td>
-                                                <td class="text-right py-1">Rs.{{ number_format(($item->price *
-                                                    $item->quantity) - ($item->discount * $item->quantity), 2) }}</td>
-                                            </tr>
-                                            @endforeach
-                                        </tbody>
-                                    </table>
-                                </div>
+                            </div>
+                        </div>
+                    </div>
 
-                                <div class="row">
-                                    <div class="col-md-12">
-                                        <hr style="border-color: #233D7F;">
-                                        <div class="d-flex justify-content-end" style="color: #233D7F;">
-                                            <div style="text-align: right;">
-                                                <span class="fw-bold">Grand Total: Rs.{{ number_format($receipt->total_amount, 2) }}</span>
+                </div>
+            </div>
+        </div>
+
+
+        <div wire:ignore.self class="modal fade" id="viewDetailModal" tabindex="-1"
+            aria-labelledby="viewDetailModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-xl modal-dialog-scrollable">
+                <div class="modal-content">
+                    <div class="modal-header bg-primary">
+                        <h1 class="modal-title fs-5 text-white" id="viewDetailModalLabel">Watch Details</h1>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    @if ($productDetails)
+                    <div class="modal-body p-4">
+                        <div class="card shadow-sm border-0">
+                            <div class="card-body p-0">
+                                <div class="row g-0">
+                                    <div class="col-md-4 border-end">
+                                        <div class="position-relative h-100">
+                                            @if ($productDetails->image)
+                                            <img src="{{ asset('public/storage/' . $productDetails->image) }}"
+                                                alt="{{ $productDetails->name }}"
+                                                class="img-fluid rounded-start h-100 w-100 object-fit-cover">
+                                            @else
+                                            <div
+                                                class="bg-light d-flex flex-column align-items-center justify-content-center h-100">
+                                                <i class="bi bi-box-seam text-muted" style="font-size: 5rem;"></i>
+                                                <p class="text-muted mt-2">No image available</p>
+                                            </div>
+                                            @endif
+                                            <div class="position-absolute top-0 end-0 p-2 d-flex flex-column gap-2">
+                                                @if ($productDetails->available_stock > 0)
+                                                <span class="badge bg-success">
+                                                    <i class="bi bi-check-circle-fill"></i> In Stock
+                                                </span>
+                                                @else
+                                                <span class="badge bg-danger">
+                                                    <i class="bi bi-x-circle-fill"></i> Out of Stock
+                                                </span>
+                                                @endif
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-8">
+                                        <div class="p-4">
+                                            <div class="d-flex justify-content-between align-items-center mb-3">
+                                                <h3 class="fw-bold mb-0 text-primary">{{
+                                                        $productDetails->product_name }}</h3>
+                                            </div>
+
+                                            <div class="mb-3">
+                                                <span class="badge bg-dark p-2 fs-6">Code: {{
+                                                        $productDetails->product_code ?? 'N/A' }}</span>
+                                            </div>
+
+                                            <div class="mb-4">
+                                                <p class="text-muted mb-1">Description</p>
+                                                <p>{{ $productDetails->description ?? 'N/A' }}</p>
+                                            </div>
+
+                                            <div class="card bg-light p-3 mb-3">
+                                                <div class="d-flex justify-content-between align-items-center">
+                                                    <div>
+                                                        <h4 class="text-primary fw-bold">
+                                                            Rs.{{ number_format($productDetails->selling_price, 2)
+                                                                }}
+                                                        </h4>
+                                                        @if ($productDetails->available_stock > 0)
+                                                        <small class="text-success">
+                                                            <i class="bi bi-check-circle-fill"></i> {{
+                                                                $productDetails->available_stock }} units available
+                                                        </small>
+                                                        @else
+                                                        <small class="text-danger fw-bold">
+                                                            <i class="bi bi-exclamation-triangle-fill"></i> OUT OF
+                                                            STOCK
+                                                        </small>
+                                                        @endif
+                                                    </div>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
+                            </div>
 
-                                <div class="text-center mt-4 pt-3 border-top" style="border-color: #233D7F;">
-                                    <p class="mb-0 text-muted small" style="color: #6B7280;">Thank you for your
-                                        purchase!</p>
+                            <div class="accordion mt-4" id="productDetailsAccordion">
+                                <div class="accordion-item">
+                                    <h2 class="accordion-header">
+                                        <button class="accordion-button" type="button" data-bs-toggle="collapse"
+                                            data-bs-target="#inventory-collapse" aria-expanded="true"
+                                            aria-controls="inventory-collapse">
+                                            <i class="bi bi-box-seam me-2"></i> Inventory
+                                        </button>
+                                    </h2>
+                                    <div id="inventory-collapse" class="accordion-collapse collapse show"
+                                        data-bs-parent="#productDetailsAccordion">
+                                        <div class="accordion-body">
+                                            <div class="row">
+                                                <div class="col-md-6">
+                                                    <div class="card mb-3 border-danger">
+                                                        <div class="card-body d-flex justify-content-between">
+                                                            <p class="card-text fw-bold">Damage Stock</p>
+                                                            <h4 class="card-title text-danger">{{
+                                                                    $productDetails->damage_quantity }}</h4>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <div
+                                                        class="card mb-3 {{ $productDetails->available_stock > 0 ? 'border-success' : 'border-danger' }}">
+                                                        <div class="card-body d-flex justify-content-between">
+                                                            <p class="card-text fw-bold">Available Stock</p>
+                                                            <h4
+                                                                class="card-title {{ $productDetails->available_stock > 0 ? 'text-success' : 'text-danger' }}">
+                                                                {{ $productDetails->available_stock }}
+                                                            </h4>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
-                            @else
-                            <div class="text-center p-5">
-                                <p class="text-muted" style="color: #6B7280;">No receipt data available</p>
+                        </div>
+
+                    </div>
+                    @endif
+
+
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <div wire:ignore.self class="modal fade" id="addCustomerModal" tabindex="-1"
+            aria-labelledby="addCustomerModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header bg-primary text-white">
+                        <h5 class="modal-title" id="addCustomerModalLabel">
+                            <i class="bi bi-user-plus me-2"></i>Add New Customer
+                        </h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form wire:submit.prevent="saveCustomer">
+                            <div class="row g-3">
+                                <div class="col-md-12">
+                                    <label class="form-label">Customer Type</label>
+                                    <div class="d-flex">
+                                        <div class="form-check me-4">
+                                            <input class="form-check-input" type="radio" name="newCustomerType"
+                                                id="newWholesale" value="wholesale" wire:model="newCustomerType" checked>
+                                            <label class="form-check-label" for="newWholesale">Wholesale</label>
+                                        </div>
+                                        <div class="form-check ">
+                                            <input class="form-check-input" type="radio" name="newCustomerType"
+                                                id="newRetail" value="retail" wire:model="newCustomerType">
+                                            <label class="form-check-label" for="newRetail">Retail</label>
+                                        </div>
+
+                                    </div>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <label class="form-label">Full Name <span class="text-danger">*</span></label>
+                                    <div class="input-group">
+                                        <span class="input-group-text"><i class="bi bi-person"></i></span>
+                                        <input type="text" class="form-control" placeholder="Enter customer name"
+                                            wire:model="newCustomerName" required>
+                                    </div>
+                                    @error('newCustomerName')
+                                    <small class="text-danger">{{ $message }}</small>
+                                    @enderror
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label">Phone Number</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text"><i class="bi bi-telephone"></i></span>
+                                        <input type="text" class="form-control" placeholder="Enter phone number"
+                                            wire:model="newCustomerPhone">
+                                    </div>
+                                    @error('newCustomerPhone')
+                                    <small class="text-danger">{{ $message }}</small>
+                                    @enderror
+                                </div>
+
+                                <div class="col-md-6">
+                                    <label class="form-label">Email Address</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text"><i class="bi bi-envelope-at"></i></span>
+                                        <input type="email" class="form-control" placeholder="Enter email address"
+                                            wire:model="newCustomerEmail">
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label">Address</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text"><i class="bi bi-geo-alt"></i></span>
+                                        <input type="text" class="form-control" placeholder="Enter address"
+                                            wire:model="newCustomerAddress">
+                                    </div>
+                                </div>
+
+                                <div class="col-md-12">
+                                    <label class="form-label">Additional Information</label>
+                                    <textarea class="form-control" rows="3"
+                                        placeholder="Add any additional information about this customer"
+                                        wire:model="newCustomerNotes"></textarea>
+                                </div>
                             </div>
-                            @endif
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                            <i class="bi bi-x me-1"></i>Cancel
+                        </button>
+                        <button type="button" class="btn btn-primary" wire:click="saveCustomer">
+                            <i class="bi bi-save me-1"></i>Save Customer
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div wire:ignore.self class="modal fade" id="receiptModal" tabindex="-1" aria-labelledby="receiptModalLabel"
+            aria-hidden="true">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content rounded-4 shadow-xl"
+                    style="border: 2px solid #233D7F; background: linear-gradient(145deg, #FFFFFF, #F8F9FA);">
+                    <div class="modal-header"
+                        style="background-color: #233D7F; color: #FFFFFF; border-top-left-radius: 0.5rem; border-top-right-radius: 0.5rem;">
+                        <h5 class="modal-title fw-bold tracking-tight" id="receiptModalLabel">
+                            <i class="bi bi-receipt me-2"></i>Sales Receipt
+                        </h5>
+                        <div class="ms-auto d-flex gap-2">
+                            <button type="button" class="btn btn-sm rounded-full px-3 transition-all hover:shadow"
+                                id="printButton" style="background-color: #233D7F;border-color:#fff; color: #fff;">
+                                <i class="bi bi-printer me-1"></i>Print
+                            </button>
+                            <button type="button" class="btn-close btn-close-white opacity-75 hover:opacity-100"
+                                data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
-                        <div class="modal-footer border-top py-3" style="border-color: #233D7F; background: #F8F9FA;">
-                            <button type="button"
-                                class="btn btn-secondary rounded-pill px-4 fw-medium transition-all hover:shadow"
-                                data-bs-dismiss="modal"
-                                style="background-color: #6B7280; border-color: #6B7280; color: #FFFFFF;"
-                                onmouseover="this.style.backgroundColor='#233D7F'; this.style.borderColor='#233D7F';"
-                                onmouseout="this.style.backgroundColor='#6B7280'; this.style.borderColor='#6B7280';">Close</button>
+                    </div>
+                    <div class="modal-body p-4" id="receiptContent">
+                        @if ($receipt)
+                        <div class="receipt-container">
+                            <div class="text-center mb-4">
+                                <h3 class="mb-1 fw-bold tracking-tight" style="color: #233D7F;">SAHAR LANKA</h3>
+                                <h5 class="mb-1 fw-medium" style="color: #233D7F;">Importers & Retailers of Genuine Spares for <br> MARUTI-LEYLAND - MAHINDRA-TATA-ALTO</h5>
+                                <p class="mb-0 text-muted small" style="color: #6B7280;">NO. 397/, DUNU ELA, THIHARIYA, KALAGEDIHENA</p>
+                                <p class="mb-0 text-muted small" style="color: #6B7280;">Phone: 077 6718838</p>
+                                <hr style=" border: 2px solid #233D7F;">
+                            </div>
+
+
+                            <div class="row mb-2">
+
+                                <div class="col-md-6">
+
+                                    @if ($receipt->customer)
+                                    <p class="mb-1" style="color: #233D7F;"><strong>Customer Name:</strong> {{
+                                            $receipt->customer->name }}</p>
+                                    <p class="mb-1" style="color: #233D7F;"><strong>Address :</strong> {{
+                                            $receipt->customer->address }}</p>
+                                    <p class="mb-1" style="color: #233D7F;"><strong>Phone :</strong> {{
+                                            $receipt->customer->phone }}</p>
+                                    @else
+                                    <p class="text-muted" style="color: #6B7280;">Walk-in Customer</p>
+                                    @endif
+                                </div>
+                                <div class="col-md-6">
+
+                                    <p class="mb-1" style="color: #233D7F;"><strong>Invoice Number:</strong> {{
+                                            $receipt->invoice_number }}</p>
+                                    <p class="mb-1" style="color: #233D7F;"><strong>Date:</strong> {{
+                                            $receipt->created_at->setTimezone('Asia/Colombo')->format('d/m/Y h:i A') }}
+                                    </p>
+                                    <p class="mb-1"><strong>Payment Status:</strong>
+                                        @if(ucfirst($receipt->payment_status) == 'Paid')
+                                        <span class="badge"
+                                            style="background-color: {{ $receipt->payment_status == 'paid' ? '#0F5132' : ($receipt->payment_status == 'partial' ? '#664D03' : '#842029') }}; color: #FFFFFF;">
+                                            Paid
+                                        </span>
+                                        @else
+                                        <span class="badge"
+                                            style="background-color: {{ $receipt->payment_status == 'paid' ? '#0F5132' : ($receipt->payment_status == 'partial' ? '#664D03' : '#842029') }}; color: #FFFFFF;">
+                                            Credit
+                                        </span>
+                                        @endif
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="table-responsive mb-4">
+                                <table class="table table-bordered table-sm border-1"
+                                    style="border-color: #233D7F;">
+                                    <thead style="background-color: #233D7F; color: #FFFFFF;">
+                                        <tr>
+                                            <th scope="col" class="text-center py-2">No</th>
+                                            <th scope="col" class="text-center py-2">Code</th>
+                                            <th scope="col" class="text-center py-2">Product Name</th>
+
+                                            <th scope="col" class="text-center py-2">Qty</th>
+                                            <th scope="col" class="text-center py-2">Unit Price</th>
+                                            <th scope="col" class="text-center py-2">Total</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody style="color: #233D7F;">
+                                        @foreach ($receipt->items as $index => $item)
+                                        <tr class="transition-all hover:bg-gray-50">
+                                            <td class="text-center py-1">{{ $index + 1 }}</td>
+                                            <td class="text-center py-1">{{ $item->product->product_code ?? 'N/A' }}
+                                            </td>
+                                            <td class="text-left py-1">{{ $item->product->product_name ?? 'N/A' }}
+                                            </td>
+                                            <td class="text-center py-1">{{ $item->quantity }}</td>
+                                            <td class="text-right py-1">{{ number_format($item->price, 2) }}
+                                            </td>
+
+                                            <td class="text-right py-1">{{ number_format(($item->price *
+                                                    $item->quantity) - ($item->discount * $item->quantity), 2) }}</td>
+                                        </tr>
+                                        @endforeach
+                                        <!-- Subtotal, Discount, and Grand Total rows -->
+                                        <tr style="background-color: #f8f9fa;">
+                                            <td colspan="5" class="text-right py-2 fw-bold" style="font-size: 14px;">Amount (LKR):</td>
+                                            <td class="text-right py-2 fw-bold" style="font-size: 14px;">{{ number_format($receipt->subtotal, 2) }}</td>
+                                        </tr>
+                                        @if($receipt->discount_amount > 0)
+                                        <tr style="background-color: #f8f9fa;">
+                                            <td colspan="5" class="text-right py-2 fw-bold text-danger" style="font-size: 14px;">Total Discount:</td>
+                                            <td class="text-right py-2 fw-bold text-danger" style="font-size: 14px;">({{ number_format($receipt->discount_amount, 2) }})</td>
+                                        </tr>
+
+                                        <tr style="background-color: #233D7F; color: #FFFFFF;">
+                                            <td colspan="5" class="text-right py-2 fw-bold fs-6" style="font-size: 14px;">Total:</td>
+                                            <td class="text-right py-2 fw-bold fs-6" style="font-size: 14px;">{{ number_format($receipt->total_amount, 2) }}</td>
+                                        </tr>
+                                        @else
+                                        <tr style="background-color: #f8f9fa;">
+                                            <td colspan="5" class="text-right py-2 fw-bold text-danger" style="font-size: 14px;">Total Discount:</td>
+                                            <td class="text-right py-2 fw-bold text-danger" style="font-size: 14px;"></td>
+                                        </tr>
+
+                                        <tr style="background-color: #233D7F; color: #FFFFFF;">
+                                            <td colspan="5" class="text-right py-2 fw-bold fs-6" style="font-size: 14px;">Total:</td>
+                                            <td class="text-right py-2 fw-bold fs-6" style="font-size: 14px;"></td>
+                                        </tr>
+                                        @endif
+                                    </tbody>
+                                </table>
+                            </div>
+
+                            <div class="text-center mt-4 pt-3 border-top" style="border-color: #233D7F;">
+                                <p class="mb-0 text-muted small" style="color: #6B7280;">Thank you for your
+                                    purchase!</p>
+                            </div>
                         </div>
+                        @else
+                        <div class="text-center p-5">
+                            <p class="text-muted" style="color: #6B7280;">No receipt data available</p>
+                        </div>
+                        @endif
+                    </div>
+                    <div class="modal-footer border-top py-3" style="border-color: #233D7F; background: #F8F9FA;">
+                        <button type="button"
+                            class="btn btn-secondary rounded-pill px-4 fw-medium transition-all hover:shadow"
+                            data-bs-dismiss="modal"
+                            style="background-color: #6B7280; border-color: #6B7280; color: #FFFFFF;"
+                            onmouseover="this.style.backgroundColor='#233D7F'; this.style.borderColor='#233D7F';"
+                            onmouseout="this.style.backgroundColor='#6B7280'; this.style.borderColor='#6B7280';">Close</button>
                     </div>
                 </div>
             </div>
         </div>
     </div>
+</div>
 
-    @push('scripts')
-    {{-- FIXED: Simplified script section --}}
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const printButton = document.getElementById('printButton');
-            if (printButton) {
-                printButton.addEventListener('click', function() {
-                    printSalesReceipt();
-                });
-            }
-        });
+@push('scripts')
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const printButton = document.getElementById('printButton');
+        if (printButton) {
+            printButton.addEventListener('click', function() {
+                printSalesReceipt();
+            });
+        }
+    });
 
-        function printSalesReceipt() {
-            const receiptContent = document.querySelector('#receiptContent');
-            if (!receiptContent) {
-                alert('Receipt content not found.');
-                return;
-            }
+    function printSalesReceipt() {
+        const receiptContent = document.querySelector('#receiptContent');
+        if (!receiptContent) {
+            alert('Receipt content not found.');
+            return;
+        }
 
-            // Extract data from receipt modal
-            const rowDiv = receiptContent.querySelector('.row.mb-2');
-            const leftCol = rowDiv?.querySelector('.col-md-6:first-child');
-            const rightCol = rowDiv?.querySelector('.col-md-6:last-child');
+        // Extract data from receipt modal
+        const rowDiv = receiptContent.querySelector('.row.mb-2');
+        const leftCol = rowDiv?.querySelector('.col-md-6:first-child');
+        const rightCol = rowDiv?.querySelector('.col-md-6:last-child');
 
-            // Extract customer information (from left column)
-            let customerName = 'Walk-in Customer';
-            let customerAddress = '';
+        // Extract customer information (from left column)
+        let customerName = 'Walk-in Customer';
+        let customerAddress = '';
+        let customerPhone = '';
 
-            if (leftCol) {
-                const customerNameP = leftCol.querySelector('p:first-child');
-                if (customerNameP && customerNameP.textContent.includes('Customer Name:')) {
-                    customerName = customerNameP.textContent.replace('Customer Name:', '').trim();
-                }
-
-                const customerAddressP = leftCol.querySelector('p:nth-child(2)');
-                if (customerAddressP && customerAddressP.textContent.includes('Address:')) {
-                    customerAddress = customerAddressP.textContent.replace('Address:', '').trim();
-                }
+        if (leftCol) {
+            const customerNameP = leftCol.querySelector('p:first-child');
+            if (customerNameP && customerNameP.textContent.includes('Customer Name:')) {
+                customerName = customerNameP.textContent.replace('Customer Name:', '').trim();
             }
 
-            // Extract invoice information (from right column)
-            let invoiceNumber = '';
-            let date = '';
-            let paymentStatus = 'N/A';
-
-            if (rightCol) {
-                const invoiceP = rightCol.querySelector('p:first-child');
-                if (invoiceP && invoiceP.textContent.includes('Invoice Number:')) {
-                    invoiceNumber = invoiceP.textContent.replace('Invoice Number:', '').trim();
-                }
-
-                const dateP = rightCol.querySelector('p:nth-child(2)');
-                if (dateP && dateP.textContent.includes('Date:')) {
-                    date = dateP.textContent.replace('Date:', '').trim();
-                }
-
-                const statusP = rightCol.querySelector('p:nth-child(3)');
-                if (statusP) {
-                    const statusBadge = statusP.querySelector('.badge');
-                    if (statusBadge) {
-                        paymentStatus = statusBadge.textContent.trim();
-                    }
-                }
+            const customerAddressP = leftCol.querySelector('p:nth-child(2)');
+            if (customerAddressP && customerAddressP.textContent.includes('Address :')) {
+                customerAddress = customerAddressP.textContent.replace('Address :', '').trim();
             }
 
-            // Get items table and total
-            const itemsTable = receiptContent.querySelector('.table-bordered');
-            const totalText = receiptContent.querySelector('.justify-content-end .fw-bold')?.textContent || '';
-            const grandTotal = totalText.replace('Grand Total:', '').trim();
+            const customerPhoneP = leftCol.querySelector('p:nth-child(3)');
+            if (customerPhoneP && customerPhoneP.textContent.includes('Phone :')) {
+                customerPhone = customerPhoneP.textContent.replace('Phone :', '').trim();
+            }
+        }
 
-            const printWindow = window.open('', '_blank', 'height=600,width=800');
+        // Extract invoice information (from right column)
+        let invoiceNumber = '';
+        let date = '';
+        let paymentStatus = 'N/A';
 
-            printWindow.document.write(`
+        if (rightCol) {
+            const invoiceP = rightCol.querySelector('p:first-child');
+            if (invoiceP && invoiceP.textContent.includes('Invoice Number:')) {
+                invoiceNumber = invoiceP.textContent.replace('Invoice Number:', '').trim();
+            }
+
+            const dateP = rightCol.querySelector('p:nth-child(2)');
+            if (dateP && dateP.textContent.includes('Date:')) {
+                date = dateP.textContent.replace('Date:', '').trim();
+            }
+
+            const statusP = rightCol.querySelector('p:nth-child(3)');
+            if (statusP) {
+                const statusBadge = statusP.querySelector('.badge');
+                if (statusBadge) {
+                    paymentStatus = statusBadge.textContent.trim();
+                }
+            }
+        }
+
+        // Get items table
+        const itemsTable = receiptContent.querySelector('.table-bordered');
+
+        const printWindow = window.open('', '_blank', 'height=600,width=800');
+
+        printWindow.document.write(`
                 <!DOCTYPE html>
                 <html>
                 <head>
@@ -1055,26 +1173,26 @@
                         .info-row {
                             display: flex;
                             justify-content: space-between;
-                            margin-bottom: 5px;
+                            margin-bottom: 2px;
                         }
                         .info-section {
                             width: 48%;
-                            padding: 10px;
+                            padding: 8px;
                         }
                         .info-section h6 {
                             color: #000;
                             font-weight: bold;
-                            padding-bottom: 5px;
-                            margin-bottom: 5px;
+                            padding-bottom: 4px;
+                            margin-bottom: 4px;
                             font-size: 13px;
                         }
                         .info-section table {
                             width: 100%;
-                            font-size: 12px;
+                            font-size: 11px;
                             border: none;
                         }
                         .info-section td {
-                            padding: 3px 0;
+                            padding: 2px 0;
                             color: #000 !important;
                             border: none;
                         }
@@ -1094,63 +1212,82 @@
                         table {
                             width: 100%;
                             border-collapse: collapse;
-                            margin: 20px 0;
+                            margin: 5px 0 20px;
                         }
                         table th, table td {
                             border: 1px solid #000;
-                            padding: 8px;
+                            padding: 3px;
                             text-align: left;
                             font-family: 'Courier New', monospace !important;
                             color: #000 !important;
                         }
                         table th {
-                            
                             background-color: #f0f0f0;
                             font-weight: bold;
                         }
-                        .summary-section {
-                            display: flex;
-                            justify-content: flex-end;
-                            margin-top: 20px;
-                        }
-                        .summary-box {
-                            width: 400px;
-                            border: 2px solid #000;
-                            padding: 15px;
-                        }
-                        .summary-box h6 {
-                            color: #000;
-                            font-weight: bold;
-                            margin-bottom: 15px;
-                            font-size: 13px;
-                        }
-                        .summary-row {
-                            display: flex;
-                            justify-content: space-between;
-                            padding: 5px 0;
-                            border-bottom: 1px solid #000;
-                            color: #000;
-                        }
-                        .summary-row.total {
-                            font-size: 16px;
-                            font-weight: bold;
-                            border-top: 2px solid #000;
-                            margin-top: 10px;
-                            padding-top: 10px;
-                            border-bottom: none;
-                        }
+                        
+                        /* Footer Styling */
                         .footer {
                             text-align: center;
-                            margin-top: 40px;
+                            margin-top: 30px;
                             padding-top: 20px;
-                            border-top: 1px solid #000;
-                            font-size: 14px;
                             color: #000;
                         }
+                        
+                        .signature-row {
+                            display: flex;
+                            justify-content: space-around;
+                            margin-bottom: 5px;
+                            text-align: center;
+                        }
+                        
+                        .check {
+                            flex: 1;
+                            padding: 0 10px;
+                        }
+                        
+                        .check .signature-line {
+                            padding-bottom: 2px;
+                            min-height: 30px;
+                        }
+                        
+                        .check .label {
+                            font-size: 11px;
+                            font-weight: bold;
+                            color: #000 !important;
+                        }
+                        
+                        .footer p {
+                            margin: 0;
+                            font-size: 11px;
+                            color: #000 !important;
+                            font-weight: bold;
+                        }
+                        
+                        .footer .original {
+                            font-size: 12px;
+                            font-weight: bold;
+                            margin: 25px 0 0;
+                            letter-spacing: 2px;
+                        }
+                        
+                        .footer .bank-info {
+                            font-size: 11px;
+                            margin: 2px 0;
+                        }
+                        
+                        .footer .return-policy {
+                            font-size: 11px;
+                            margin-top: 5px;
+                            padding: 3px 0;
+                            font-weight: bold;
+                        }
+                        
                         h3, h4, h5, h6, p, strong, span, td, th, div {
                             font-family: 'Courier New', monospace !important;
                             color: #000 !important;
                         }
+                        
                         @media print { 
                             .no-print { display: none; }
                             body { padding: 10px; }
@@ -1163,172 +1300,212 @@
                         <div class="company-header">
                             <div class="company-name">SAHAR LANKA</div>
                             <div class="company-address">Importers & Retailers of Genuine Spares for</div>
-                            <div class="company-address">MARUTI-LEYLAND - MAHINDRA-TATA-ALTO</div>
+                            <div class="company-address">MARUTI - LEYLAND - MAHINDRA - TATA - ALTO</div>
                             <div class="company-address">Phone: 077 6718838 | Address: No. 397/3, Dunu Ela, Thihariya, Kalagedihena.</div>
                         </div>
                         
-                        <div class="receipt-title">SALES INVOICE</div>
-                        
                         <div class="info-row">
                             <div class="info-section">
-                                
                                 <table>
                                     <tr><td>Name:</td><td>${customerName}</td></tr>
-                                    <tr><td>Phone/Address:</td><td>${customerAddress || 'N/A'}</td></tr>
+                                    <tr><td>Address:</td><td>${customerAddress}</td></tr>
+                                    <tr><td>Phone:</td><td>${customerPhone}</td></tr>
                                 </table>
                             </div>
                             <div class="info-section">
                                 <table>
                                     <tr><td>Invoice Number:</td><td>${invoiceNumber}</td></tr>
                                     <tr><td>Date:</td><td>${date}</td></tr>
-                                    <tr><td>Payment Status:</td><td>${paymentStatus}</td></tr>
                                 </table>
                             </div>
                         </div>
                         
                         ${itemsTable ? itemsTable.outerHTML : ''}
                         
-                        <div class="summary-section">
-                            <div class="summary-box">
-                                <h6>Payment Summary</h6>
-                                <div class="summary-row total">
-                                    <span>Grand Total:</span>
-                                    <span>${grandTotal}</span>
+                        <div class="footer">
+                            <div class="signature-row">
+                                <div class="check">
+                                    <div class="signature-line">...........................</div>
+                                    <div class="label">Receiver's Signature</div>
+                                </div>
+                                <div class="check">
+                                    <div class="signature-line">...........................</div>
+                                    <div class="label">Check By</div>
+                                </div>
+                                <div class="check">
+                                    <div class="signature-line">...........................</div>
+                                    <div class="label">Authorized Signature</div>
                                 </div>
                             </div>
-                        </div>
-                        
-                        <div class="footer">
-                            <p><strong>Thank you for your purchase!</strong></p>
+                            
+                            <p class="original">*****ORIGINAL*****</p>
+                            <p>Please draw the cheque in favor of M.A.Z Ahamed</p>
+                            <p class="bank-info">Peoples Bank Acc No: 278100102421207</p>
+                            <p class="return-policy">||RETURN GOODS WILL BE ACCEPTED WITHIN 30 DAYS ONLY||</p>
                         </div>
                     </div>
                 </body>
                 </html>
             `);
 
-            printWindow.document.close();
-            printWindow.focus();
+        printWindow.document.close();
+        printWindow.focus();
 
-            setTimeout(() => {
-                printWindow.print();
-                printWindow.close();
-            }, 250);
+        setTimeout(() => {
+            printWindow.print();
+            printWindow.close();
+        }, 250);
+    }
+
+    document.addEventListener('livewire:initialized', () => {
+
+        // Listener for showing modals from the backend
+        window.addEventListener('showModal', event => {
+            const modal = new bootstrap.Modal(document.getElementById(event.detail[0].modalId));
+            modal.show();
+        });
+
+        // Listener for closing modals from the backend
+        window.addEventListener('closeModal', event => {
+            const modal = bootstrap.Modal.getInstance(document.getElementById(event.detail[0].modalId));
+            if (modal) {
+                modal.hide();
+            }
+        });
+
+        // This is the single, working toast notification listener using SweetAlert2
+        window.addEventListener('show-toast', event => {
+            const data = event.detail[0];
+            Swal.fire({
+                toast: true,
+                position: 'top-end',
+                icon: data.type,
+                title: data.message,
+                showConfirmButton: false,
+                timer: 3000,
+                timerProgressBar: true
+            });
+        });
+
+        // Cheque form validation and utilities
+        window.resetChequeForm = function() {
+            const form = document.getElementById('chequeForm');
+            if (form) {
+                form.reset();
+                // Trigger Livewire to reset the form data
+                @this.call('resetChequeForm');
+            }
         }
 
-        document.addEventListener('livewire:initialized', () => {
+        function validateChequeForm() {
+            const form = document.getElementById('chequeForm');
+            if (!form) return true;
 
-            // Listener for showing modals from the backend
-            window.addEventListener('showModal', event => {
-                const modal = new bootstrap.Modal(document.getElementById(event.detail[0].modalId));
-                modal.show();
-            });
+            const chequeNumber = form.querySelector('input[wire\\:model="newCheque.number"]')?.value || '';
+            const bankName = form.querySelector('select[wire\\:model="newCheque.bank"]')?.value || '';
+            const chequeDate = form.querySelector('input[wire\\:model="newCheque.date"]')?.value || '';
+            const amount = form.querySelector('input[wire\\:model="newCheque.amount"]')?.value || '';
 
-            // Listener for closing modals from the backend
-            window.addEventListener('closeModal', event => {
-                const modal = bootstrap.Modal.getInstance(document.getElementById(event.detail[0].modalId));
-                if (modal) {
-                    modal.hide();
-                }
-            });
-
-            // This is the single, working toast notification listener using SweetAlert2
-            window.addEventListener('show-toast', event => {
-                const data = event.detail[0];
+            if (!chequeNumber.trim()) {
                 Swal.fire({
-                    toast: true,
-                    position: 'top-end',
-                    icon: data.type,
-                    title: data.message,
-                    showConfirmButton: false,
-                    timer: 3000,
-                    timerProgressBar: true
+                    icon: 'error',
+                    title: 'Validation Error',
+                    text: 'Please enter a cheque number'
                 });
-            });
-
-            // Cheque form validation and utilities
-            function resetChequeForm() {
-                const form = document.getElementById('chequeForm');
-                if (form) {
-                    form.reset();
-                    // Trigger Livewire to reset the form data
-                    @this.call('resetChequeForm');
-                }
+                return false;
             }
 
-            function validateChequeForm() {
-                const form = document.getElementById('chequeForm');
-                if (!form) return true;
-
-                const chequeNumber = form.querySelector('input[wire\\:model="newCheque.number"]')?.value || '';
-                const bankName = form.querySelector('select[wire\\:model="newCheque.bank"]')?.value || '';
-                const chequeDate = form.querySelector('input[wire\\:model="newCheque.date"]')?.value || '';
-                const amount = form.querySelector('input[wire\\:model="newCheque.amount"]')?.value || '';
-
-                if (!chequeNumber.trim()) {
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Validation Error',
-                        text: 'Please enter a cheque number'
-                    });
-                    return false;
-                }
-
-                if (!bankName) {
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Validation Error',
-                        text: 'Please select a bank'
-                    });
-                    return false;
-                }
-
-                if (!chequeDate) {
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Validation Error',
-                        text: 'Please select a cheque date'
-                    });
-                    return false;
-                }
-
-                // Check if date is today or future
-                const selectedDate = new Date(chequeDate);
-                const today = new Date();
-                today.setHours(0, 0, 0, 0);
-
-                if (selectedDate < today) {
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Invalid Date',
-                        text: 'Cheque date cannot be in the past. Please select today\'s date or a future date.'
-                    });
-                    return false;
-                }
-
-                if (!amount || parseFloat(amount) <= 0) {
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Validation Error',
-                        text: 'Please enter a valid amount greater than 0'
-                    });
-                    return false;
-                }
-
-                return true;
+            if (!bankName) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Validation Error',
+                    text: 'Please select a bank'
+                });
+                return false;
             }
 
-            // Add form validation on submit
-            document.addEventListener('submit', function(e) {
-                if (e.target.id === 'chequeForm') {
-                    if (!validateChequeForm()) {
-                        e.preventDefault();
-                        e.stopPropagation();
-                        return false;
-                    }
-                }
-            });
+            if (!chequeDate) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Validation Error',
+                    text: 'Please select a cheque date'
+                });
+                return false;
+            }
 
+            // Check if date is today or future
+            const selectedDate = new Date(chequeDate);
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
+
+            if (selectedDate < today) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Invalid Date',
+                    text: 'Cheque date cannot be in the past. Please select today\'s date or a future date.'
+                });
+                return false;
+            }
+
+            if (!amount || parseFloat(amount) <= 0) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Validation Error',
+                    text: 'Please enter a valid amount greater than 0'
+                });
+                return false;
+            }
+
+            return true;
+        }
+
+        // Add form validation on submit
+        document.addEventListener('submit', function(e) {
+            if (e.target.id === 'chequeForm') {
+                if (!validateChequeForm()) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    return false;
+                }
+            }
         });
-    </script>
-    @endpush
+
+    });
+    document.addEventListener('livewire:initialized', () => {
+        // Handle discount type button clicks with proper event delegation
+        document.addEventListener('click', function(e) {
+            const btn = e.target.closest('.discount-type-btn');
+            if (btn) {
+                e.preventDefault();
+                e.stopPropagation();
+
+                // Remove active class from all buttons
+                document.querySelectorAll('.discount-type-btn').forEach(b => {
+                    b.classList.remove('active');
+                });
+
+                // Add active class to clicked button
+                btn.classList.add('active');
+
+                // Trigger Livewire update
+                const discountType = btn.title.includes('Amount') ? 'amount' : 'percentage';
+                @this.set('discountType', discountType);
+            }
+        });
+
+        // Update button states when discountType changes
+        Livewire.on('discountTypeChanged', () => {
+            const currentType = @this.discountType;
+            document.querySelectorAll('.discount-type-btn').forEach(btn => {
+                const btnType = btn.title.includes('Amount') ? 'amount' : 'percentage';
+                if (btnType === currentType) {
+                    btn.classList.add('active');
+                } else {
+                    btn.classList.remove('active');
+                }
+            });
+        });
+    });
+</script>
+@endpush
 </div>

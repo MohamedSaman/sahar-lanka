@@ -35,6 +35,11 @@ class StoreBilling extends Component
     public $totalDiscount = 0;
     public $grandTotal = 0;
 
+    // Overall Discount Properties
+    public $discountType = 'percentage'; // Default to percentage
+    public $discountValue = 0;
+    public $calculatedDiscount = 0;
+
     public $customers = [];
     public $customerId = null;
     public $customerType = 'wholesale';
@@ -93,6 +98,7 @@ class StoreBilling extends Component
         $this->updateTotals();
         $this->balanceDueDate = date('Y-m-d', strtotime('+7 days'));
     }
+
     public function loadBanks()
     {
         $this->banks = [
@@ -120,7 +126,6 @@ class StoreBilling extends Component
         ];
     }
 
-
     public function loadCustomers()
     {
         $this->customers = Customer::orderBy('name')->get();
@@ -132,16 +137,13 @@ class StoreBilling extends Component
             $this->searchResults = ProductDetail::join('product_categories', 'product_categories.id', '=', 'product_details.category_id')
                 ->where('product_details.product_name', 'LIKE', '%' . $this->search . '%')
                 ->orWhere('product_details.product_code', 'LIKE', '%' . $this->search . '%')
-                ->select('product_details.*') // Select only product_details columns to avoid ambiguity
+                ->select('product_details.*')
                 ->get();
         } else {
             $this->searchResults = [];
         }
     }
 
-    /**
-     * MODIFIED: This method now adds new items to the top of the cart.
-     */
     public function addToCart($productId)
     {
         $product = ProductDetail::find($productId);
@@ -170,11 +172,11 @@ class StoreBilling extends Component
                 ]
             ];
 
-            $this->cart = $newItem + $this->cart; // Prepend new item
+            $this->cart = $newItem + $this->cart;
             $this->prices[$productId] = $product->selling_price ?? 0;
             $this->quantities[$productId] = 1;
             $this->discounts[$productId] = $product->discount_price ?? 0;
-            $this->quantityTypes[$productId] = ''; // Initialize quantity type
+            $this->quantityTypes[$productId] = '';
         }
 
         $this->search = '';
@@ -192,7 +194,6 @@ class StoreBilling extends Component
         $value = max(0, floatval($value));
         $this->prices[$key] = $value;
 
-        // Update max discount if needed
         if (isset($this->discounts[$key]) && $this->discounts[$key] > $value) {
             $this->discounts[$key] = $value;
         }
@@ -204,6 +205,17 @@ class StoreBilling extends Component
     {
         $price = $this->prices[$key] ?? $this->cart[$key]['price'] ?? 0;
         $this->discounts[$key] = max(0, min(floatval($value), $price));
+        $this->updateTotals();
+    }
+
+    public function updatedDiscountType()
+    {
+        $this->discountValue = 0;
+        $this->updateTotals();
+    }
+
+    public function updatedDiscountValue()
+    {
         $this->updateTotals();
     }
 
@@ -296,6 +308,24 @@ class StoreBilling extends Component
         $this->js('$("#viewDetailModal").modal("show")');
     }
 
+    public function calculateOverallDiscount()
+    {
+        $baseAmount = $this->subtotal - $this->totalDiscount;
+        
+        if ($baseAmount <= 0) {
+            $this->calculatedDiscount = 0;
+            return;
+        }
+        
+        if ($this->discountType === 'percentage') {
+            $percentage = min(100, max(0, floatval($this->discountValue)));
+            $this->calculatedDiscount = ($baseAmount * $percentage) / 100;
+        } else {
+            // Amount-based discount
+            $this->calculatedDiscount = min($baseAmount, max(0, floatval($this->discountValue)));
+        }
+    }
+
     public function updateTotals()
     {
         $this->subtotal = 0;
@@ -309,7 +339,16 @@ class StoreBilling extends Component
             $this->totalDiscount += $discount * $qty;
         }
 
-        $this->grandTotal = $this->subtotal - $this->totalDiscount;
+        // Calculate overall discount
+        $this->calculateOverallDiscount();
+
+        // Grand total = subtotal - item discounts - overall discount
+        $this->grandTotal = $this->subtotal - $this->totalDiscount - $this->calculatedDiscount;
+        
+        // Ensure grand total doesn't go negative
+        if ($this->grandTotal < 0) {
+            $this->grandTotal = 0;
+        }
     }
 
     public function clearCart()
@@ -319,6 +358,9 @@ class StoreBilling extends Component
         $this->discounts = [];
         $this->prices = [];
         $this->quantityTypes = [];
+        $this->discountType = 'percentage';
+        $this->discountValue = 0;
+        $this->calculatedDiscount = 0;
         $this->updateTotals();
     }
 
@@ -338,7 +380,7 @@ class StoreBilling extends Component
         ]);
 
         $this->loadCustomers();
-        $this->customerId = $customer->id; // Auto-select the newly created customer
+        $this->customerId = $customer->id;
 
         $this->newCustomerName = '';
         $this->newCustomerPhone = '';
@@ -370,7 +412,6 @@ class StoreBilling extends Component
 
     public function addCheque()
     {
-        // Validate required fields
         $this->validate([
             'newCheque.number' => 'required|string|max:255',
             'newCheque.bank' => 'required|string|max:255',
@@ -385,7 +426,6 @@ class StoreBilling extends Component
             'newCheque.amount.min' => 'Cheque amount must be greater than 0.',
         ]);
 
-        // Additional validation for cheque date
         $chequeDate = strtotime($this->newCheque['date']);
         $today = strtotime(date('Y-m-d'));
 
@@ -401,7 +441,6 @@ class StoreBilling extends Component
             'amount' => floatval($this->newCheque['amount']),
         ];
 
-        // Reset form after successful addition
         $this->resetChequeForm();
     }
 
@@ -419,12 +458,13 @@ class StoreBilling extends Component
     {
         if (isset($this->cheques[$index])) {
             unset($this->cheques[$index]);
-            $this->cheques = array_values($this->cheques); // Re-index the array
+            $this->cheques = array_values($this->cheques);
         }
     }
 
     public function completeSale()
     {
+
         if (empty($this->cart)) {
             $this->js('swal.fire("Error", "Please add items to the cart.", "error")');
             return;
@@ -432,19 +472,17 @@ class StoreBilling extends Component
 
         $this->validate([
             'customerId' => 'required',
-            'paymentType' => 'required|in:full,partial',
+            'paymentType' => 'required|in:full,partial,credit',
         ]);
 
         $totalChequeAmount = collect($this->cheques)->sum('amount');
         $totalPaid = floatval($this->cashAmount) + floatval($totalChequeAmount);
 
-        // Handle full payment (cash)
         if ($this->paymentType === 'full') {
-            $this->cashAmount = $this->grandTotal; // Automatically set cash amount to grand total
+            $this->cashAmount = $this->grandTotal;
             $totalPaid = $this->grandTotal;
         }
 
-        // Full Payment validation
         if ($this->paymentType === 'full') {
             if ($totalPaid != $this->grandTotal) {
                 $this->js('swal.fire("Error", "Full payment must equal the grand total.", "error")');
@@ -452,21 +490,17 @@ class StoreBilling extends Component
             }
         }
 
-        // Partial / Credit Payment - cash can be less than grand total, cheques are pending dues
         if ($this->paymentType === 'partial') {
-            // For credit payments, cash amount is optional but cheques represent pending dues
             if (floatval($this->cashAmount) < 0) {
                 $this->js('swal.fire("Error", "Cash amount cannot be negative.", "error")');
                 return;
             }
 
-            // If cash is provided, ensure it's less than or equal to grand total
             if (floatval($this->cashAmount) > 0 && floatval($this->cashAmount) > $this->grandTotal) {
                 $this->js('swal.fire("Error", "Cash amount cannot exceed the grand total.", "error")');
                 return;
             }
 
-            // Validate cheque amounts if provided
             if (!empty($this->cheques)) {
                 foreach ($this->cheques as $cheque) {
                     if (floatval($cheque['amount']) <= 0) {
@@ -474,6 +508,10 @@ class StoreBilling extends Component
                         return;
                     }
                 }
+            }
+            if (($totalPaid <= 0) || ($totalPaid >= $this->grandTotal)) {
+                $this->js('swal.fire("Error", "For partial payments, the total paid amount must be greater than 0 and less than the grand total.", "error")');
+                return;
             }
         }
 
@@ -483,38 +521,37 @@ class StoreBilling extends Component
             $totalChequeAmount = collect($this->cheques)->sum('amount');
             $totalPaid = floatval($this->cashAmount) + floatval($totalChequeAmount);
 
-            // Determine payment status and due amount
             if ($this->paymentType === 'full') {
                 $paymentStatus = 'paid';
                 $dueAmount = 0;
-            } else { // Credit payment
+            } else {
                 $paymentStatus = 'pending';
-                // For credit payments: due amount = grand total - cash payments + cheque amounts
-                // Cheques are considered as pending dues, not actual payments
                 $dueAmount = $this->grandTotal - (floatval($this->cashAmount) + floatval($totalChequeAmount));
-                // dd($dueAmount);
             }
 
-            // Save sale
+            // Calculate total discount (item discounts + overall discount)
+            $totalDiscountAmount = $this->totalDiscount + $this->calculatedDiscount;
+
             $sale = Sale::create([
                 'invoice_number'   => Sale::generateInvoiceNumber(),
                 'customer_id'      => $this->customerId,
                 'user_id'          => auth()->id(),
                 'customer_type'    => Customer::find($this->customerId)->type,
                 'subtotal'         => $this->subtotal,
-                'discount_amount'  => $this->totalDiscount,
+                'discount_amount'  => $totalDiscountAmount,
                 'total_amount'     => $this->grandTotal,
                 'payment_type'     => $this->paymentType,
                 'payment_status'   => $paymentStatus,
                 'notes'            => $this->saleNotes ?: null,
                 'due_amount'       => $dueAmount,
             ]);
-            // Save Sales Items and Update Stock
+
             foreach ($this->cart as $id => $item) {
                 $quantityToSell = $this->quantities[$id];
                 $price = $this->prices[$id] ?? $item['price'];
                 $itemDiscount = $this->discounts[$id] ?? 0;
                 $total = ($price * $quantityToSell) - ($itemDiscount * $quantityToSell);
+                
                 SalesItem::create([
                     'sale_id' => $sale->id,
                     'product_id' => $item['id'],
@@ -530,7 +567,6 @@ class StoreBilling extends Component
                 $productStock->save();
             }
 
-            // Save Payments
             if ($this->paymentType === 'full' || floatval($this->cashAmount) > 0) {
                 Payment::create([
                     'sale_id' => $sale->id,
@@ -542,7 +578,6 @@ class StoreBilling extends Component
                 ]);
             }
 
-            // Save cheques as pending payments (they represent future dues)
             foreach ($this->cheques as $cheque) {
                 $payment = Payment::create([
                     'sale_id' => $sale->id,
@@ -566,13 +601,11 @@ class StoreBilling extends Component
                 ]);
             }
 
-             DB::commit();
+            DB::commit();
 
-            // Load the receipt data with all relationships
             $this->receipt = Sale::with(['customer', 'items.product', 'payments'])
                 ->find($sale->id);
 
-            // Show the receipt modal
             $this->dispatch('showModal', ['modalId' => 'receiptModal']);
 
             $this->js('swal.fire("Success", "Sale completed successfully!", "success")');
@@ -583,7 +616,6 @@ class StoreBilling extends Component
             $this->js('swal.fire("Error", "' . $e->getMessage() . '", "error")');
         }
     }
-
 
     public function resetPaymentInfo()
     {
@@ -601,6 +633,10 @@ class StoreBilling extends Component
             'date' => '',
             'amount' => '',
         ];
+
+        $this->discountType = 'percentage';
+        $this->discountValue = 0;
+        $this->calculatedDiscount = 0;
 
         $this->initialPaymentAmount = 0;
         $this->initialPaymentMethod = '';
