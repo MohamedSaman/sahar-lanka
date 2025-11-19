@@ -628,7 +628,7 @@
             <!DOCTYPE html>
             <html>
             <head>
-                <title>Sales Receipt - ${invoiceNumber}</title>
+                <title>Sales Invoice - ${invoiceNumber}</title>
                 <style>
                     * {
                         margin: 0;
@@ -827,6 +827,7 @@
                         <p class="return-policy">||RETURN GOODS WILL BE ACCEPTED WITHIN 30 DAYS ONLY||</p>
                     </div>
                 </div>
+                
             </body>
             </html>
         `);
