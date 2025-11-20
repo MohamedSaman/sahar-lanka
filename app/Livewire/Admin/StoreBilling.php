@@ -509,7 +509,7 @@ class StoreBilling extends Component
                     }
                 }
             }
-            if (($totalPaid <= 0) || ($totalPaid >= $this->grandTotal)) {
+            if (($totalPaid < 0) || ($totalPaid > $this->grandTotal)) {
                 $this->js('swal.fire("Error", "For partial payments, the total paid amount must be greater than 0 and less than the grand total.", "error")');
                 return;
             }
