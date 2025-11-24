@@ -52,7 +52,7 @@ class StoreBilling extends Component
     public $newCustomerNotes = '';
 
     public $saleNotes = '';
-    public $paymentType = 'full';
+    public $paymentType = 'partial';
     public $paymentMethod = '';
     public $paymentReceiptImage;
     public $paymentReceiptImagePreview = null;

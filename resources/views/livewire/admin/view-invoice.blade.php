@@ -639,7 +639,7 @@
                     body { 
                         font-family: 'Courier New', monospace !important; 
                         padding: 20px;
-                        font-size: 12px;
+                        font-size: 14px;
                         line-height: 1.4;
                         color: #000;
                         font-weight: bold;
@@ -738,6 +738,11 @@
                         color: #000 !important;
                     }
                     
+                    .footer{
+                        position: absolute;
+                        bottom: 0;
+                        width: 100%;
+                    }
                     .footer p {
                         margin: 0;
                         font-size: 11px;

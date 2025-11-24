@@ -326,17 +326,6 @@
                                             <div class="d-flex">
                                                 <div class="form-check me-4">
                                                     <input class="form-check-input" type="radio" name="paymentType"
-                                                        id="fullPayment" value="full" wire:model.live="paymentType"
-                                                        checked>
-                                                    <label class="form-check-label" for="fullPayment">
-                                                        <span class="badge bg-success me-1">
-                                                            <i class="fas fa-money-bill me-1"></i>
-                                                        </span>
-                                                        Cash
-                                                    </label>
-                                                </div>
-                                                <div class="form-check">
-                                                    <input class="form-check-input" type="radio" name="paymentType"
                                                         id="partialPayment" value="partial"
                                                         wire:model.live="paymentType">
                                                     <label class="form-check-label" for="partialPayment">
@@ -346,6 +335,18 @@
                                                         Credit
                                                     </label>
                                                 </div>
+                                                <div class="form-check ">
+                                                    <input class="form-check-input" type="radio" name="paymentType"
+                                                        id="fullPayment" value="full" wire:model.live="paymentType"
+                                                        checked>
+                                                    <label class="form-check-label" for="fullPayment">
+                                                        <span class="badge bg-success me-1">
+                                                            <i class="fas fa-money-bill me-1"></i>
+                                                        </span>
+                                                        Cash
+                                                    </label>
+                                                </div>
+                                                
                                             </div>
                                         </div>
 
@@ -1134,7 +1135,7 @@
                         body { 
                             font-family: 'Courier New', monospace !important; 
                             padding: 20px;
-                            font-size: 12px;
+                            font-size: 14px;
                             line-height: 1.4;
                             color: #000;
                             font-weight: bold;
@@ -1232,6 +1233,9 @@
                             margin-top: 30px;
                             padding-top: 20px;
                             color: #000;
+                            position: absolute;
+                            bottom: 0;
+                            width: 100%;
                         }
                         
                         .signature-row {

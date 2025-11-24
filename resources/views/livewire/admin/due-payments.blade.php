@@ -33,7 +33,7 @@
                                             <p class="text-xs text-gray-600 mb-0 text-uppercase fw-semibold">Total Due
                                                 Payments</p>
                                             <div class="d-flex align-items-baseline mt-1">
-                                                <h3 class="mb-0 fw-bold text-gray-800">{{ $duePaymentsCount }}</h3>
+                                                <h3 class="text-md mb-0 fw-bold text-gray-800">{{ $duePaymentsCount }}</h3>
                                                 <span class="badge bg-info bg-opacity-10 text-info ms-2 rounded-full"
                                                     style="padding: 6px 12px;">To Collect</span>
                                             </div>
@@ -56,7 +56,7 @@
                                             <p class="text-xs text-gray-600 mb-0 text-uppercase fw-semibold">Total Due
                                                 Amount</p>
                                             <div class="d-flex align-items-baseline mt-1">
-                                                <h4 class="mb-0 fw-bold text-gray-800">
+                                                <h4 class="text-md mb-0 fw-bold text-gray-800">
                                                     Rs.{{ number_format($totalDue, 2) }}
                                                 </h4>
                                             </div>
@@ -78,7 +78,7 @@
                                             <p class="text-xs text-gray-600 mb-0 text-uppercase fw-semibold">Today Due
                                                 Payment</p>
                                             <div class="d-flex align-items-baseline mt-1">
-                                                <h4 class="mb-0 fw-bold text-gray-800">
+                                                <h4 class="text-md mb-0 fw-bold text-gray-800">
                                                     {{ $todayDuePaymentsCount }}
                                                 </h4>
                                             </div>
@@ -100,7 +100,7 @@
                                             <p class="text-xs text-gray-600 mb-0 text-uppercase fw-semibold">Total Due
                                                 Amount</p>
                                             <div class="d-flex align-items-baseline mt-1">
-                                                <h4 class="mb-0 fw-bold text-gray-800">
+                                                <h4 class=" text-md mb-0 fw-bold text-gray-800">
                                                     Rs.{{ number_format($todayDuePayments, 2) }}
                                                 </h4>
                                             </div>
