@@ -49,7 +49,7 @@ class ManageCustomer extends Component
     {
         $this->validate([
             'name' => 'required|string|max:255',
-            'contactNumber' => 'nullable|string|max:20',
+            'contactNumber' => 'nullable|string|max:40',
             'email' => 'nullable|email|max:255|unique:customers,email',
             'customerType' => 'nullable',
             'businessName' => 'nullable|string|max:255',
@@ -93,7 +93,7 @@ class ManageCustomer extends Component
     {
         $this->validate([
             'editName' => 'required|string|max:255',
-            'editContactNumber' => 'nullable|string|max:20',
+            'editContactNumber' => 'nullable|string|max:40',
             'editEmail' => 'nullable|email|max:255|unique:customers,email,' . $this->editCustomerId,
             'editCustomerType' => 'nullable',
             'editBusinessName' => 'nullable|string|max:255',
