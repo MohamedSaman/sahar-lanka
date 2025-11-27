@@ -739,8 +739,12 @@
                     }
                     
                     .footer{
+                        text-align: center;
+                        margin-bottom: 100px;
+                        padding-top: 20px;
+                        color: #000;
                         position: absolute;
-                        bottom: 0;
+                        bottom: 20px;
                         width: 100%;
                     }
                     .footer p {
@@ -828,7 +832,7 @@
                         
                         <p class="original">*****ORIGINAL*****</p>
                         <p>Please draw the cheque in favor of M.A.Z Ahamed</p>
-                        <p class="bank-info">Peoples Bank Acc No: 278100102421207</p>
+                        <p class="bank-info">Peoples Bank Acc No: 2781-0010-2421-207</p>
                         <p class="return-policy">||RETURN GOODS WILL BE ACCEPTED WITHIN 30 DAYS ONLY||</p>
                     </div>
                 </div>
